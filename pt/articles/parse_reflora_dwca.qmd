@@ -1,0 +1,85 @@
+---
+title: "Analisar arquivos Darwin Core do Reflora"
+format: html
+sidebar: pt-articles
+---
+
+Este guia demonstra como usar a função `reflora_parse()` do pacote `refloraR`. A função lê e analisa arquivos Darwin Core Archive (DwC-A) previamente baixados com `reflora_download()`.
+
+## Visão Geral da Função
+
+A função `reflora_parse()` lê dados DwC-A de todas ou de coleções específicas de herbário do Reflora. Também limpa e formata os dados dos espécimes.
+
+## Argumentos
+
+| Argumento     | Descrição |
+|---------------|-----------|
+| `path`        | Diretório contendo as pastas DwC-A baixadas. |
+| `herbarium`   | Vetor de siglas de herbário (ex.: `"RB"`, `"K"`). Use `NULL` para analisar todos. |
+| `repatriated` | Lógico. Se `FALSE`, ignora herbários repatriados (ver `reflora_summary()`). |
+| `verbose`     | Lógico. Se `TRUE`, exibe mensagens de progresso. |
+
+## Analisar Todas as Coleções no Diretório
+
+Use as configurações padrão para analisar todas as pastas DwC-A:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  verbose = TRUE
+)
+```
+
+## Analisar Coleções Específicas
+
+Você pode especificar quais coleções analisar:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  herbarium = c("RB", "K"),
+  verbose = TRUE
+)
+```
+
+## Ignorar Coleções Repatriadas
+
+Para ignorar herbários repatriados:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  repatriated = FALSE,
+  verbose = TRUE
+)
+```
+
+## Estrutura da Saída Analisada
+
+O retorno é uma **lista nomeada** onde cada elemento representa uma coleção e contém:
+
+- `occurrence.txt`: Data frame com os registros de espécimes.
+- `eml.xml`: Metadados sobre a coleção.
+- `summary_<COL>.csv` opcional: Arquivo de resumo de metadados.
+
+```r
+names(dwca)
+head(dwca[["ALCB"]][["data"]][["occurrence.txt"]])
+```
+
+## Limpeza de Dados e Padronização de Colunas
+
+- Converte campos taxonômicos para formato "title case".
+- Adiciona `taxonName` combinando `genus`, `specificEpithet` e `infraspecificEpithet`.
+- Substitui ranks taxonômicos ausentes por `"FAMILY"`.
+
+## Dicas
+
+- Certifique-se de ter baixado os dados com `reflora_download()` antes de analisar.
+- Use `reflora_summary()` para verificar quais herbários são repatriados.
+- Você pode combinar e analisar dados parseados usando `dplyr::bind_rows()`.
+
+## Veja Também
+
+- [`reflora_download()`](/pt/articles/download_reflora_collections.qmd): Baixar registros de espécimes do Reflora
+- [`reflora_summary()`](/pt/articles/summarize_reflora_collections.qmd): Inspecionar coleções do Reflora

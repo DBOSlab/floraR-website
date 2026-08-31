@@ -1,0 +1,57 @@
+---
+title: "Novidades"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+
+# refloraR 1.0.0
+
+## Lançamento Inicial
+
+Primeira versão oficial do pacote R `refloraR`, desenvolvido para simplificar o acesso a dados de espécimes vegetais do Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro.
+
+### Funcionalidades
+
+- `reflora_summary()`: Recupera metadados e informações resumidas de todos ou herbários específicos do Reflora.
+- `reflora_download()`: Baixa dados originais de espécimes no formato Darwin Core Archive (DwC-A).
+- `reflora_records()`: Analisa, filtra e organiza registros do Reflora por táxon, herbário, região e ano.
+- `reflora_indets()`: Recupera espécimes indeterminados (ex.: identificados apenas a nível de família ou gênero).
+- Filtros opcionais por `taxon`, `herbarium`, `state`, `recordYear` e `level`.
+- Suporte à integração com fluxos de trabalho do tidyverse para análises posteriores.
+- Filtragem de coleções repatriadas (`repatriated = TRUE` por padrão).
+- Cobertura de testes >95%, integração contínua via GitHub Actions.
+
+### Infraestrutura
+
+- Licença MIT.
+- GitHub Actions: R-CMD-check e cobertura de testes.
+- Documentação hospedada: [refloraR-website](https://dboslab.github.io/refloraR-website/)
+
+### Feedback
+
+Por favor, reporte bugs ou problemas em:
+<https://github.com/DBOSlab/refloraR/issues>

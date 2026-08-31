@@ -1,0 +1,109 @@
+<script>
+(function () {
+  'use strict';
+
+  var IS_PT = /\/pt(\/|$)/.test(window.location.pathname);
+
+  function toAbsolute(href) {
+    var a = document.createElement('a');
+    a.href = href;
+    return a.pathname;
+  }
+
+  function getSiteBase() {
+    // Derive site base from the brand (logo) link, which always points to site root
+    var brand = document.querySelector('a.navbar-brand');
+    if (brand) {
+      var a = document.createElement('a');
+      a.href = brand.getAttribute('href');
+      return a.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
+    }
+    // Fallback: extract from current PT URL
+    var m = window.location.pathname.match(/^(.*?)\/pt(\/|$)/);
+    return m ? m[1] : '';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var siteBase = getSiteBase();
+
+    function toPt(absPath) {
+      if (absPath.includes('/pt/')) return absPath;
+      if (absPath.startsWith(siteBase + '/')) {
+        return siteBase + '/pt/' + absPath.slice(siteBase.length + 1);
+      }
+      return '/pt' + absPath;
+    }
+
+    function toEn(absPath) {
+      return absPath.replace('/pt/', '/');
+    }
+
+    // ── 1. On PT pages: rewrite internal links to PT equivalents ──────────
+    if (IS_PT) {
+      var selectors = [
+        '.navbar-nav a[href]',
+        'a.navbar-brand[href]',
+        '#quarto-sidebar a[href]'
+      ].join(', ');
+
+      document.querySelectorAll(selectors).forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href || href.charAt(0) === '#' ||
+            href.indexOf('mailto:') === 0 ||
+            href.indexOf('http') === 0) return;
+        var abs = toAbsolute(href);
+        if (!abs.includes('/pt/')) {
+          link.setAttribute('href', toPt(abs));
+        }
+      });
+
+      // Translate navbar label text
+      var navTextMap = {
+        'Overview'      : 'Visão Geral',
+        'Get Started'   : 'Primeiros Passos',
+        'Articles'      : 'Artigos',
+        'News'          : 'Novidades',
+        'Reference'     : 'Referência',
+        'Authors'       : 'Autores',
+        'Help'          : 'Ajuda',
+        'Report a Bug'  : 'Reportar um Bug',
+        'Ask a Question': 'Fazer uma Pergunta',
+        'FAQ'           : 'Perguntas Frequentes',
+        'About'         : 'Sobre',
+        'License'       : 'Licença'
+      };
+      document.querySelectorAll(
+        '.navbar-nav .menu-text, .navbar-nav .dropdown-text'
+      ).forEach(function (el) {
+        var t = el.textContent.trim();
+        if (navTextMap[t]) el.textContent = navTextMap[t];
+      });
+    }
+
+    // ── 2. Inject language toggle button into navbar ───────────────────────
+    var switchPath = IS_PT
+      ? toEn(window.location.pathname)
+      : toPt(window.location.pathname);
+
+    var label = IS_PT ? '🇬🇧 EN' : '🇧🇷 PT';
+    var hint  = IS_PT ? 'Switch to English' : 'Mudar para Português';
+
+    var a = document.createElement('a');
+    a.className = 'nav-link lang-toggle';
+    a.href      = switchPath;
+    a.innerHTML = label;
+    a.title     = hint;
+    a.setAttribute('aria-label', hint);
+    a.style.cssText = 'font-weight:700;letter-spacing:.04em;padding-left:.6rem;';
+
+    var li = document.createElement('li');
+    li.className = 'nav-item';
+    li.appendChild(a);
+
+    var navLeft = document.querySelector(
+      'ul.navbar-nav.navbar-nav-scroll.me-auto, ul.navbar-nav.me-auto, ul.navbar-nav'
+    );
+    if (navLeft) navLeft.appendChild(li);
+  });
+})();
+</script>

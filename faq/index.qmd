@@ -1,0 +1,77 @@
+---
+title: "Frequently Asked Questions"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* white with 80% opacity */
+    z-index: -1;
+  }
+</style>
+
+### What can I use refloraR for?
+
+The `refloraR` package allows researchers and taxonomists to download, filter, and analyze plant specimen data from the [Reflora Virtual Herbarium](https://ipt.jbrj.gov.br/reflora). With dedicated functions, users can access large datasets in Darwin Core Format, explore taxonomic and geographic distributions, and summarize collections efficiently.
+
+### How do I install refloraR?
+
+Visit the [Get Started guide](/get-started/index.qmd) for installation instructions from GitHub.
+
+### Is refloraR free to use?
+
+Yes. `refloraR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
+
+### What output can refloraR generate?
+
+While `refloraR` itself does not generate formatted documents, it is designed for data retrieval and analysis. However, it integrates well with tools like Quarto and RMarkdown to produce documents, HTML pages, and interactive apps using filtered specimen data.
+
+### Who are the developers of refloraR?
+
+Development is sponsored by [JBRJ](https://www.gov.br/jbrj/pt-br), [FINEP](http://www.finep.gov.br), and [CNPq](https://www.gov.br/cnpq/pt-br). Main developers:
+
+- Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
+- Carlos Calderón ([\@caldecid](https://github.com/caldecid))
+
+View the code and contribute on GitHub: [https://github.com/DBOSlab/refloraR](https://github.com/DBOSlab/refloraR)
+
+### Why the name refloraR?
+
+The name pays tribute to Brazil's Reflora programme, with a clever nod to the R programming language. It symbolizes the repatriation and rediscovery of Brazil's botanical heritage, now enhanced by reproducible data workflows.
+
+### Where can I report bugs or request features?
+
+Submit issues on GitHub: [refloraR Issues](https://github.com/DBOSlab/refloraR/issues).
+
+### Where can I ask questions and discuss refloraR?
+
+Join our community via [GitHub Discussions](https://github.com/DBOSlab/refloraR/discussions) to ask questions, suggest ideas, or help others.
+
+### What is the Reflora Virtual Herbarium?
+
+The Reflora Virtual Herbarium is a digital repository for Brazilian plant specimens, particularly those collected in Brazil but historically stored in foreign herbaria. Through high-resolution imaging and curation tools, it enables researchers to view, determine, and typify specimens remotely.
+
+### How does refloraR relate to Reflora?
+
+The `refloraR` package acts as a programmatic interface to query, retrieve, and explore data from Reflora Virtual Herbarium and its partner collections. It enhances access, encourages reproducibility, and supports large-scale taxonomic and biogeographic studies.
+
+### Can my herbarium join the Reflora Virtual Herbarium?
+
+Yes. Herbarium curators can contact **reflora@jbrj.gov.br** to initiate data and image contributions. Participating herbaria receive support to digitize and publish their collections.

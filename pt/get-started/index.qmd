@@ -1,0 +1,43 @@
+---
+title: "Instalação"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+
+## Instalar o pacote
+
+Você pode instalar a versão de desenvolvimento mais recente do pacote `refloraR` a partir do [GitHub](https://github.com/DBOSlab/refloraR) da seguinte forma:
+
+```{r}
+#| eval: false
+
+#install.packages("devtools")
+devtools::install_github("DBOSlab/refloraR")
+```
+
+:::{.callout-caution}
+Os passos desta seção só são necessários se você precisar executar [...]. Se já tiver um ambiente configurado [...], pode pular esta seção.
+:::

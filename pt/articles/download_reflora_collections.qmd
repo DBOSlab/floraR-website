@@ -1,0 +1,75 @@
+---
+title: "Baixar registros de espécimes do Reflora"
+format: html
+sidebar: pt-articles
+---
+
+Apresentamos aqui um guia completo para a função `reflora_download()` do pacote `refloraR`. Essa função permite que os usuários recuperem registros de espécimes vegetais no formato Darwin Core do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro.
+
+## Visão Geral da Função
+
+A função `reflora_download()` baixa dados de espécimes de todas ou de coleções específicas de herbário associadas ao Reflora. Oferece flexibilidade por meio de vários argumentos.
+
+## Argumentos
+
+| Argumento     | Descrição |
+|---------------|-----------|
+| `herbarium`   | Vetor de siglas de herbário (ex.: `"RB"`, `"K"`). Use `NULL` para baixar todas as coleções. |
+| `repatriated` | Lógico. Se `FALSE`, herbários repatriados serão ignorados. Use `reflora_summary()` para identificá-los. |
+| `verbose`     | Lógico. Se `TRUE`, mensagens sobre o progresso do download serão exibidas. |
+| `dir`         | Caminho do diretório para salvar os arquivos. Padrão: `"reflora_download"`. |
+
+## Baixar Todos os Registros do Reflora
+
+Use a função com as configurações padrão para baixar todos os dados do Reflora.
+
+```r
+reflora_download(
+  verbose = TRUE,
+  dir = "reflora_download"
+)
+```
+
+## Baixar Espécimes de Coleções Selecionadas
+
+Especifique os códigos de coleção com o argumento `herbarium`:
+
+```r
+reflora_download(
+  herbarium = c("ALCB", "HUEFS", "RB", "US", "K"),
+  verbose = TRUE,
+  dir = "reflora_download"
+)
+```
+
+## Ignorar Coleções Repatriadas
+
+Para excluir coleções marcadas como repatriadas:
+
+```r
+reflora_download(
+  repatriated = FALSE,
+  verbose = TRUE,
+  dir = "reflora_download"
+)
+```
+
+## Exemplo: Diretório Personalizado Sem Mensagens Detalhadas
+
+```r
+reflora_download(
+  herbarium = "RB",
+  verbose = FALSE,
+  dir = "custom_directory"
+)
+```
+
+## Dicas Adicionais
+
+- Use `reflora_summary()` para verificar quais coleções estão disponíveis e se são repatriadas.
+- Certifique-se de ter acesso à internet ao executar `reflora_download()`.
+- Verifique o conteúdo da pasta baixada para confirmar a presença de `occurrence.txt` e metadados.
+
+## Veja Também
+
+- [`reflora_summary()`](/pt/articles/summarize_reflora_collections.qmd): Obter um resumo das coleções do Reflora

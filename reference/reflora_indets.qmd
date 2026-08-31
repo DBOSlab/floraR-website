@@ -1,0 +1,95 @@
+---
+title: 'reflora_indets'
+description: 'Retrieve indeterminate specimens from Reflora collections'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_indets()
+```
+
+### Description
+
+Retrieves occurrence records for indeterminate specimens (e.g., identified
+only to family or genus level) from the
+[Reflora Virtual Herbarium](https://ipt.jbrj.gov.br/reflora/)
+hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
+The function automatically downloads and parses Darwin Core Archive (DwC-A)
+files, applies optional filters by taxon, herbarium, state, and year, and
+exports the results if desired. All returned records include direct links to
+specimen images (column `'bibliographicCitation'`) and, when available, high-resolution
+download URLs (column `'associatedMedia'`).
+
+### Details
+
+This function supports downloading and processing Darwin Core Archive (DwC-A)
+files directly from the Reflora repository. It allows for flexible filtering
+by taxon, herbarium, locality (Brazilian states), and collection year(s). The
+`level` parameter enables filtering for indeterminate records such as those
+identified only to `'FAMILY'` or `'GENUS'` rank. The function uses
+helper functions like `.arg_check_herbarium()` and `.filter_occur_df()`
+to validate inputs and refine the occurrence records. If `path` is not
+provided, the function will automatically manage downloading and storing fresh DwC-A archives.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| level | Character vector. Filter by taxonomic level. Accepted values: `"FAMILY"`, `"GENUS"`, or both. Defaults to `NULL` to include all indeterminate ranks. |
+| herbarium | Character vector. Herbarium codes (e.g., `"RB"`, `"SP"`) in uppercase. Use `NULL` to include all herbaria. |
+| repatriated | Logical. If `FALSE`, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is `TRUE`. Use `reflora_summary()` to check which collections are repatriated. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT), even when the physical specimens remain curated in the holding herbarium. |
+| taxon | Character vector. Specific taxon names to filter by (e.g., `"Fabaceae"`). |
+| state | Character vector. Brazilian state full name or abbreviations (e.g., `"BA"`, `"SP"`) to filter by locality. |
+| recordYear | Character or numeric vector. A single year (e.g., `"2001"`) or a range (e.g., `c("2000", "2022")`). |
+| reorder | Character vector. Reorder output by columns. Defaults to: `c("herbarium", "taxa", "collector", "area", "year")`. |
+| path | Character. Path to existing Reflora dwca files. If `NULL`, downloads fresh data. |
+| updates | Logical. If `TRUE` (default), checks for updated DwC-A files from Reflora. |
+| verbose | Logical. If `TRUE` (default), prints progress messages to the console. |
+| save | Logical. If `TRUE` (default), saves the results to a CSV file. |
+| dir | Character. Directory path to save output files. Default: `"reflora_indets"`. |
+| filename | Character. Name of the output file (without extension). Default: `"reflora_indets_search"`. |
+
+### Value
+
+A `data.frame` containing occurrence records for indeterminate
+specimens retrieved from the selected Reflora herbaria. Records are filtered
+according to the user-specified arguments (e.g., `level`, `taxon`,
+`state`, `recordYear`, `herbarium`, and `repatriated`).
+By default, higher-rank indeterminate taxa (e.g., `"FAMILY"`,
+`"GENUS"`, `"SUBFAMILY"`, `"TRIBE"`, `"DIVISION"`,
+`"ORDER"`, `"CLASS"`) are included unless a specific
+`level` is provided.
+
+The returned data frame includes specimen metadata and direct links to
+images via the `bibliographicCitation` (specimen page URL) and
+`associatedMedia` (high-resolution image URL(s), when available)
+columns. Columns containing only `NA` values are removed before
+returning the object.
+
+If `save = TRUE`, the function also writes the results to a CSV file
+in the specified `dir` directory (creating it if necessary) and
+generates or appends a `log.txt` file summarizing the session,
+including total records and breakdowns by herbarium, family, genus,
+country, and state.
+
+### Examples
+
+```r
+# Retrieve indeterminate records for Fabaceae and Ochnaceae from all herbaria
+reflora_indets(taxon = c("Fabaceae", "Ochnaceae"),
+               level = "FAMILY",
+               save = TRUE,
+               dir = "reflora_indets",
+               filename = "fabaceae_ochnaceae_records")
+
+# Filter by specific herbarium and state
+reflora_indets(taxon = "Fabaceae",
+               herbarium = "RB",
+               state = c("BA", "MG"),
+               recordYear = c("1990", "2022"))
+```
+
+

@@ -1,0 +1,81 @@
+---
+title: "Sobre o refloraR"
+subtitle: "Ferramentas de código aberto para explorar coleções de espécimes vegetais do Herbário Virtual Reflora"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+
+## Visão Geral
+
+`refloraR` é um pacote R para explorar coleções de espécimes vegetais do [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora), hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj). O pacote interage com o Integrated Publishing Toolkit (IPT) do Reflora, permitindo o download completo de registros de espécimes no formato Darwin Core. Também fornece funções para resumir e filtrar dados por critérios taxonômicos ou geográficos.
+
+## O Programa Reflora
+
+O Brasil possui a flora mais rica do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). Historicamente, muitos espécimes vegetais foram enviados a herbários europeus durante os séculos XVIII e XIX. Essas coleções fundamentaram inúmeras descrições de espécies e a monumental *Flora brasiliensis* ([Martius, Eichler & Urban, 1840–1906](https://www.biodiversitylibrary.org/bibliography/454)).
+
+Lançado em 2010, o Programa Reflora/CNPq teve como objetivo digitalizar e repatriar informações sobre espécimes vegetais brasileiros armazenados no exterior. Em 2014, o programa se expandiu em parceria com o SiBBr e o IFN. Os dados são publicados pelo [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do).
+
+Desenvolvida pelo [JBRJ](https://www.gov.br/jbrj) e pelo [COPPE/UFRJ](https://coppe.ufrj.br/en/home-en/), a plataforma apoia validação taxonômica e colaboração por meio da iniciativa [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
+
+## O Herbário Virtual Reflora
+
+O Herbário Virtual Reflora foi encomendado pelo CNPq ao JBRJ em 2010 para fornecer dados centralizados, em alta resolução e de acesso público sobre espécimes brasileiros. O sistema replica as principais funções da curadoria de herbários físicos. Curadores podem redeterminar e tipificar espécimes, enquanto taxonomistas contribuem para a validação das espécies. Mais de 900 taxonomistas já contribuíram para a plataforma.
+
+Os parceiros iniciais incluíram os herbários [**K**](https://www.kew.org), [**P**](https://www.mnhn.fr/fr/collection-des-plantes-vasculaires) e [**RB**](https://www.gov.br/jbrj), com apoio posterior do [**SiBBr**](https://www.sibbr.gov.br) e do [**IFN**](https://www.gov.br/florestal/pt-br/assuntos/ifn). A iniciativa continua a digitalizar coleções brasileiras e internacionais.
+
+## Descrição do Pacote
+
+Pacote: `refloraR`
+Tipo: Pacote R
+Versão: 1.0.0
+
+Autores: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656)) e Carlos Calderón ([\@caldecid](https://github.com/caldecid) [ORCID](https://orcid.org/0000-0002-3897-4615))
+
+Mantenedor: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
+
+### Funcionalidades
+
+- Recuperar registros de espécimes por filtros taxonômicos e geográficos
+- Resumir coleções e disponibilidade de dados
+- Compatível com o padrão Darwin Core Archive (DwC-A)
+- Totalmente integrado com fluxos de trabalho do tidyverse
+- Inclui suporte a visualização de dados e mapeamento
+
+## Contribua
+
+Você pode contribuir com o `refloraR`:
+
+- Abrindo issues para feedback ou relatos de bugs
+- Enviando pull requests com correções ou melhorias
+- Sugerindo ou desenvolvendo novas funcionalidades (abra uma issue para discussão antes)
+
+## Licença
+
+`refloraR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
+
+## Agradecimentos
+
+O desenvolvimento do `refloraR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).

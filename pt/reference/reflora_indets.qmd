@@ -1,0 +1,92 @@
+---
+title: 'reflora_indets'
+description: 'Recuperar espécimes indeterminados de coleções do Reflora'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_indets()
+```
+
+### Descrição
+
+Recupera registros de ocorrência de espécimes indeterminados (ex.: identificados
+apenas a nível de família ou gênero) do
+[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/)
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+A função baixa e analisa automaticamente arquivos Darwin Core Archive (DwC-A),
+aplica filtros opcionais por táxon, herbário, estado e ano, e
+exporta os resultados se desejado. Todos os registros retornados incluem links diretos para
+imagens de espécimes (coluna `'bibliographicCitation'`) e, quando disponíveis,
+URLs de download em alta resolução (coluna `'associatedMedia'`).
+
+### Detalhes
+
+Esta função suporta download e processamento de arquivos Darwin Core Archive (DwC-A)
+diretamente do repositório Reflora. Permite filtragem flexível
+por táxon, herbário, localidade (estados brasileiros) e ano(s) de coleta. O
+parâmetro `level` permite filtrar registros indeterminados como aqueles
+identificados apenas ao nível `'FAMILY'` ou `'GENUS'`. A função usa
+funções auxiliares como `.arg_check_herbarium()` e `.filter_occur_df()`
+para validar entradas e refinar os registros de ocorrência. Se `path` não for
+fornecido, a função gerenciará automaticamente o download e armazenamento de novos arquivos DwC-A.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| level | Vetor de caracteres. Filtra por nível taxonômico. Valores aceitos: `"FAMILY"`, `"GENUS"`, ou ambos. O padrão é `NULL` para incluir todos os níveis indeterminados. |
+| herbarium | Vetor de caracteres. Códigos de herbário (ex.: `"RB"`, `"SP"`) em letras maiúsculas. Use `NULL` para incluir todos os herbários. |
+| repatriated | Lógico. Se `FALSE`, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é `TRUE`. Use `reflora_summary()` para verificar quais coleções são repatriadas. |
+| taxon | Vetor de caracteres. Nomes específicos de táxons para filtrar (ex.: `"Fabaceae"`). |
+| state | Vetor de caracteres. Nome completo ou siglas de estados brasileiros (ex.: `"BA"`, `"SP"`) para filtrar por localidade. |
+| recordYear | Vetor de caracteres ou numérico. Um único ano (ex.: `"2001"`) ou um intervalo (ex.: `c("2000", "2022")`). |
+| reorder | Vetor de caracteres. Reordena a saída por colunas. Padrão: `c("herbarium", "taxa", "collector", "area", "year")`. |
+| path | Caractere. Caminho para arquivos dwca existentes do Reflora. Se `NULL`, baixa dados novos. |
+| updates | Lógico. Se `TRUE` (padrão), verifica arquivos DwC-A atualizados do Reflora. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso no console. |
+| save | Lógico. Se `TRUE` (padrão), salva os resultados em arquivo CSV. |
+| dir | Caractere. Caminho do diretório para salvar os arquivos de saída. Padrão: `"reflora_indets"`. |
+| filename | Caractere. Nome do arquivo de saída (sem extensão). Padrão: `"reflora_indets_search"`. |
+
+### Valor
+
+Um `data.frame` contendo registros de ocorrência de espécimes
+indeterminados recuperados dos herbários do Reflora selecionados. Os registros são filtrados
+de acordo com os argumentos especificados pelo usuário (ex.: `level`, `taxon`,
+`state`, `recordYear`, `herbarium` e `repatriated`).
+Por padrão, táxons indeterminados de nível superior (ex.: `"FAMILY"`,
+`"GENUS"`, `"SUBFAMILY"`, `"TRIBE"`, `"DIVISION"`,
+`"ORDER"`, `"CLASS"`) são incluídos, a menos que um
+`level` específico seja fornecido.
+
+O data frame retornado inclui metadados de espécimes e links diretos para
+imagens via as colunas `bibliographicCitation` (URL da página do espécime) e
+`associatedMedia` (URL(s) de imagem em alta resolução, quando disponível).
+Colunas contendo apenas valores `NA` são removidas antes de retornar o objeto.
+
+Se `save = TRUE`, a função também grava os resultados em arquivo CSV
+no diretório `dir` especificado (criando-o se necessário) e
+gera ou acrescenta um arquivo `log.txt` resumindo a sessão,
+incluindo registros totais e detalhamentos por herbário, família, gênero,
+país e estado.
+
+### Exemplos
+
+```r
+# Recuperar registros indeterminados de Fabaceae e Ochnaceae de todos os herbários
+reflora_indets(taxon = c("Fabaceae", "Ochnaceae"),
+               level = "FAMILY",
+               save = TRUE,
+               dir = "reflora_indets",
+               filename = "fabaceae_ochnaceae_records")
+
+# Filtrar por herbário e estado específicos
+reflora_indets(taxon = "Fabaceae",
+               herbarium = "RB",
+               state = c("BA", "MG"),
+               recordYear = c("1990", "2022"))
+```

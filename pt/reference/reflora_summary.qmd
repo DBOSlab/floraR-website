@@ -1,0 +1,76 @@
+---
+title: 'reflora_summary'
+description: 'Resumir registros atuais de espécimes vegetais no Herbário Virtual Reflora'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_summary()
+```
+
+### Descrição
+
+Resume os registros de espécimes vegetais atualmente disponíveis no
+[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/)
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+O Reflora agrega coleções de herbários brasileiros e internacionais
+que possuem espécimes brasileiros. Neste contexto, "repatriação digital" refere-se
+a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio
+de uma infraestrutura pública brasileira (HVR/IPT), mesmo que os espécimes
+físicos permaneçam custodiados no herbário de origem. A saída de
+`reflora_summary()` inclui um campo de status de repatriação para ajudar
+os usuários a identificar essas coleções digitalmente repatriadas.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| herbarium | Vetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como `NULL` para resumir os registros de espécimes de todos os herbários hospedados pelo Reflora. |
+| verbose | Lógico; se `FALSE`, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console. |
+| save | Lógico; se `TRUE`, os resultados da busca serão salvos em disco. |
+| dir | Caminho para o diretório do computador onde o resumo em formato de tabela será salvo. O padrão é criar um diretório chamado `reflora_summary`. |
+
+### Valor
+
+Um `data.frame` com uma linha por coleção de herbário e as
+seguintes colunas:
+
+collectionCodeCaractere. Sigla do herbário (código de coleção) conforme
+registrada no Herbário Virtual Reflora.
+
+rightsHolderCaractere. Instituição responsável pela coleção,
+conforme informado nos metadados do IPT.
+
+RepatriatedLógico. Indica se o herbário corresponde a
+uma coleção repatriada (i.e., espécimes brasileiros digitalizados de
+instituições estrangeiras como US, NY, K, etc.).
+
+contactPointCaractere. Nome do responsável pelo contato ou curador
+associado à coleção.
+
+hasEmailCaractere. Endereço de e-mail de contato para o contactPoint,
+quando disponível.
+
+VersionCaractere. Número da versão atual do conjunto de dados disponível no
+repositório IPT.
+
+Published.onCaractere. Data e hora em que a versão atual do conjunto de dados
+foi publicada no IPT.
+
+RecordsNumérico. Número total de registros de espécimes atualmente
+disponíveis para a coleção.
+
+Reflora_URLCaractere. URL direta para a página da coleção no
+Herbário Virtual Reflora.
+
+### Exemplos
+
+```r
+reflora_summary(herbarium = c("ALCB", "HUEFS"),
+                verbose = TRUE,
+                save = TRUE,
+                dir = "reflora_summary")
+```

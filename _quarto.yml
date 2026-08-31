@@ -1,0 +1,128 @@
+project:
+  output-dir: docs
+  type: website
+  resources:
+    - figures/**
+
+website:
+  title: "refloraR"
+  site-url: https://dboslab.github.io/refloraR-website/
+  page-navigation: true
+  reader-mode: true  
+  favicon: "figures/refloraR_hex_sticker.png"
+  
+  page-footer:
+    center:
+      - text: "About"
+        href: about.qmd
+      - text: "FAQ"
+        href: faq/index.qmd
+      - text: "License"
+        href: LICENSE.md
+    right:
+      - icon: github
+        href: https://github.com/DBOSlab/refloraR
+        aria-label: refloraR GitHub
+  
+  navbar:
+    search: true
+    background: light
+    collapse-below: lg
+    type: light
+    logo: "figures/refloraR_hex_sticker.png"
+    href: index.qmd
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Get Started"
+        href: get-started/index.qmd
+      - text: "Articles"
+        href: articles/index.qmd
+      - text: "News"
+        href: news/index.qmd 
+      - text: "Reference"
+        href: reference/index.qmd
+      - text: "Authors"
+        href: authors/index.qmd
+      - text: "Help"
+        menu:
+          - text: "Report a Bug"
+            icon: "bug"
+            href: "https://github.com/DBOSlab/refloraR/issues"
+          - text: "Ask a Question"
+            icon: "chat-right-text"
+            href: "https://github.com/DBOSlab/refloraR/discussions"
+          - text: "FAQ"
+            icon: "question-circle"
+            href: faq/index.qmd
+        
+    tools:
+      - icon: github
+        href: https://github.com/DBOSlab/refloraR
+        text: refloraR GitHub
+        
+  sidebar:
+    - id: articles
+      title: Articles
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Overview
+          href: articles/index.qmd
+        - section: Summarize Reflora collections
+          contents:
+          - text: Summarize herbarium collections
+            href: articles/summarize_reflora_collections.qmd
+        - section: Download and parse Reflora records
+          contents:
+          - text: Download specimen records
+            href: articles/download_reflora_collections.qmd
+          - text: Parse Reflora Darwin Core Archives
+            href: articles/parse_reflora_dwca.qmd
+        - section: Filter Reflora records
+          contents:
+          - text: Retrieve taxon-specific specimens
+            href: articles/filter_reflora_records.qmd
+          - text: Filter indeterminate specimens
+            href: articles/filter_indeterminate_reflora_specimens.qmd
+
+    - id: pt-articles
+      title: Artigos
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Visão Geral
+          href: pt/articles/index.qmd
+        - section: Resumir coleções do Reflora
+          contents:
+          - text: Resumir coleções de herbário
+            href: pt/articles/summarize_reflora_collections.qmd
+        - section: Baixar e analisar registros do Reflora
+          contents:
+          - text: Baixar registros de espécimes
+            href: pt/articles/download_reflora_collections.qmd
+          - text: Analisar arquivos Darwin Core do Reflora
+            href: pt/articles/parse_reflora_dwca.qmd
+        - section: Filtrar registros do Reflora
+          contents:
+          - text: Recuperar espécimes por táxon
+            href: pt/articles/filter_reflora_records.qmd
+          - text: Filtrar espécimes indeterminados
+            href: pt/articles/filter_indeterminate_reflora_specimens.qmd
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-copy: true
+    code-overflow: wrap
+    code-tools: true
+    css: styles.css
+    eval: false
+    theme:
+      light: [spacelab, theme.scss]
+      dark: [spacelab, theme-dark.scss]
+    include-in-header:
+      - gtm-head.html
+      - lang-switcher.html
+    include-before-body: gtm-body.html

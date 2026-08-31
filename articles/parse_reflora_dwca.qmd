@@ -1,0 +1,85 @@
+---
+title: "Parse Reflora Darwin Core Archives"
+format: html
+---
+
+This guide demonstrates how to use the `reflora_parse()` function from the `refloraR` package. The function reads and parses Darwin Core Archive (DwC-A) files previously downloaded with `reflora_download()`.
+
+## Function Overview
+
+The `reflora_parse()` function reads DwC-A data for all or specified Reflora herbarium collections. It also cleans and formats the specimen data.
+
+## Arguments
+
+| Argument      | Description |
+|---------------|-------------|
+| `path`        | Directory containing downloaded DwC-A folders. |
+| `herbarium`   | A character vector of herbarium acronyms (e.g., `"RB"`, `"K"`). Use `NULL` to parse all. |
+| `repatriated` | Logical. If `FALSE`, skips repatriated herbaria (see `reflora_summary()`). |
+| `verbose`     | Logical. If `TRUE`, displays progress messages. |
+
+## Parse All Collections in Directory
+
+Use the default settings to parse all DwC-A folders:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  verbose = TRUE
+)
+```
+
+## Parse Specific Herbarium Collections
+
+You can specify which collections to parse:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  herbarium = c("RB", "K"),
+  verbose = TRUE
+)
+```
+
+## Skipping Repatriated Collections
+
+To skip repatriated herbaria:
+
+```r
+dwca <- reflora_parse(
+  path = "reflora_download",
+  repatriated = FALSE,
+  verbose = TRUE
+)
+```
+
+## Structure of Parsed Output
+
+The return is a **named list** where each element represents a collection and contains:
+
+- `occurrence.txt`: A data frame of specimen records.
+- `eml.xml`: Metadata about the collection.
+- Optional `summary_<COL>.csv`: Metadata summary file.
+
+```r
+names(dwca)
+head(dwca[["ALCB"]][["data"]][["occurrence.txt"]])
+```
+
+## Data Cleaning and Column Standardization
+
+- Converts taxonomic fields to title case.
+- Adds `taxonName` combining `genus`, `specificEpithet`, `infraspecificEpithet`.
+- Replaces missing taxon ranks with `"FAMILY"`.
+
+## Tips
+
+- Ensure you've downloaded data using `reflora_download()` before parsing.
+- Use `reflora_summary()` to explore which herbaria are repatriated.
+- You can combine and analyze parsed data using `dplyr::bind_rows()`.
+
+## See Also
+
+- [`reflora_download()`](/articles/download_reflora_collections.qmd): Download Reflora specimen records
+- [`reflora_summary()`](/articles/summarize_reflora_collections.qmd): Inspect Reflora collections
+

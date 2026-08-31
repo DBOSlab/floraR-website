@@ -1,0 +1,249 @@
+---
+format:
+  html:
+    toc: true
+    page-layout: custom
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+resources:
+  - figures/
+---
+
+```{r setup, include=FALSE}
+library(refloraR)
+
+summary_df <- reflora_summary(verbose = FALSE,
+                              save = FALSE,
+                              dir = "reflora_summary")
+```
+
+<style>
+  .floating-logos {
+    position: fixed;
+    top: 60px;
+    right: 450px;
+    width: 165px;
+    opacity: 0.85;
+    z-index: 1;
+  }
+
+  .floating-logos img {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    border-radius: 4px;
+  }
+</style>
+
+<div class="floating-logos">
+  <img src='/figures/reflorar_hex_sticker.png' alt='refloraR hex sticker'>
+  <img src='/figures/jbrj_marca.jpg' alt='JBRJ logo'>
+</div>
+
+<!-- Carrossel horizontal contínuo da direita para a esquerda, loop infinito -->
+```{=html}
+<div style="position: relative; overflow: visible; width: 100%; margin-bottom: 30px;">
+  <div class="carousel-track">
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=5990667" target="_blank">
+      <img src="/figures/paubrasilia_rb.jpg" class="carousel-img fade-img" alt="paubrasilia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=1101548" target="_blank">
+      <img src="/figures/aechmea_rb.jpg" class="carousel-img fade-img" alt="aechmea" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=4902004" target="_blank">
+      <img src="/figures/lobelia_B.jpg" class="carousel-img fade-img" alt="lobelia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=200809" target="_blank">
+      <img src="/figures/luetzelburgia_huefs.jpg" class="carousel-img fade-img" alt="luetzelburgia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=1252307" target="_blank">
+      <img src="/figures/luetzelburgia_K.jpg" class="carousel-img fade-img" alt="luetzelburgia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=6068833" target="_blank">
+      <img src="/figures/dipteryx_rb.jpg" class="carousel-img fade-img" alt="dipteryx" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=204958" target="_blank">
+      <img src="/figures/aguiaria_rb.jpg" class="carousel-img fade-img" alt="aguiaria" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=5541519" target="_blank">
+      <img src="/figures/marcetia_huefs.jpg" class="carousel-img fade-img" alt="marcetia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=5541519" target="_blank">
+      <img src="/figures/hypolepis_rb.jpg" class="carousel-img fade-img" alt="hypolepis" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=6383956" target="_blank">
+      <img src="/figures/aeschynomene_huefs.jpg" class="carousel-img fade-img" alt="aeschynomene" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=3401673" target="_blank">
+      <img src="/figures/bocoa_e.jpg" class="carousel-img fade-img" alt="bocoa" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=50940" target="_blank">
+      <img src="/figures/ruellia_rb.jpg" class="carousel-img fade-img" alt="ruellia" />
+    </a>
+    <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do?idTestemunho=3668646" target="_blank">
+      <img src="/figures/staelia_ny.jpg" class="carousel-img fade-img" alt="staelia" />
+    </a>
+  </div>
+</div>
+
+<style>
+@keyframes scroll-carousel {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  animation: scroll-carousel 40s linear infinite;
+  animation-play-state: running;
+}
+
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+.carousel-img {
+  height: 120px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: transform 0.4s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+}
+
+.fade-img {
+  animation: fade-in 3s ease-in both;
+}
+
+.carousel-img:hover {
+  transform: scale(1.5);
+  z-index: 10;
+}
+
+.carousel-track a {
+  position: relative;
+}
+</style>
+```
+
+::: whitebox
+::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
+
+::: {layout-ncol="2"}
+
+::: {style="text-align: left;"}
+
+\
+`refloraR` é um pacote R para explorar coleções de espécimes vegetais do [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora), hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj). O pacote interage com o Integrated Publishing Toolkit (IPT) do Reflora, permitindo o download completo dos registros de espécimes de qualquer herbário no formato Darwin Core. Além disso, o pacote oferece funções específicas para resumir informações e filtrar dados por critérios taxonômicos ou geográficos.\
+\
+
+## O Programa Reflora
+
+O estudo da flora do Brasil, reconhecida como a mais rica do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)), tem uma longa história. Durante os séculos XVIII e XIX, naturalistas europeus, juntamente com poucos botânicos brasileiros, coletaram espécimes de plants no Brasil e os enviaram a herbários na Europa. O principal objetivo desse período era investigar a flora e seus usos potenciais. Muitas dessas coleções serviram de base para a descrição de novas espécies ou gêneros (tipos nomenclaturais) e foram fundamentais para a monumental obra _Flora Brasiliensis_ ([Martius, Eichler & Urban, 1840–1906](https://www.biodiversitylibrary.org/bibliography/454)), que descreveu mais de 22.000 espécies.\
+\
+
+Em 2010, o governo brasileiro, por meio do CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico), lançou o Programa Reflora com o objetivo principal de recuperar e disponibilizar imagens e dados de espécimes de plantas brasileiras armazenados principalmente em herbários estrangeiros. Esses recursos estão disponíveis desde 2013 por meio do Herbário Virtual Reflora. Em 2014, essa iniciativa foi fortalecida com a colaboração do SiBBr (Sistema de Informação sobre a Biodiversidade Brasileira) e do IFN (Inventário Florestal Nacional), que ampliaram as coleções publicadas pelo projeto Reflora com a participação de herbários brasileiros.
+
+A plataforma [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do) foi desenvolvida em parceria entre o [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj) e o [COPPE (Instituto Alberto Luiz Coimbra de Pós-Graduação e Pesquisa de Engenharia, UFRJ)](https://coppe.ufrj.br/en/home-en/). O JBRJ hospeda o sistema, supervisionando o recebimento, armazenamento e publicação dos dados e imagens dos herbários.
+
+Complementando o Herbário Virtual Reflora, uma plataforma dedicada à taxonomia da flora brasileira foi lançada inicialmente em 2008. Esse sistema evoluiu por várias etapas — incluindo a Lista de Espécies da Flora do Brasil, [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) e, atualmente, [Flora e Funga do Brasil](https://reflora.jbrj.gov.br/consulta) — e também faz parte do Programa Reflora em sentido amplo. A Flora e Funga do Brasil atua como validador da nomenclatura das imagens do Herbário Virtual Reflora, continuamente aprimoradas e enriquecidas por taxonomistas que colaboram em um sistema online.
+
+O Programa Reflora desempenhou papel fundamental no sucesso do Brasil em cumprir as metas da Estratégia Global para a Conservação das Plantas, parte da Convenção sobre Diversidade Biológica, para 2010 e 2020. Diante dos desafios contínuos de compreender e estudar a biodiversidade, os sistemas Reflora continuarão a fornecer acesso irrestrito a dados de alta qualidade e precisão sobre plantas, algas e fungos do Brasil.\
+\
+
+## O Herbário Virtual Reflora
+
+A missão de construir um herbário virtual para exibir as imagens de plantas brasileiras depositadas em herbários estrangeiros foi apresentada pelo [Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq)](https://www.gov.br/cnpq/pt-br) ao Jardim Botânico do Rio de Janeiro (JBRJ) em dezembro de 2010. O objetivo era proporcionar capacidade de armazenamento e exibição de dados de alta qualidade sobre a Flora do Brasil em uma instituição pública. O Herbário Virtual Reflora foi projetado para permitir que taxonomistas realizem procedimentos similares aos que estão acostumados em coleções físicas. No sistema, têm acesso a imagens de alta resolução em vez de espécimes físicos, podendo consultá-los, redeterminá-los e tipificá-los, entre outras funcionalidades. Os curadores também têm acesso a relatórios de determinação de espécimes para auxiliar na atualização de suas coleções físicas. Esse inovador sistema tem sido utilizado por um grupo de mais de 900 taxonomistas envolvidos nos projetos Lista de Espécies da Flora do Brasil e Flora do Brasil 2020.
+
+Os parceiros iniciais dessa iniciativa foram os herbários [**K**](https://www.kew.org) (Royal Botanic Gardens, Kew), [**P**](https://www.mnhn.fr/fr/collection-des-plantes-vasculaires) (Muséum national d'histoire naturelle, Paris) e [**RB**](https://www.gov.br/jbrj) (JBRJ). A partir de 2014, com o apoio do [**SiBBr**](https://www.sibbr.gov.br) (Sistema de Informação sobre a Biodiversidade Brasileira) e do [**IFN**](https://www.gov.br/florestal/pt-br/assuntos/ifn) (Inventário Florestal Nacional), outros herbários europeus, americanos e brasileiros foram incluídos na iniciativa, muitos dos quais receberam equipamentos e treinamento para digitalizar seus espécimes vegetais.
+
+Atualmente, **`r length(summary_df$collectionCode)`** coleções estão publicadas na plataforma. Entre elas, **`r length(summary_df$collectionCode[summary_df$Repatriated == TRUE])`** correspondem a coleções digitalmente repatriadas, ou seja, conjuntos de espécimes coletados no Brasil mas fisicamente depositados em herbários estrangeiros, cujas imagens de alta resolução e metadados associados foram digitalizados pelas instituições depositárias e disponibilizados abertamente por meio do Herbário Virtual Reflora. Esse "repatriamento digital" apoia revisões taxonômicas, curadoria e avaliações nacionais de biodiversidade no Brasil. Neste contexto, "repatriamento" refere-se ao retorno do acesso à informação (imagens, dados de etiqueta, determinações e metadados relacionados) ao Brasil por meio de uma infraestrutura pública nacional, e não ao retorno físico dos espécimes.
+
+```{r}
+#| echo: false
+knitr::asis_output(
+  paste0(
+    paste(
+      mapply(
+        function(code, url, holder) {
+          sprintf("<a href='%s'><strong>%s</strong></a> (%s)", url, code, holder)
+        },
+        summary_df$collectionCode[summary_df$Repatriated == TRUE],
+        summary_df$Reflora_URL[summary_df$Repatriated == TRUE],
+        summary_df$rightsHolder[summary_df$Repatriated == TRUE]
+      ),
+      collapse = ", "
+    ),
+    "."
+  )
+)
+```
+
+As seguintes **`r length(summary_df$collectionCode[summary_df$Repatriated == FALSE])`** coleções são de herbários brasileiros com espécimes digitalizados:
+
+```{r}
+#| echo: false
+knitr::asis_output(
+  paste0(
+    paste(
+      mapply(
+        function(code, url, holder) {
+          sprintf("<a href='%s'><strong>%s</strong></a> (%s)", url, code, holder)
+        },
+        summary_df$collectionCode[summary_df$Repatriated == FALSE],
+        summary_df$Reflora_URL[summary_df$Repatriated == FALSE],
+        summary_df$rightsHolder[summary_df$Repatriated == FALSE]
+      ),
+      collapse = ", "
+    ),
+    "."
+  )
+)
+```
+
+Atualmente, mais de 4.800.000 imagens de espécimes estão disponíveis no Herbário Virtual Reflora. Entre elas, 157.652 são tipos nomenclaturais e 1.985.843 são registros georreferenciados.
+
+Se você é curador de herbário e deseja publicar imagens e dados da sua coleção no Herbário Virtual Reflora, envie uma solicitação para o e-mail **reflora\@jbrj.gov.br**.\
+\
+:::
+::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
+:::
+:::
+:::
+:::
+
+::: mainbox
+::: {style="padding-left: 100px; padding-right: 100px; display: inline-block;"}
+::: {layout-ncol="2"}
+::: {style="text-align: center;"}
+### [Primeiros Passos](/pt/get-started/index.qmd)
+
+Bem-vindo! Aprenda como instalar o `refloraR`
+:::
+
+::: {style="text-align: center;"}
+### [Artigos](/pt/articles/index.qmd)
+
+Tutoriais práticos para aprender a usar o `refloraR`
+:::
+:::
+:::
+:::
+
+:::

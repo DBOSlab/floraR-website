@@ -1,0 +1,46 @@
+---
+title: "Artigos"
+format: html
+sidebar: pt-articles
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+
+::: {layout-ncol="2"}
+::: {style="display: block;"}
+### Resumir coleções do Reflora
+- [Resumir coleções](/pt/articles/summarize_reflora_collections.qmd)
+
+::: {style="display: block;"}
+:::
+### Baixar e analisar registros do Reflora
+- [Baixar registros de espécimes](/pt/articles/download_reflora_collections.qmd)
+- [Analisar arquivos Darwin Core do Reflora](/pt/articles/parse_reflora_dwca.qmd)
+
+::: {style="display: block;"}
+:::
+### Filtrar registros do Reflora
+- [Recuperar espécimes por táxon](/pt/articles/filter_reflora_records.qmd)
+- [Filtrar espécimes indeterminados](/pt/articles/filter_indeterminate_reflora_specimens.qmd)
+:::
+:::

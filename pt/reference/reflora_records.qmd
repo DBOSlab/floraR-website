@@ -1,0 +1,76 @@
+---
+title: 'reflora_records'
+description: 'Recuperar registros de táxons de coleções do Reflora'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_records()
+```
+
+### Descrição
+
+Recupera registros de ocorrência para táxons específicos do
+[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/),
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+Esta função realiza download automático, análise, filtragem e
+salvamento opcional dos dados de ocorrência. Todos os registros retornados incluem links
+diretos para imagens de espécimes (coluna `'bibliographicCitation'`) e, quando
+disponíveis, URLs de download em alta resolução (coluna `'associatedMedia'`).
+
+### Detalhes
+
+Esta função processa arquivos Darwin Core Archive (DwC-A) do Reflora. Você
+pode fornecer um caminho específico para arquivos previamente baixados usando `path`, ou deixar
+a função gerenciar o download automaticamente. Filtros podem ser aplicados por nome
+de táxon, código de herbário, estado e ano. O argumento `reorder` permite
+personalizar a estrutura dos dados retornados. Use `verbose = TRUE` para ver
+atualizações de status. Use `save = TRUE` para salvar os resultados em disco como arquivo CSV no
+diretório especificado.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| herbarium | Vetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como `NULL` para resumir os registros de espécimes de todos os herbários hospedados pelo Reflora. |
+| repatriated | Lógico. Se `FALSE`, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é `TRUE`. Use `reflora_summary()` para verificar quais coleções são repatriadas. O Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros. Neste contexto, "repatriação digital" refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT). |
+| taxon | Vetor com o táxon desejado. Pode ser um ou um vetor de vários nomes científicos em nível de família, gênero ou espécie. |
+| state | Vetor com o(s) estado(s) brasileiro(s) desejado(s) (nome completo ou sigla). |
+| recordYear | Vetor com o ano de registro desejado ou intervalo de anos. Por exemplo, `"1992"` ou `c("1992", "2024")`. |
+| indets | Lógico; se `FALSE`, remove todos os espécimes indeterminados que não estão identificados ao nível de espécie (i.e., registros identificados apenas a família ou gênero). |
+| reorder | Forneça um vetor com qualquer combinação de `c("herbarium", "taxa", "collector", "area", "year")` para reordenar os registros recuperados com base nas colunas especificadas. Por padrão, os dados serão reordenados de acordo com este vetor. |
+| path | Opcional; caminho para o diretório do computador onde as pastas dwca baixadas do Reflora estão. Se não for fornecido, a função baixará a versão mais atualizada dos arquivos dwca do Reflora. |
+| updates | Lógico; se `FALSE`, a busca não verificará a versão mais atualizada dos arquivos dwca do Reflora. Este argumento é frequentemente usado quando você definiu um caminho específico para arquivos dwca do Reflora previamente baixados. |
+| verbose | Lógico; se `FALSE`, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console. |
+| save | Lógico; se `TRUE`, os resultados da busca serão salvos em disco. |
+| dir | Caminho para o diretório do computador onde o resumo em formato de tabela será salvo. O padrão é criar um diretório chamado `reflora_records`. |
+| filename | Nome do arquivo de saída a ser salvo. O padrão é criar um arquivo chamado `reflora_records_search.csv`. |
+
+### Valor
+
+Um `data.frame` contendo registros de ocorrência dos
+herbários do Reflora selecionados, filtrados de acordo com os argumentos
+especificados pelo usuário (e.g., `taxon`, `state`, `recordYear`, `indets`,
+`herbarium` e `repatriated`). Colunas contendo apenas
+valores `NA` são removidas antes de retornar o objeto.
+
+Se `save = TRUE`, a função também grava os resultados em um arquivo CSV
+no diretório `dir` especificado (criando-o se necessário) e
+gera ou acrescenta um arquivo `log.txt` resumindo a sessão de download,
+incluindo o número total de registros e detalhamentos por herbário, família,
+gênero, país e estado.
+
+### Exemplos
+
+```r
+fam_taxa <- c("Fabaceae", "Ochnaceae")
+reflora_records(herbarium = c("ALCB", "HUEFS", "K", "RB"),
+                taxon = fam_taxa,
+                verbose = TRUE,
+                save = TRUE,
+                dir = "reflora_records",
+                filename = "reflora_records_search")
+```

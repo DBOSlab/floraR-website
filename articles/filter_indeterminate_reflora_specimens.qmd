@@ -1,0 +1,153 @@
+---
+title: "Filter Indeterminate Reflora Specimens"
+format: html
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+---
+
+```{r setup, include=FALSE}
+library(refloraR)
+```
+
+This guide explains how to use the `reflora_indets()` function in the `refloraR` package to retrieve occurrence records of indeterminate specimens (e.g., identified only to family or genus level) from the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden.
+
+## Function Overview
+
+`reflora_indets()` is designed to identify and extract plant specimen records from Reflora collections that are not determined to species level. It allows filtering by herbarium, taxon, locality (Brazilian state), year, and taxonomic rank.
+
+This function is especially useful for identifying possible Linnean shortfalls by summarizing the amount of undetermined taxa across different herbaria or within a particular plant family. It helps researchers pinpoint data gaps in plant identification within Reflora
+
+## Arguments
+
+| Argument      | Description |
+|---------------|-------------|
+| `level`       | Taxonomic rank to filter indeterminates (e.g., `"FAMILY"`, `"GENUS"`). |
+| `herbarium`   | Herbarium codes (e.g., `"RB"`, `"SP"`). Use `NULL` for all collections. |
+| `repatriated` | Logical. If `FALSE`, skips repatriated collections. |
+| `taxon`       | Vector of family or genus names to filter by. |
+| `state`       | Brazilian state abbreviations to filter locality. |
+| `recordYear`  | Year or range of years for filtering (e.g., `"2001"`, `c("2000", "2022")`). |
+| `reorder`     | Reorder columns in the final output. Default is by herbarium, taxa, etc. |
+| `path`        | **Directory containing previously downloaded Reflora data.** If provided, avoids re-downloading and allows offline or reproducible analyses. Especially important when analyzing a frozen dataset or shared repository. |
+| `updates`     | Logical. If `TRUE`, updates DwC-A archives from Reflora if versions are outdated. |
+| `verbose`     | Logical. If `TRUE`, prints progress messages. |
+| `save`        | Logical. If `TRUE`, saves the result as a CSV file. |
+| `dir`         | Directory to store CSV output. |
+| `filename`    | Output filename for results and logs. |
+
+## Use Case: Retrieve All Indeterminates by Family
+
+```r
+reflora_indets(
+  level = "FAMILY",
+  verbose = TRUE,
+  save = TRUE,
+  dir = "reflora_indets",
+  filename = "family_level_indets"
+)
+```
+
+## Filter by Herbarium and State
+
+```r
+reflora_indets(
+  taxon = "Fabaceae",
+  herbarium = "RB",
+  state = c("BA", "MG"),
+  recordYear = c("1990", "2022")
+)
+```
+
+## Filtering by Taxonomic Rank and Year
+
+```r
+reflora_indets(
+  level = "GENUS",
+  recordYear = "2020",
+  save = FALSE
+)
+```
+
+## Analyzing a Specific Dataset
+
+You can reuse previously downloaded Reflora data by setting the `path` argument:
+
+```r
+reflora_indets(
+  path = "my_reflora_data",
+  updates = FALSE,
+  verbose = TRUE
+)
+```
+
+### Why Use `path`?
+- It allows working **offline** with already downloaded Reflora archives.
+- It avoids **redundant downloads**, speeding up analysis.
+- It improves **reproducibility** by analyzing a specific static dataset.
+- Set `updates = FALSE` to avoid modifying your local data.
+- It is ideal when working with a **shared folder** or preserving **frozen datasets**.
+
+## Use Case: Linnean Shortfalls Insight
+
+By summarizing undetermined records across herbaria or within a taxon, `reflora_indets()` serves as a powerful diagnostic tool to highlight data gaps in floristic knowledge. It can help researchers:
+
+- Visualize how many specimens are unidentified across collections.
+- Prioritize taxonomic work on poorly determined groups.
+- Highlight herbaria with the highest volume of unidentified material.
+
+## Visualizing Indeterminates per Herbarium
+
+```r
+library(dplyr)
+library(ggplot2)
+
+results <- reflora_indets(level = "FAMILY",
+                          herbarium = c("ALCB", "HUEFS", "RB", "K", "E"),
+                          save = FALSE)
+
+results %>%
+  count(collectionCode) %>%
+  ggplot(aes(x = reorder(collectionCode, n), y = n)) +
+  geom_col() +
+  coord_flip() +
+  labs(x = "Herbarium",
+       y = "Number of Indeterminate Specimens at Family Level")
+```
+
+```{r}
+#| echo: false
+library(dplyr)
+library(ggplot2)
+
+results <- reflora_indets(level = "FAMILY",
+                          herbarium = c("ALCB", "HUEFS", "RB", "K", "E"),
+                          save = FALSE)
+
+results %>%
+  count(collectionCode) %>%
+  ggplot(aes(x = reorder(collectionCode, n), y = n)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(x = "Herbarium",
+       y = "Number of Indeterminate Specimens at Family Level")
+```
+
+## Tips
+
+- Use `reflora_summary()` to inspect available collections.
+- For reproducibility, document your input parameters.
+- Logs and CSV files are saved automatically if `save = TRUE`.
+
+## See Also
+
+- [`reflora_download()`](/articles/download_reflora_collections.qmd): Download Reflora specimen records
+- [`reflora_parse()`](/articles/parse_reflora_dwca.qmd): Parse Reflora archive files
+- [`reflora_summary()`](/articles/summarize_reflora_collections.qmd): Summarize Reflora collections
+

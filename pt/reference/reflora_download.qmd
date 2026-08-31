@@ -1,0 +1,42 @@
+---
+title: 'reflora_download'
+description: 'Baixar registros de espécimes vegetais do Herbário Virtual Reflora'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_download()
+```
+
+### Descrição
+
+Baixa registros de espécimes vegetais no formato Darwin Core de qualquer
+coleção de herbário no [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/)
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+O Reflora agrega coleções de herbários brasileiros e internacionais
+que possuem espécimes brasileiros.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| herbarium | Vetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como NULL para baixar registros de todos os herbários do Reflora. |
+| repatriated | Lógico. Se `FALSE`, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é `TRUE`. Use `reflora_summary()` para verificar quais coleções são repatriadas. Neste contexto, "repatriação digital" refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT). |
+| verbose | Lógico; se `FALSE`, a mensagem mostrando as etapas ao baixar os registros de espécimes não será impressa integralmente no console. |
+| dir | Caminho para o diretório do computador onde o arquivo será salvo. O padrão é criar um diretório chamado `reflora_download` e os resultados serão salvos em uma subpasta nomeada por cada coleção de herbário associada ao Reflora pesquisada. |
+
+### Valor
+
+Retorna `NULL` de forma invisível. Esta função é chamada para baixar
+e extrair arquivos Darwin Core Archive (DwC-A) no diretório especificado.
+
+### Exemplos
+
+```r
+reflora_download(herbarium = c("ALCB", "HUEFS", "K", "RB"),
+                 verbose = TRUE,
+                 dir = "reflora_download")
+```

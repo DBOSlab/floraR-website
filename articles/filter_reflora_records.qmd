@@ -1,0 +1,144 @@
+---
+title: "Filter Reflora specimen records"
+format: html
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+---
+
+```{r setup, include=FALSE}
+library(refloraR)
+```
+
+This guide demonstrates how to use the `reflora_records()` function in the `refloraR` package to retrieve specimen occurrence records for specific taxa from the Reflora Virtual Herbarium, hosted by the Rio de Janeiro Botanical Garden.
+
+## Function Overview
+
+The `reflora_records()` function retrieves filtered plant specimen records from Reflora collections based on taxon, herbarium, location, and date criteria. It handles downloading, parsing, filtering, and optionally saving the occurrence data.
+
+This tool is ideal for floristic, taxonomic, or biogeographic research, especially when working with large datasets for a particular plant group.
+
+## Arguments
+
+| Argument      | Description |
+|---------------|-------------|
+| `herbarium`   | Vector of herbarium codes (e.g., `"RB"`, `"SP"`). Use `NULL` for all collections. |
+| `repatriated` | Logical. If `FALSE`, skips repatriated herbaria. |
+| `taxon`       | One or multiple family, genus, or species names to filter by. |
+| `state`       | Vector of Brazilian states (e.g., `"BA"`, `"SP"`). |
+| `recordYear`  | A specific year (e.g., `"2001"`) or range (e.g., `c("1990", "2024")`). |
+| `indets`      | If `FALSE`, filters out records not identified to species level. |
+| `reorder`     | Controls column order of the final result (e.g., by herbarium, taxon, year). |
+| `path`        | Optional directory containing existing Reflora DwC-A files. |
+| `updates`     | If `TRUE`, checks for updated versions of data in the IPT. |
+| `verbose`     | If `TRUE`, shows progress messages. |
+| `save`        | If `TRUE`, saves results as CSV and log files. |
+| `dir`         | Folder where output will be saved. |
+| `filename`    | Name of the resulting CSV and log files. |
+
+## Basic Use Case
+
+```r
+reflora_records(
+  taxon = c("Fabaceae", "Ochnaceae"),
+  verbose = TRUE,
+  save = TRUE,
+  dir = "reflora_records",
+  filename = "fabaceae_ochnaceae_records"
+)
+```
+
+## Filter by Herbarium and Year Range
+
+```r
+reflora_records(
+  taxon = "Fabaceae",
+  herbarium = c("RB", "K"),
+  recordYear = c("1995", "2023"),
+  verbose = TRUE,
+  save = FALSE
+)
+```
+
+## Filter by State and Remove Indeterminate Records
+
+```r
+reflora_records(
+  taxon = "Malpighiaceae",
+  state = c("BA", "PE"),
+  indets = FALSE,
+  save = TRUE,
+  dir = "malpighiaceae_ba_pe"
+)
+```
+
+## Using a Pre-Downloaded Dataset
+
+```r
+reflora_records(
+  path = "reflora_download",
+  taxon = "Myrtaceae",
+  updates = FALSE,
+  save = FALSE
+)
+```
+
+## Visualizing Specimens by Year
+
+```r
+library(dplyr)
+library(ggplot2)
+
+records <- reflora_records(taxon = "Fabaceae", 
+                           herbarium = "RB", 
+                           recordYear = c("2000", "2025"), 
+                           save = FALSE)
+
+records %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Fabaceae Records by Year (RB Herbarium)",
+       x = "",
+       y = "Number of Records")
+```
+
+```{r}
+#| echo: false
+library(dplyr)
+library(ggplot2)
+
+records <- reflora_records(taxon = "Fabaceae", 
+                           herbarium = "RB", 
+                           recordYear = c("2000", "2025"),
+                           verbose = FALSE,
+                           save = FALSE)
+
+records %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Fabaceae Records by Year (RB Herbarium)",
+       x = "",
+       y = "Number of Records") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+## Tips
+
+- Use `recordYear = c("YYYY", "YYYY")` to analyze records over a time span.
+- Use `reflora_summary()` beforehand to check herbarium availability.
+- Set `save = TRUE` for reproducible outputs and logs.
+
+## See Also
+
+- [`reflora_download()`](/articles/download_reflora_collections.qmd): Download REFLORA specimen records
+- [`reflora_parse()`](/articles/parse_reflora_dwca.qmd): Parse REFLORA archive files
+- [`reflora_summary()`](/articles/summarize_reflora_collections.qmd): Summarize REFLORA collections
+- [`reflora_indets()`](/articles/filter_indeterminate_reflora_specimens.qmd): Extract indeterminate records

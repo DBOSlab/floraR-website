@@ -1,0 +1,78 @@
+---
+title: 'reflora_records'
+description: 'Retrieve taxon records from Reflora collections'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_records()
+```
+
+### Description
+
+Retrieve occurrence records for specific taxa from the
+[Reflora Virtual Herbarium](https://ipt.jbrj.gov.br/reflora/),
+hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
+This function handles automatic download, parsing, filtering, and optional
+saving of the occurrence data. All returned records include direct links to
+specimen images (column `'bibliographicCitation'`) and, when available, high-resolution
+download URLs (column `'associatedMedia'`).
+
+### Details
+
+This function processes Darwin Core Archive (DwC-A) files from Reflora. You
+may supply a specific path to previously downloaded files using `path`, or let
+the function handle the download automatically. Filters can be applied by taxon
+name, herbarium code, state, and year. The `reorder` argument allows you to
+customize the structure of the returned data. Use `verbose = TRUE` to see
+status updates. Use `save = TRUE` to save results to disk as a CSV file in the
+specified directory.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| herbarium | A vector of specific herbarium acronyms (collection code) in uppercase letters or leave it as `NULL` to summarize specimen records for all Reflora-hosted herbaria. |
+| repatriated | Logical. If `FALSE`, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is `TRUE`. Use `reflora_summary()` to check which collections are repatriated. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT). |
+| taxon | A vector with the required taxon. It can be one or a vector of multiple scientific names at family, genus or species level. |
+| state | A vector with the required Brazilian state(s) (full name or acronym). |
+| recordYear | A vector with the required record year or year range. For example, `"1992"` or `c("1992", "2024")` |
+| indets | Logical, if `FALSE`, removes all indeterminate specimens that are not identified to the species level (i.e., records identified only to family or genus). |
+| reorder | Provide a vector with any of `c("herbarium", "taxa", "collector", "area", "year")` to reorder the retrieved records based on the specified columns. By default, the data will be redordered according to this vector, meaning the returned dataset will be specifically reordered based on the columns `'herbarium'`, `'family'`, `'genus'`, `'specificEpithet'`, `'recordedBy'`, `'recordNumber'`, `'country'`, `'stateProvince'`, `'municipality'` and `'year'`. You can modify the order of the vector or provide a subset of these columns to customize the reordering of the data accordingly. |
+| path | Optional; a pathway to the computer's directory, where the Reflora-downloaded dwca folders are. If you do not provide a path, the function will download the most updated version of the Reflora dwca files. |
+| updates | Logical, if `FALSE`, the search will not check for the most updated version of the Reflora dwca files. This argument is often used if you have defined a specific path to previously downloaded Reflora dwca files either manually or with function `reflora_download`. |
+| verbose | Logical, if `FALSE`, a message showing steps when summarizing specimen records will not be printed in the console in full. |
+| save | Logical, if `TRUE`, the search results will be saved on disk |
+| dir | Pathway to the computer's directory, where the table-formatted summary will be saved. The default is to create a directory named `reflora_records`. |
+| filename | Name of the output file to be saved. The default is to create a file entitled `reflora_records_search.csv`. |
+
+### Value
+
+A `data.frame` containing occurrence records from the selected
+Reflora herbaria, filtered according to the user-specified arguments
+(e.g., `taxon`, `state`, `recordYear`, `indets`,
+`herbarium`, and `repatriated`). Columns containing only
+`NA` values are removed before returning the object.
+
+If `save = TRUE`, the function also writes the results to a CSV file
+in the specified `dir` directory (creating it if necessary) and
+generates or appends a `log.txt` file summarizing the download session,
+including the total number of records and breakdowns by herbarium, family,
+genus, country, and state.
+
+### Examples
+
+```r
+fam_taxa <- c("Fabaceae", "Ochnaceae")
+reflora_records(herbarium = c("ALCB", "HUEFS", "K", "RB"),
+                taxon = fam_taxa,
+                verbose = TRUE,
+                save = TRUE,
+                dir = "reflora_records",
+                filename = "reflora_records_search")
+```
+
+

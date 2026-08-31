@@ -1,0 +1,183 @@
+---
+format:
+  html:
+    toc: true
+    toc-depth: 3
+resources:
+  - authors/images/
+---
+
+<style>
+  body {
+    background-image: url('/figures/reflora_bg.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: top center;
+    position: relative;
+    z-index: 0;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+
+  .icon-link {
+    display: inline-block;
+    margin: 0 6px;
+  }
+
+  .icon-link img {
+    width: 18px;
+    height: 18px;
+    vertical-align: text-bottom;
+  }
+</style>
+
+## Os Desenvolvedores do `refloraR`
+
+```{=html}
+<div class="authors-group">
+
+  <div class="author-card">
+    <img src="/authors/images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Domingos Cardoso</h3>
+      <p>
+        <a class="icon-link" href="mailto:domingoscardoso@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomista e bioinformata líder do pacote refloraR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="/authors/images/carlos.jpg" alt="Carlos Calderón" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Carlos Calderón</h3>
+      <p>
+        <a class="icon-link" href="mailto:caldecid@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-3897-4615" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/3331732061175660" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Bioinformata que contribui para o pacote refloraR, com foco no design e implementação dos fluxos de trabalho das funções</p>
+    </div>
+  </div>
+
+</div>
+```
+
+## A Equipe Reflora
+
+```{=html}
+<div class="authors-group">
+
+  <div class="author-card">
+    <img src="/authors/images/rafaela.jpg" alt="Rafaela Forzza" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Rafaela Forzza</h3>
+      <p>
+        <a class="icon-link" href="mailto:rafaela@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-7035-9313" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6249814039461102" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomista sênior e coordenadora da iniciativa Reflora no Brasil</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="/authors/images/paula.jpg" alt="Paula Leitman" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Paula Leitman</h3>
+      <p>
+        <a class="icon-link" href="mailto:reflora@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-2997-3784" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6097135982786067" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Especialista em integração de dados de biodiversidade e membro da equipe Reflora</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="/authors/images/fabiana.jpg" alt="Fabiana Filardi" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Fabiana Filardi</h3>
+      <p>
+        <a class="icon-link" href="mailto:ffilardi@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-0372-4325" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/5902829568480499" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Especialista em integração de dados de biodiversidade e membro da equipe Reflora</p>
+    </div>
+  </div>
+
+  <div class="author-card">
+    <img src="/authors/images/anaflavia.jpg" alt="Flávia Versiane" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Flávia Versiane</h3>
+      <p>
+        <a class="icon-link" href="mailto:anaflaviaversiane@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0001-9634-0365" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/1843612090689191" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Pesquisadora associada que contribui para a curadoria de dados do Reflora</p>
+    </div>
+  </div>
+
+</div>
+```
+
+<style>
+.authors-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 2rem;
+}
+
+.author-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 1rem;
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.author-card:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.author-photo {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.author-info {
+  text-align: center;
+}
+
+.author-info p a {
+  margin: 0 6px;
+  color: #007bff;
+  font-size: 1.1rem;
+}
+
+.author-name {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+</style>

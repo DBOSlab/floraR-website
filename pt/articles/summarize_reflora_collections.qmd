@@ -1,0 +1,94 @@
+---
+title: "Resumir coleções do Reflora"
+format: html
+sidebar: pt-articles
+---
+
+Apresentamos aqui um guia prático para a função `reflora_summary()` do pacote `refloraR`. Essa função fornece estatísticas resumidas dos registros de espécimes vegetais disponíveis no Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro e publicados por meio do [Integrated Publishing Toolkit (IPT)](https://ipt.jbrj.gov.br/reflora).
+
+O Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros. Neste contexto, "repatriação digital" refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT), mesmo que os espécimes físicos permaneçam custodiados no herbário de origem. A saída de `reflora_summary()` inclui um campo de status de repatriação para ajudar os usuários a identificar essas coleções digitalmente repatriadas.
+
+## Visão Geral da Função
+
+A função `reflora_summary()` recupera informações resumidas de uma ou mais coleções de herbário associadas ao Reflora. Permite filtrar coleções e, opcionalmente, salvar o resumo como arquivo CSV. Também fornece metadados como número de registros, versão e data de publicação, além de link direto para a página IPT de cada herbário.
+
+## Argumentos
+
+| Argumento   | Descrição |
+|-------------|-----------|
+| `herbarium` | Vetor de siglas de herbário (ex.: `"RB"`, `"K"`). Use `NULL` para resumir todas as coleções. |
+| `verbose`   | Lógico. Se `TRUE`, mensagens sobre o progresso do resumo serão exibidas. |
+| `save`      | Lógico. Se `TRUE`, o resumo será salvo como arquivo CSV. |
+| `dir`       | Caminho do diretório para salvar o arquivo. Padrão: `"reflora_summary"`. |
+
+## Colunas de Saída
+
+`reflora_summary()` retorna uma linha por coleção e inclui, entre outros, os seguintes campos:
+
+- **collection_code / herbarium**: Sigla do herbário (ex.: RB, K) que identifica a coleção.
+- **records**: Número de registros de espécimes publicados atualmente para a coleção no IPT Reflora.
+- **version**: Identificador da versão/release atual do recurso IPT (útil para reprodutibilidade e citação).
+- **publication_date**: Data em que a versão atual foi publicada/atualizada no IPT.
+- **ipt_link**: Link direto para a página do recurso IPT da coleção.
+- **repatriation_status**: Indica se a coleção é **digitalmente repatriada** (espécimes brasileiros digitalizados de herbário estrangeiro e disponibilizados pelo Reflora) ou não repatriada.
+- **contact / curator**: Informações de contato fornecidas nos metadados do IPT para a coleção.
+
+## Resumir Todas as Coleções do Reflora
+
+Use a função com as configurações padrão para obter um resumo de todas as coleções, incluindo sigla do herbário, contato do curador, contagem de registros e link direto para o IPT:
+
+```r
+summary_df <- reflora_summary(
+  verbose = TRUE,
+  save = TRUE,
+  dir = "reflora_summary"
+)
+```
+
+## Resumir Coleções Específicas
+
+Especifique um ou mais herbários com o argumento `herbarium`:
+
+```r
+summary_some_df <- reflora_summary(
+  herbarium = c("ALCB", "HUEFS", "K", "RB"),
+  verbose = TRUE,
+  save = TRUE,
+  dir = "reflora_summary"
+)
+```
+
+## Salvar Resumo em Diretório Personalizado
+
+Você pode personalizar o diretório de saída para o arquivo de resumo:
+
+```r
+reflora_summary(
+  herbarium = "RB",
+  verbose = TRUE,
+  save = TRUE,
+  dir = "custom_summary"
+)
+```
+
+## Desativar Saída Detalhada
+
+Suprima as mensagens de progresso com `verbose = FALSE`:
+
+```r
+reflora_summary(
+  verbose = FALSE
+)
+```
+
+## Dicas Adicionais
+
+- O resumo é projetado como uma etapa de descoberta: ajuda a identificar quais coleções estão disponíveis, quantos registros contêm e onde são publicadas no IPT.
+- Use `repatriation_status` para distinguir coleções digitalmente repatriadas (espécimes brasileiros digitalizados/disponibilizados via Reflora de herbários estrangeiros) de outras coleções publicadas.
+- Use `version` e `publication_date` para documentar exatamente qual versão do IPT você utilizou, melhorando a reprodutibilidade ao baixar ou analisar registros posteriormente.
+- Se `save = TRUE`, o resumo é gravado em disco como arquivo CSV para inspeção e relatório offline.
+
+## Veja Também
+
+- [`reflora_download()`](/pt/articles/download_reflora_collections.qmd): Baixar registros de espécimes do Reflora
+- [`reflora_parse()`](/pt/articles/parse_reflora_dwca.qmd): Analisar e limpar registros baixados

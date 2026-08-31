@@ -1,0 +1,1525 @@
+[
+  {
+    "objectID": "get-started/index.html#install-the-package",
+    "href": "get-started/index.html#install-the-package",
+    "title": "Install",
+    "section": "Install the package",
+    "text": "Install the package\nYou can install the latest development version of refloraR package from GitHub as follows:\n\n#install.packages(\"devtools\")\ndevtools::install_github(\"DBOSlab/refloraR\")\n\n\n\n\n\n\n\nCaution\n\n\n\nThe steps in this section are only needed if you need to run […]. If you already have a running […], then skip this section."
+  },
+  {
+    "objectID": "reference/reflora_summary.html",
+    "href": "reference/reflora_summary.html",
+    "title": "reflora_summary",
+    "section": "",
+    "text": "refloraR::reflora_summary()\n\n\nDescription\nSummarize current available plant specimen records at Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT), even when the physical specimens remain curated in the holding herbarium. The reflora_summary() output includes a repatriation status field to help users identify these digitally repatriated collections.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nA vector of specific herbarium acronyms (collection code) in uppercase letters or leave it as NULL to summarize specimen records for all Reflora-hosted herbaria.\n\n\nverbose\nLogical, if FALSE, a message showing steps when summarizing specimen records will not be printed in the console in full.\n\n\nsave\nLogical, if TRUE, the search results will be saved on disk.\n\n\ndir\nPathway to the computer’s directory, where the table-formatted summary will be saved. The default is to create a directory named reflora_summary.\n\n\n\n\n\nValue\nA data.frame with one row per herbarium collection and the following columns:\ncollectionCodeCharacter. Herbarium acronym (collection code) as registered in the Reflora Virtual Herbarium.\nrightsHolderCharacter. Institution responsible for the collection, as reported in the IPT metadata.\nRepatriatedLogical. Indicates whether the herbarium corresponds to a repatriated collection (i.e., Brazilian specimens digitized from foreign institutions such as US, NY, K, etc.).\ncontactPointCharacter. Name of the contact person or curator associated with the collection.\nhasEmailCharacter. Contact email address for the contactPoint, when available.\nVersionCharacter. Current dataset version number available in the IPT repository.\nPublished.onCharacter. Date and hour on which the current dataset version was published in the IPT.\nRecordsNumeric. Total number of specimen records currently available for the collection.\nReflora_URLCharacter. Direct URL to the collection page in the Reflora Virtual Herbarium.\n\n\nExamples\nreflora_summary(herbarium = c(\"ALCB\", \"HUEFS\"),\n                verbose = TRUE,\n                save = TRUE,\n                dir = \"reflora_summary\")"
+  },
+  {
+    "objectID": "reference/index.html#reflorar",
+    "href": "reference/index.html#reflorar",
+    "title": "Function Reference",
+    "section": "refloraR",
+    "text": "refloraR\n\nreflora_download()\nreflora_indets()\nreflora_parse()\nreflora_records()\nreflora_summary()"
+  },
+  {
+    "objectID": "reference/reflora_records.html",
+    "href": "reference/reflora_records.html",
+    "title": "reflora_records",
+    "section": "",
+    "text": "refloraR::reflora_records()\n\n\nDescription\nRetrieve occurrence records for specific taxa from the Reflora Virtual Herbarium, hosted by the Rio de Janeiro Botanical Garden. This function handles automatic download, parsing, filtering, and optional saving of the occurrence data. All returned records include direct links to specimen images (column 'bibliographicCitation') and, when available, high-resolution download URLs (column 'associatedMedia').\n\n\nDetails\nThis function processes Darwin Core Archive (DwC-A) files from Reflora. You may supply a specific path to previously downloaded files using path, or let the function handle the download automatically. Filters can be applied by taxon name, herbarium code, state, and year. The reorder argument allows you to customize the structure of the returned data. Use verbose = TRUE to see status updates. Use save = TRUE to save results to disk as a CSV file in the specified directory.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nA vector of specific herbarium acronyms (collection code) in uppercase letters or leave it as NULL to summarize specimen records for all Reflora-hosted herbaria.\n\n\nrepatriated\nLogical. If FALSE, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is TRUE. Use reflora_summary() to check which collections are repatriated. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT).\n\n\ntaxon\nA vector with the required taxon. It can be one or a vector of multiple scientific names at family, genus or species level.\n\n\nstate\nA vector with the required Brazilian state(s) (full name or acronym).\n\n\nrecordYear\nA vector with the required record year or year range. For example, \"1992\" or c(\"1992\", \"2024\")\n\n\nindets\nLogical, if FALSE, removes all indeterminate specimens that are not identified to the species level (i.e., records identified only to family or genus).\n\n\nreorder\nProvide a vector with any of c(\"herbarium\", \"taxa\", \"collector\", \"area\", \"year\") to reorder the retrieved records based on the specified columns. By default, the data will be redordered according to this vector, meaning the returned dataset will be specifically reordered based on the columns 'herbarium', 'family', 'genus', 'specificEpithet', 'recordedBy', 'recordNumber', 'country', 'stateProvince', 'municipality' and 'year'. You can modify the order of the vector or provide a subset of these columns to customize the reordering of the data accordingly.\n\n\npath\nOptional; a pathway to the computer’s directory, where the Reflora-downloaded dwca folders are. If you do not provide a path, the function will download the most updated version of the Reflora dwca files.\n\n\nupdates\nLogical, if FALSE, the search will not check for the most updated version of the Reflora dwca files. This argument is often used if you have defined a specific path to previously downloaded Reflora dwca files either manually or with function reflora_download.\n\n\nverbose\nLogical, if FALSE, a message showing steps when summarizing specimen records will not be printed in the console in full.\n\n\nsave\nLogical, if TRUE, the search results will be saved on disk\n\n\ndir\nPathway to the computer’s directory, where the table-formatted summary will be saved. The default is to create a directory named reflora_records.\n\n\nfilename\nName of the output file to be saved. The default is to create a file entitled reflora_records_search.csv.\n\n\n\n\n\nValue\nA data.frame containing occurrence records from the selected Reflora herbaria, filtered according to the user-specified arguments (e.g., taxon, state, recordYear, indets, herbarium, and repatriated). Columns containing only NA values are removed before returning the object.\nIf save = TRUE, the function also writes the results to a CSV file in the specified dir directory (creating it if necessary) and generates or appends a log.txt file summarizing the download session, including the total number of records and breakdowns by herbarium, family, genus, country, and state.\n\n\nExamples\nfam_taxa &lt;- c(\"Fabaceae\", \"Ochnaceae\")\nreflora_records(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                taxon = fam_taxa,\n                verbose = TRUE,\n                save = TRUE,\n                dir = \"reflora_records\",\n                filename = \"reflora_records_search\")"
+  },
+  {
+    "objectID": "pt/get-started/index.html#instalar-o-pacote",
+    "href": "pt/get-started/index.html#instalar-o-pacote",
+    "title": "Instalação",
+    "section": "Instalar o pacote",
+    "text": "Instalar o pacote\nVocê pode instalar a versão de desenvolvimento mais recente do pacote refloraR a partir do GitHub da seguinte forma:\n\n#install.packages(\"devtools\")\ndevtools::install_github(\"DBOSlab/refloraR\")\n\n\n\n\n\n\n\nCaution\n\n\n\nOs passos desta seção só são necessários se você precisar executar […]. Se já tiver um ambiente configurado […], pode pular esta seção."
+  },
+  {
+    "objectID": "pt/reference/reflora_summary.html",
+    "href": "pt/reference/reflora_summary.html",
+    "title": "reflora_summary",
+    "section": "",
+    "text": "refloraR::reflora_summary()\n\n\nDescrição\nResume os registros de espécimes vegetais atualmente disponíveis no Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro. O Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros. Neste contexto, “repatriação digital” refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT), mesmo que os espécimes físicos permaneçam custodiados no herbário de origem. A saída de reflora_summary() inclui um campo de status de repatriação para ajudar os usuários a identificar essas coleções digitalmente repatriadas.\n\n\nArgumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como NULL para resumir os registros de espécimes de todos os herbários hospedados pelo Reflora.\n\n\nverbose\nLógico; se FALSE, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console.\n\n\nsave\nLógico; se TRUE, os resultados da busca serão salvos em disco.\n\n\ndir\nCaminho para o diretório do computador onde o resumo em formato de tabela será salvo. O padrão é criar um diretório chamado reflora_summary.\n\n\n\n\n\nValor\nUm data.frame com uma linha por coleção de herbário e as seguintes colunas:\ncollectionCodeCaractere. Sigla do herbário (código de coleção) conforme registrada no Herbário Virtual Reflora.\nrightsHolderCaractere. Instituição responsável pela coleção, conforme informado nos metadados do IPT.\nRepatriatedLógico. Indica se o herbário corresponde a uma coleção repatriada (i.e., espécimes brasileiros digitalizados de instituições estrangeiras como US, NY, K, etc.).\ncontactPointCaractere. Nome do responsável pelo contato ou curador associado à coleção.\nhasEmailCaractere. Endereço de e-mail de contato para o contactPoint, quando disponível.\nVersionCaractere. Número da versão atual do conjunto de dados disponível no repositório IPT.\nPublished.onCaractere. Data e hora em que a versão atual do conjunto de dados foi publicada no IPT.\nRecordsNumérico. Número total de registros de espécimes atualmente disponíveis para a coleção.\nReflora_URLCaractere. URL direta para a página da coleção no Herbário Virtual Reflora.\n\n\nExemplos\nreflora_summary(herbarium = c(\"ALCB\", \"HUEFS\"),\n                verbose = TRUE,\n                save = TRUE,\n                dir = \"reflora_summary\")"
+  },
+  {
+    "objectID": "pt/reference/index.html#reflorar",
+    "href": "pt/reference/index.html#reflorar",
+    "title": "Referência de Funções",
+    "section": "refloraR",
+    "text": "refloraR\n\nreflora_download()\nreflora_indets()\nreflora_parse()\nreflora_records()\nreflora_summary()"
+  },
+  {
+    "objectID": "pt/reference/reflora_records.html",
+    "href": "pt/reference/reflora_records.html",
+    "title": "reflora_records",
+    "section": "",
+    "text": "refloraR::reflora_records()\n\n\nDescrição\nRecupera registros de ocorrência para táxons específicos do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro. Esta função realiza download automático, análise, filtragem e salvamento opcional dos dados de ocorrência. Todos os registros retornados incluem links diretos para imagens de espécimes (coluna 'bibliographicCitation') e, quando disponíveis, URLs de download em alta resolução (coluna 'associatedMedia').\n\n\nDetalhes\nEsta função processa arquivos Darwin Core Archive (DwC-A) do Reflora. Você pode fornecer um caminho específico para arquivos previamente baixados usando path, ou deixar a função gerenciar o download automaticamente. Filtros podem ser aplicados por nome de táxon, código de herbário, estado e ano. O argumento reorder permite personalizar a estrutura dos dados retornados. Use verbose = TRUE para ver atualizações de status. Use save = TRUE para salvar os resultados em disco como arquivo CSV no diretório especificado.\n\n\nArgumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como NULL para resumir os registros de espécimes de todos os herbários hospedados pelo Reflora.\n\n\nrepatriated\nLógico. Se FALSE, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é TRUE. Use reflora_summary() para verificar quais coleções são repatriadas. O Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros. Neste contexto, “repatriação digital” refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT).\n\n\ntaxon\nVetor com o táxon desejado. Pode ser um ou um vetor de vários nomes científicos em nível de família, gênero ou espécie.\n\n\nstate\nVetor com o(s) estado(s) brasileiro(s) desejado(s) (nome completo ou sigla).\n\n\nrecordYear\nVetor com o ano de registro desejado ou intervalo de anos. Por exemplo, \"1992\" ou c(\"1992\", \"2024\").\n\n\nindets\nLógico; se FALSE, remove todos os espécimes indeterminados que não estão identificados ao nível de espécie (i.e., registros identificados apenas a família ou gênero).\n\n\nreorder\nForneça um vetor com qualquer combinação de c(\"herbarium\", \"taxa\", \"collector\", \"area\", \"year\") para reordenar os registros recuperados com base nas colunas especificadas. Por padrão, os dados serão reordenados de acordo com este vetor.\n\n\npath\nOpcional; caminho para o diretório do computador onde as pastas dwca baixadas do Reflora estão. Se não for fornecido, a função baixará a versão mais atualizada dos arquivos dwca do Reflora.\n\n\nupdates\nLógico; se FALSE, a busca não verificará a versão mais atualizada dos arquivos dwca do Reflora. Este argumento é frequentemente usado quando você definiu um caminho específico para arquivos dwca do Reflora previamente baixados.\n\n\nverbose\nLógico; se FALSE, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console.\n\n\nsave\nLógico; se TRUE, os resultados da busca serão salvos em disco.\n\n\ndir\nCaminho para o diretório do computador onde o resumo em formato de tabela será salvo. O padrão é criar um diretório chamado reflora_records.\n\n\nfilename\nNome do arquivo de saída a ser salvo. O padrão é criar um arquivo chamado reflora_records_search.csv.\n\n\n\n\n\nValor\nUm data.frame contendo registros de ocorrência dos herbários do Reflora selecionados, filtrados de acordo com os argumentos especificados pelo usuário (e.g., taxon, state, recordYear, indets, herbarium e repatriated). Colunas contendo apenas valores NA são removidas antes de retornar o objeto.\nSe save = TRUE, a função também grava os resultados em um arquivo CSV no diretório dir especificado (criando-o se necessário) e gera ou acrescenta um arquivo log.txt resumindo a sessão de download, incluindo o número total de registros e detalhamentos por herbário, família, gênero, país e estado.\n\n\nExemplos\nfam_taxa &lt;- c(\"Fabaceae\", \"Ochnaceae\")\nreflora_records(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                taxon = fam_taxa,\n                verbose = TRUE,\n                save = TRUE,\n                dir = \"reflora_records\",\n                filename = \"reflora_records_search\")"
+  },
+  {
+    "objectID": "pt/about.html#visão-geral",
+    "href": "pt/about.html#visão-geral",
+    "title": "Sobre o refloraR",
+    "section": "Visão Geral",
+    "text": "Visão Geral\nrefloraR é um pacote R para explorar coleções de espécimes vegetais do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro. O pacote interage com o Integrated Publishing Toolkit (IPT) do Reflora, permitindo o download completo de registros de espécimes no formato Darwin Core. Também fornece funções para resumir e filtrar dados por critérios taxonômicos ou geográficos."
+  },
+  {
+    "objectID": "pt/about.html#o-programa-reflora",
+    "href": "pt/about.html#o-programa-reflora",
+    "title": "Sobre o refloraR",
+    "section": "O Programa Reflora",
+    "text": "O Programa Reflora\nO Brasil possui a flora mais rica do mundo (BFG 2022). Historicamente, muitos espécimes vegetais foram enviados a herbários europeus durante os séculos XVIII e XIX. Essas coleções fundamentaram inúmeras descrições de espécies e a monumental Flora brasiliensis (Martius, Eichler & Urban, 1840–1906).\nLançado em 2010, o Programa Reflora/CNPq teve como objetivo digitalizar e repatriar informações sobre espécimes vegetais brasileiros armazenados no exterior. Em 2014, o programa se expandiu em parceria com o SiBBr e o IFN. Os dados são publicados pelo Herbário Virtual Reflora.\nDesenvolvida pelo JBRJ e pelo COPPE/UFRJ, a plataforma apoia validação taxonômica e colaboração por meio da iniciativa Flora e Funga do Brasil."
+  },
+  {
+    "objectID": "pt/about.html#o-herbário-virtual-reflora",
+    "href": "pt/about.html#o-herbário-virtual-reflora",
+    "title": "Sobre o refloraR",
+    "section": "O Herbário Virtual Reflora",
+    "text": "O Herbário Virtual Reflora\nO Herbário Virtual Reflora foi encomendado pelo CNPq ao JBRJ em 2010 para fornecer dados centralizados, em alta resolução e de acesso público sobre espécimes brasileiros. O sistema replica as principais funções da curadoria de herbários físicos. Curadores podem redeterminar e tipificar espécimes, enquanto taxonomistas contribuem para a validação das espécies. Mais de 900 taxonomistas já contribuíram para a plataforma.\nOs parceiros iniciais incluíram os herbários K, P e RB, com apoio posterior do SiBBr e do IFN. A iniciativa continua a digitalizar coleções brasileiras e internacionais."
+  },
+  {
+    "objectID": "pt/about.html#descrição-do-pacote",
+    "href": "pt/about.html#descrição-do-pacote",
+    "title": "Sobre o refloraR",
+    "section": "Descrição do Pacote",
+    "text": "Descrição do Pacote\nPacote: refloraR Tipo: Pacote R Versão: 1.0.0\nAutores: Domingos Cardoso (@DBOSlab ORCID) e Carlos Calderón (@caldecid ORCID)\nMantenedor: Domingos Cardoso (domingoscardoso@jbrj.gov.br)\n\nFuncionalidades\n\nRecuperar registros de espécimes por filtros taxonômicos e geográficos\nResumir coleções e disponibilidade de dados\nCompatível com o padrão Darwin Core Archive (DwC-A)\nTotalmente integrado com fluxos de trabalho do tidyverse\nInclui suporte a visualização de dados e mapeamento"
+  },
+  {
+    "objectID": "pt/about.html#contribua",
+    "href": "pt/about.html#contribua",
+    "title": "Sobre o refloraR",
+    "section": "Contribua",
+    "text": "Contribua\nVocê pode contribuir com o refloraR:\n\nAbrindo issues para feedback ou relatos de bugs\nEnviando pull requests com correções ou melhorias\nSugerindo ou desenvolvendo novas funcionalidades (abra uma issue para discussão antes)"
+  },
+  {
+    "objectID": "pt/about.html#licença",
+    "href": "pt/about.html#licença",
+    "title": "Sobre o refloraR",
+    "section": "Licença",
+    "text": "Licença\nrefloraR é um software de código aberto. Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento."
+  },
+  {
+    "objectID": "pt/about.html#agradecimentos",
+    "href": "pt/about.html#agradecimentos",
+    "title": "Sobre o refloraR",
+    "section": "Agradecimentos",
+    "text": "Agradecimentos\nO desenvolvimento do refloraR é liderado pelo Jardim Botânico do Rio de Janeiro (JBRJ), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico e da FINEP - Financiadora de Estudos e Projetos."
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "",
+    "text": "Este guia explica como usar a função reflora_indets() do pacote refloraR para recuperar registros de ocorrência de espécimes indeterminados (ex.: identificados apenas a nível de família ou gênero) do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#visão-geral-da-função",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#visão-geral-da-função",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Visão Geral da Função",
+    "text": "Visão Geral da Função\nreflora_indets() foi desenvolvida para identificar e extrair registros de espécimes vegetais de coleções do Reflora que não estão determinados ao nível de espécie. Permite filtrar por herbário, táxon, localidade (estado brasileiro), ano e nível taxonômico.\nEssa função é especialmente útil para identificar possíveis lacunas taxonômicas (Linnean shortfalls), resumindo a quantidade de táxons indeterminados em diferentes herbários ou dentro de uma família vegetal específica. Ajuda pesquisadores a identificar lacunas de dados na identificação de plantas no Reflora.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#argumentos",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#argumentos",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Argumentos",
+    "text": "Argumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nlevel\nNível taxonômico para filtrar indeterminadas (ex.: \"FAMILY\", \"GENUS\").\n\n\nherbarium\nCódigos de herbário (ex.: \"RB\", \"SP\"). Use NULL para todas as coleções.\n\n\nrepatriated\nLógico. Se FALSE, ignora coleções repatriadas.\n\n\ntaxon\nVetor de nomes de família ou gênero para filtrar.\n\n\nstate\nSiglas de estado brasileiro para filtrar por localidade.\n\n\nrecordYear\nAno ou intervalo de anos para filtragem (ex.: \"2001\", c(\"2000\", \"2022\")).\n\n\nreorder\nReordena colunas na saída final. Padrão por herbário, táxons, etc.\n\n\npath\nDiretório contendo dados do Reflora previamente baixados. Se fornecido, evita re-download e permite análises offline ou reprodutíveis. Especialmente importante ao analisar um conjunto de dados fixo ou repositório compartilhado.\n\n\nupdates\nLógico. Se TRUE, atualiza os arquivos DwC-A do Reflora quando desatualizados.\n\n\nverbose\nLógico. Se TRUE, imprime mensagens de progresso.\n\n\nsave\nLógico. Se TRUE, salva o resultado como arquivo CSV.\n\n\ndir\nDiretório para armazenar a saída CSV.\n\n\nfilename\nNome do arquivo de saída para resultados e logs.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#exemplo-de-caso-recuperar-todos-as-indeterminadas-por-família",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#exemplo-de-caso-recuperar-todos-as-indeterminadas-por-família",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Exemplo de caso: Recuperar Todos as Indeterminadas por Família",
+    "text": "Exemplo de caso: Recuperar Todos as Indeterminadas por Família\nreflora_indets(\n  level = \"FAMILY\",\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_indets\",\n  filename = \"family_level_indets\"\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#filtrar-por-herbário-e-estado",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#filtrar-por-herbário-e-estado",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Filtrar por Herbário e Estado",
+    "text": "Filtrar por Herbário e Estado\nreflora_indets(\n  taxon = \"Fabaceae\",\n  herbarium = \"RB\",\n  state = c(\"BA\", \"MG\"),\n  recordYear = c(\"1990\", \"2022\")\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#filtragem-por-nível-taxonômico-e-ano",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#filtragem-por-nível-taxonômico-e-ano",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Filtragem por Nível Taxonômico e Ano",
+    "text": "Filtragem por Nível Taxonômico e Ano\nreflora_indets(\n  level = \"GENUS\",\n  recordYear = \"2020\",\n  save = FALSE\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#analisando-um-conjunto-de-dados-específico",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#analisando-um-conjunto-de-dados-específico",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Analisando um Conjunto de Dados Específico",
+    "text": "Analisando um Conjunto de Dados Específico\nVocê pode reutilizar dados do Reflora previamente baixados definindo o argumento path:\nreflora_indets(\n  path = \"my_reflora_data\",\n  updates = FALSE,\n  verbose = TRUE\n)\n\nPor que usar path?\n\nPermite trabalhar offline com arquivos do Reflora já baixados.\nEvita downloads redundantes, acelerando a análise.\nMelhora a reprodutibilidade ao analisar um conjunto de dados estático específico.\nDefina updates = FALSE para evitar modificar seus dados locais.\nIdeal ao trabalhar com uma pasta compartilhada ou preservar conjuntos de dados fixos.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#caso-de-uso-análise-de-lacunas-de-lineu",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#caso-de-uso-análise-de-lacunas-de-lineu",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Caso de Uso: Análise de Lacunas de Lineu",
+    "text": "Caso de Uso: Análise de Lacunas de Lineu\nAo resumir registros indeterminados entre herbários ou dentro de um táxon, reflora_indets() serve como uma poderosa ferramenta diagnóstica para evidenciar lacunas de dados no conhecimento florístico. Pode ajudar pesquisadores a:\n\nVisualizar quantos espécimes não identificados existem nas coleções.\nPriorizar trabalho taxonômico em grupos com baixa determinação.\nDestacar herbários com maior volume de material não identificado.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#visualizando-indeterminadas-por-herbário",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#visualizando-indeterminadas-por-herbário",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Visualizando Indeterminadas por Herbário",
+    "text": "Visualizando Indeterminadas por Herbário\nlibrary(dplyr)\nlibrary(ggplot2)\n\nresults &lt;- reflora_indets(level = \"FAMILY\",\n                          herbarium = c(\"ALCB\", \"HUEFS\", \"RB\", \"K\", \"E\"),\n                          save = FALSE)\n\nresults %&gt;%\n  count(collectionCode) %&gt;%\n  ggplot(aes(x = reorder(collectionCode, n), y = n)) +\n  geom_col() +\n  coord_flip() +\n  labs(x = \"Herbário\",\n       y = \"Número de Espécimes Indeterminados ao Nível de Família\")",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#dicas",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#dicas",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Dicas",
+    "text": "Dicas\n\nUse reflora_summary() para inspecionar coleções disponíveis.\nPara reprodutibilidade, documente seus parâmetros de entrada.\nLogs e arquivos CSV são salvos automaticamente se save = TRUE.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_indeterminate_reflora_specimens.html#veja-também",
+    "href": "pt/articles/filter_indeterminate_reflora_specimens.html#veja-também",
+    "title": "Filtrar Espécimes Indeterminados do Reflora",
+    "section": "Veja Também",
+    "text": "Veja Também\n\nreflora_download(): Baixar registros de espécimes do Reflora\nreflora_parse(): Analisar arquivos do Reflora\nreflora_summary(): Resumir coleções do Reflora",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Filtrar espécimes indeterminados"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html",
+    "href": "pt/articles/parse_reflora_dwca.html",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "",
+    "text": "Este guia demonstra como usar a função reflora_parse() do pacote refloraR. A função lê e analisa arquivos Darwin Core Archive (DwC-A) previamente baixados com reflora_download().",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#visão-geral-da-função",
+    "href": "pt/articles/parse_reflora_dwca.html#visão-geral-da-função",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Visão Geral da Função",
+    "text": "Visão Geral da Função\nA função reflora_parse() lê dados DwC-A de todas ou de coleções específicas de herbário do Reflora. Também limpa e formata os dados dos espécimes.",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#argumentos",
+    "href": "pt/articles/parse_reflora_dwca.html#argumentos",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Argumentos",
+    "text": "Argumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\npath\nDiretório contendo as pastas DwC-A baixadas.\n\n\nherbarium\nVetor de siglas de herbário (ex.: \"RB\", \"K\"). Use NULL para analisar todos.\n\n\nrepatriated\nLógico. Se FALSE, ignora herbários repatriados (ver reflora_summary()).\n\n\nverbose\nLógico. Se TRUE, exibe mensagens de progresso.",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#analisar-todas-as-coleções-no-diretório",
+    "href": "pt/articles/parse_reflora_dwca.html#analisar-todas-as-coleções-no-diretório",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Analisar Todas as Coleções no Diretório",
+    "text": "Analisar Todas as Coleções no Diretório\nUse as configurações padrão para analisar todas as pastas DwC-A:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#analisar-coleções-específicas",
+    "href": "pt/articles/parse_reflora_dwca.html#analisar-coleções-específicas",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Analisar Coleções Específicas",
+    "text": "Analisar Coleções Específicas\nVocê pode especificar quais coleções analisar:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  herbarium = c(\"RB\", \"K\"),\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#ignorar-coleções-repatriadas",
+    "href": "pt/articles/parse_reflora_dwca.html#ignorar-coleções-repatriadas",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Ignorar Coleções Repatriadas",
+    "text": "Ignorar Coleções Repatriadas\nPara ignorar herbários repatriados:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  repatriated = FALSE,\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#estrutura-da-saída-analisada",
+    "href": "pt/articles/parse_reflora_dwca.html#estrutura-da-saída-analisada",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Estrutura da Saída Analisada",
+    "text": "Estrutura da Saída Analisada\nO retorno é uma lista nomeada onde cada elemento representa uma coleção e contém:\n\noccurrence.txt: Data frame com os registros de espécimes.\neml.xml: Metadados sobre a coleção.\nsummary_&lt;COL&gt;.csv opcional: Arquivo de resumo de metadados.\n\nnames(dwca)\nhead(dwca[[\"ALCB\"]][[\"data\"]][[\"occurrence.txt\"]])",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#limpeza-de-dados-e-padronização-de-colunas",
+    "href": "pt/articles/parse_reflora_dwca.html#limpeza-de-dados-e-padronização-de-colunas",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Limpeza de Dados e Padronização de Colunas",
+    "text": "Limpeza de Dados e Padronização de Colunas\n\nConverte campos taxonômicos para formato “title case”.\nAdiciona taxonName combinando genus, specificEpithet e infraspecificEpithet.\nSubstitui ranks taxonômicos ausentes por \"FAMILY\".",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#dicas",
+    "href": "pt/articles/parse_reflora_dwca.html#dicas",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Dicas",
+    "text": "Dicas\n\nCertifique-se de ter baixado os dados com reflora_download() antes de analisar.\nUse reflora_summary() para verificar quais herbários são repatriados.\nVocê pode combinar e analisar dados parseados usando dplyr::bind_rows().",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/parse_reflora_dwca.html#veja-também",
+    "href": "pt/articles/parse_reflora_dwca.html#veja-também",
+    "title": "Analisar arquivos Darwin Core do Reflora",
+    "section": "Veja Também",
+    "text": "Veja Também\n\nreflora_download(): Baixar registros de espécimes do Reflora\nreflora_summary(): Inspecionar coleções do Reflora",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Analisar arquivos Darwin Core do Reflora"
+    ]
+  },
+  {
+    "objectID": "pt/articles/index.html",
+    "href": "pt/articles/index.html",
+    "title": "Artigos",
+    "section": "",
+    "text": "Resumir coleções do Reflora\n\nResumir coleções\n\n\n\n\n\n\nBaixar e analisar registros do Reflora\n\nBaixar registros de espécimes\nAnalisar arquivos Darwin Core do Reflora\n\n\n\n\n\n\nFiltrar registros do Reflora\n\nRecuperar espécimes por táxon\nFiltrar espécimes indeterminados",
+    "crumbs": [
+      "Overview",
+      "Visão Geral"
+    ]
+  },
+  {
+    "objectID": "pt/faq/index.html",
+    "href": "pt/faq/index.html",
+    "title": "Perguntas Frequentes",
+    "section": "",
+    "text": "Para que posso usar o refloraR?\nO pacote refloraR permite que pesquisadores e taxonomistas baixem, filtrem e analisem dados de espécimes vegetais do Herbário Virtual Reflora. Com funções dedicadas, os usuários podem acessar grandes conjuntos de dados no formato Darwin Core, explorar distribuições taxonômicas e geográficas e resumir coleções de forma eficiente.\n\n\nComo instalo o refloraR?\nVisite o guia de primeiros passos para instruções de instalação a partir do GitHub.\n\n\nO refloraR é gratuito?\nSim. refloraR é de código aberto, licenciado sob a Licença MIT.\n\n\nQuais saídas o refloraR pode gerar?\nEmbora o refloraR em si não gere documentos formatados, ele foi desenvolvido para recuperação e análise de dados. No entanto, integra-se bem com ferramentas como Quarto e RMarkdown para produzir documentos, páginas HTML e aplicativos interativos a partir de dados filtrados de espécimes.\n\n\nQuem são os desenvolvedores do refloraR?\nO desenvolvimento é patrocinado pelo JBRJ, FINEP e CNPq. Principais desenvolvedores:\n\nDomingos Cardoso (@DBOSlab)\nCarlos Calderón (@caldecid)\n\nVeja o código e contribua no GitHub: https://github.com/DBOSlab/refloraR\n\n\nPor que o nome refloraR?\nO nome presta homenagem ao programa Reflora do Brasil, com uma referência à linguagem de programação R. Simboliza o repatriamento e redescoberta do patrimônio botânico brasileiro, agora enriquecido por fluxos de trabalho reprodutíveis de dados.\n\n\nOnde posso reportar bugs ou solicitar funcionalidades?\nEnvie issues no GitHub: refloraR Issues.\n\n\nOnde posso fazer perguntas e discutir sobre o refloraR?\nParticipe da nossa comunidade nas Discussões do GitHub para fazer perguntas, sugerir ideias ou ajudar outros usuários.\n\n\nO que é o Herbário Virtual Reflora?\nO Herbário Virtual Reflora é um repositório digital de espécimes de plantas e fungos, em especial aqueles coletados no Brasil, mas historicamente depositados em herbários estrangeiros. Por meio de imagens de alta resolução e ferramentas de curadoria, permite que pesquisadores visualizem, determinem e tipifiquem espécimes remotamente.\n\n\nComo o refloraR se relaciona com o Reflora?\nO pacote refloraR funciona como uma interface programática para consultar, recuperar e explorar dados do Herbário Virtual Reflora e suas coleções parceiras. Amplia o acesso, estimula a reprodutibilidade e apoia estudos taxonômicos e biogeográficos em larga escala.\n\n\nMeu herbário pode integrar o Herbário Virtual Reflora?\nSim. Curadores de herbário podem contatar reflora@jbrj.gov.br para iniciar a contribuição de dados e imagens. Os herbários participantes recebem suporte para digitalizar e publicar suas coleções."
+  },
+  {
+    "objectID": "about.html#overview",
+    "href": "about.html#overview",
+    "title": "About refloraR",
+    "section": "Overview",
+    "text": "Overview\nrefloraR is an R package for exploring plant specimen collections from the Reflora Virtual Herbarium, hosted by the Rio de Janeiro Botanical Garden. The package interacts with the Reflora Integrated Publishing Toolkit (IPT) by readily downloading full specimen records in Darwin Core Format. It also provides functions to summarize and filter data by taxonomic or geographical criteria."
+  },
+  {
+    "objectID": "about.html#the-reflora-programme",
+    "href": "about.html#the-reflora-programme",
+    "title": "About refloraR",
+    "section": "The Reflora Programme",
+    "text": "The Reflora Programme\nBrazil holds the richest plant diversity in the world (BFG 2022). Historically, many plant specimens were sent to European herbaria during the 18th–19th centuries. These collections formed the basis for many species descriptions and the monumental Flora brasiliensis (Martius, Eichler & Urban, 1840–1906).\nLaunched in 2010, the Reflora/CNPq Programme aimed to digitize and repatriate information on Brazilian plant specimens stored abroad. In 2014, the programme expanded in partnership with SiBBr and IFN. The data are published via the Reflora Virtual Herbarium.\nDeveloped by the JBRJ and COPPE/UFRJ, the platform supports taxonomic validation and collaboration via the Flora e Funga do Brasil initiative."
+  },
+  {
+    "objectID": "about.html#the-reflora-virtual-herbarium",
+    "href": "about.html#the-reflora-virtual-herbarium",
+    "title": "About refloraR",
+    "section": "The Reflora Virtual Herbarium",
+    "text": "The Reflora Virtual Herbarium\nThe Reflora Virtual Herbarium was commissioned by CNPq to JBRJ in 2010 to provide centralized, high-resolution, publicly accessible data on Brazilian specimens. It replicates key functions of physical herbarium curation. Curators can re-determine and typify specimens, while taxonomists contribute to species validation. Over 900 taxonomists have contributed to the platform.\nEarly partners included herbaria K, P, and RB, with later support from SiBBr and IFN. The initiative continues to digitize Brazilian and international collections."
+  },
+  {
+    "objectID": "about.html#package-description",
+    "href": "about.html#package-description",
+    "title": "About refloraR",
+    "section": "Package Description",
+    "text": "Package Description\nPackage: refloraR\nType: R Package\nVersion: 1.0.0\nAuthors: Domingos Cardoso (@DBOSlab ORCID) and Carlos Calderón (@caldecid ORCID)\nMaintainer: Domingos Cardoso (domingoscardoso@jbrj.gov.br)\n\nFeatures\n\nRetrieve specimen records by taxonomic/geographic filters\nSummarize collections and data availability\nSupports Darwin Core Archive (DwC-A) standards\nFully integrates with tidyverse workflows\nIncludes data visualization and mapping support"
+  },
+  {
+    "objectID": "about.html#contribute",
+    "href": "about.html#contribute",
+    "title": "About refloraR",
+    "section": "Contribute",
+    "text": "Contribute\nYou can contribute to refloraR by:\n\nOpening issues for feedback or bug reports\nSubmitting pull requests for fixes or enhancements\nSuggesting or developing new features (please open an issue for discussion first)"
+  },
+  {
+    "objectID": "about.html#license",
+    "href": "about.html#license",
+    "title": "About refloraR",
+    "section": "License",
+    "text": "License\nrefloraR is open source software. Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing."
+  },
+  {
+    "objectID": "about.html#acknowledgements",
+    "href": "about.html#acknowledgements",
+    "title": "About refloraR",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\nDevelopment of refloraR is led by the Rio de Janeiro Botanical Garden (JBRJ), in collaboration with the biodiversity and informatics communities. We also gratefully acknowledge the financial support provided by CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico, Brazil’s National Council for Scientific and Technological Development, and FINEP - Financiadora de Estudos e Projetos, Brazil’s Funding Authority for Studies and Projects."
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html",
+    "href": "articles/filter_indeterminate_reflora_specimens.html",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "",
+    "text": "This guide explains how to use the reflora_indets() function in the refloraR package to retrieve occurrence records of indeterminate specimens (e.g., identified only to family or genus level) from the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#function-overview",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#function-overview",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Function Overview",
+    "text": "Function Overview\nreflora_indets() is designed to identify and extract plant specimen records from Reflora collections that are not determined to species level. It allows filtering by herbarium, taxon, locality (Brazilian state), year, and taxonomic rank.\nThis function is especially useful for identifying possible Linnean shortfalls by summarizing the amount of undetermined taxa across different herbaria or within a particular plant family. It helps researchers pinpoint data gaps in plant identification within Reflora",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#arguments",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#arguments",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nlevel\nTaxonomic rank to filter indeterminates (e.g., \"FAMILY\", \"GENUS\").\n\n\nherbarium\nHerbarium codes (e.g., \"RB\", \"SP\"). Use NULL for all collections.\n\n\nrepatriated\nLogical. If FALSE, skips repatriated collections.\n\n\ntaxon\nVector of family or genus names to filter by.\n\n\nstate\nBrazilian state abbreviations to filter locality.\n\n\nrecordYear\nYear or range of years for filtering (e.g., \"2001\", c(\"2000\", \"2022\")).\n\n\nreorder\nReorder columns in the final output. Default is by herbarium, taxa, etc.\n\n\npath\nDirectory containing previously downloaded Reflora data. If provided, avoids re-downloading and allows offline or reproducible analyses. Especially important when analyzing a frozen dataset or shared repository.\n\n\nupdates\nLogical. If TRUE, updates DwC-A archives from Reflora if versions are outdated.\n\n\nverbose\nLogical. If TRUE, prints progress messages.\n\n\nsave\nLogical. If TRUE, saves the result as a CSV file.\n\n\ndir\nDirectory to store CSV output.\n\n\nfilename\nOutput filename for results and logs.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#use-case-retrieve-all-indeterminates-by-family",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#use-case-retrieve-all-indeterminates-by-family",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Use Case: Retrieve All Indeterminates by Family",
+    "text": "Use Case: Retrieve All Indeterminates by Family\nreflora_indets(\n  level = \"FAMILY\",\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_indets\",\n  filename = \"family_level_indets\"\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#filter-by-herbarium-and-state",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#filter-by-herbarium-and-state",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Filter by Herbarium and State",
+    "text": "Filter by Herbarium and State\nreflora_indets(\n  taxon = \"Fabaceae\",\n  herbarium = \"RB\",\n  state = c(\"BA\", \"MG\"),\n  recordYear = c(\"1990\", \"2022\")\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#filtering-by-taxonomic-rank-and-year",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#filtering-by-taxonomic-rank-and-year",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Filtering by Taxonomic Rank and Year",
+    "text": "Filtering by Taxonomic Rank and Year\nreflora_indets(\n  level = \"GENUS\",\n  recordYear = \"2020\",\n  save = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#analyzing-a-specific-dataset",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#analyzing-a-specific-dataset",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Analyzing a Specific Dataset",
+    "text": "Analyzing a Specific Dataset\nYou can reuse previously downloaded Reflora data by setting the path argument:\nreflora_indets(\n  path = \"my_reflora_data\",\n  updates = FALSE,\n  verbose = TRUE\n)\n\nWhy Use path?\n\nIt allows working offline with already downloaded Reflora archives.\nIt avoids redundant downloads, speeding up analysis.\nIt improves reproducibility by analyzing a specific static dataset.\nSet updates = FALSE to avoid modifying your local data.\nIt is ideal when working with a shared folder or preserving frozen datasets.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#use-case-linnean-shortfalls-insight",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#use-case-linnean-shortfalls-insight",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Use Case: Linnean Shortfalls Insight",
+    "text": "Use Case: Linnean Shortfalls Insight\nBy summarizing undetermined records across herbaria or within a taxon, reflora_indets() serves as a powerful diagnostic tool to highlight data gaps in floristic knowledge. It can help researchers:\n\nVisualize how many specimens are unidentified across collections.\nPrioritize taxonomic work on poorly determined groups.\nHighlight herbaria with the highest volume of unidentified material.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#visualizing-indeterminates-per-herbarium",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#visualizing-indeterminates-per-herbarium",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Visualizing Indeterminates per Herbarium",
+    "text": "Visualizing Indeterminates per Herbarium\nlibrary(dplyr)\nlibrary(ggplot2)\n\nresults &lt;- reflora_indets(level = \"FAMILY\",\n                          herbarium = c(\"ALCB\", \"HUEFS\", \"RB\", \"K\", \"E\"),\n                          save = FALSE)\n\nresults %&gt;%\n  count(collectionCode) %&gt;%\n  ggplot(aes(x = reorder(collectionCode, n), y = n)) +\n  geom_col() +\n  coord_flip() +\n  labs(x = \"Herbarium\",\n       y = \"Number of Indeterminate Specimens at Family Level\")",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#tips",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#tips",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "Tips",
+    "text": "Tips\n\nUse reflora_summary() to inspect available collections.\nFor reproducibility, document your input parameters.\nLogs and CSV files are saved automatically if save = TRUE.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_indeterminate_reflora_specimens.html#see-also",
+    "href": "articles/filter_indeterminate_reflora_specimens.html#see-also",
+    "title": "Filter Indeterminate Reflora Specimens",
+    "section": "See Also",
+    "text": "See Also\n\nreflora_download(): Download Reflora specimen records\nreflora_parse(): Parse Reflora archive files\nreflora_summary(): Summarize Reflora collections",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Filter indeterminate specimens"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html",
+    "href": "articles/parse_reflora_dwca.html",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "",
+    "text": "This guide demonstrates how to use the reflora_parse() function from the refloraR package. The function reads and parses Darwin Core Archive (DwC-A) files previously downloaded with reflora_download().",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#function-overview",
+    "href": "articles/parse_reflora_dwca.html#function-overview",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe reflora_parse() function reads DwC-A data for all or specified Reflora herbarium collections. It also cleans and formats the specimen data.",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#arguments",
+    "href": "articles/parse_reflora_dwca.html#arguments",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\npath\nDirectory containing downloaded DwC-A folders.\n\n\nherbarium\nA character vector of herbarium acronyms (e.g., \"RB\", \"K\"). Use NULL to parse all.\n\n\nrepatriated\nLogical. If FALSE, skips repatriated herbaria (see reflora_summary()).\n\n\nverbose\nLogical. If TRUE, displays progress messages.",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#parse-all-collections-in-directory",
+    "href": "articles/parse_reflora_dwca.html#parse-all-collections-in-directory",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Parse All Collections in Directory",
+    "text": "Parse All Collections in Directory\nUse the default settings to parse all DwC-A folders:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#parse-specific-herbarium-collections",
+    "href": "articles/parse_reflora_dwca.html#parse-specific-herbarium-collections",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Parse Specific Herbarium Collections",
+    "text": "Parse Specific Herbarium Collections\nYou can specify which collections to parse:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  herbarium = c(\"RB\", \"K\"),\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#skipping-repatriated-collections",
+    "href": "articles/parse_reflora_dwca.html#skipping-repatriated-collections",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Skipping Repatriated Collections",
+    "text": "Skipping Repatriated Collections\nTo skip repatriated herbaria:\ndwca &lt;- reflora_parse(\n  path = \"reflora_download\",\n  repatriated = FALSE,\n  verbose = TRUE\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#structure-of-parsed-output",
+    "href": "articles/parse_reflora_dwca.html#structure-of-parsed-output",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Structure of Parsed Output",
+    "text": "Structure of Parsed Output\nThe return is a named list where each element represents a collection and contains:\n\noccurrence.txt: A data frame of specimen records.\neml.xml: Metadata about the collection.\nOptional summary_&lt;COL&gt;.csv: Metadata summary file.\n\nnames(dwca)\nhead(dwca[[\"ALCB\"]][[\"data\"]][[\"occurrence.txt\"]])",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#data-cleaning-and-column-standardization",
+    "href": "articles/parse_reflora_dwca.html#data-cleaning-and-column-standardization",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Data Cleaning and Column Standardization",
+    "text": "Data Cleaning and Column Standardization\n\nConverts taxonomic fields to title case.\nAdds taxonName combining genus, specificEpithet, infraspecificEpithet.\nReplaces missing taxon ranks with \"FAMILY\".",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#tips",
+    "href": "articles/parse_reflora_dwca.html#tips",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "Tips",
+    "text": "Tips\n\nEnsure you’ve downloaded data using reflora_download() before parsing.\nUse reflora_summary() to explore which herbaria are repatriated.\nYou can combine and analyze parsed data using dplyr::bind_rows().",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/parse_reflora_dwca.html#see-also",
+    "href": "articles/parse_reflora_dwca.html#see-also",
+    "title": "Parse Reflora Darwin Core Archives",
+    "section": "See Also",
+    "text": "See Also\n\nreflora_download(): Download Reflora specimen records\nreflora_summary(): Inspect Reflora collections",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Parse Reflora Darwin Core Archives"
+    ]
+  },
+  {
+    "objectID": "articles/index.html",
+    "href": "articles/index.html",
+    "title": "Articles",
+    "section": "",
+    "text": "Summarize Reflora collections\n\nSummarize collections\n\n\n\n\n\n\nDownload and parse Reflora records\n\nDownload specimen records\nParse Reflora Darwin Core Archives\n\n\n\n\n\n\nFilter Reflora records\n\nRetrieve taxon-specific specimens\nFilter indeterminate specimens",
+    "crumbs": [
+      "Articles",
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "faq/index.html",
+    "href": "faq/index.html",
+    "title": "Frequently Asked Questions",
+    "section": "",
+    "text": "What can I use refloraR for?\nThe refloraR package allows researchers and taxonomists to download, filter, and analyze plant specimen data from the Reflora Virtual Herbarium. With dedicated functions, users can access large datasets in Darwin Core Format, explore taxonomic and geographic distributions, and summarize collections efficiently.\n\n\nHow do I install refloraR?\nVisit the Get Started guide for installation instructions from GitHub.\n\n\nIs refloraR free to use?\nYes. refloraR is open source, licensed under the MIT License.\n\n\nWhat output can refloraR generate?\nWhile refloraR itself does not generate formatted documents, it is designed for data retrieval and analysis. However, it integrates well with tools like Quarto and RMarkdown to produce documents, HTML pages, and interactive apps using filtered specimen data.\n\n\nWho are the developers of refloraR?\nDevelopment is sponsored by JBRJ, FINEP, and CNPq. Main developers:\n\nDomingos Cardoso (@DBOSlab)\nCarlos Calderón (@caldecid)\n\nView the code and contribute on GitHub: https://github.com/DBOSlab/refloraR\n\n\nWhy the name refloraR?\nThe name pays tribute to Brazil’s Reflora programme, with a clever nod to the R programming language. It symbolizes the repatriation and rediscovery of Brazil’s botanical heritage, now enhanced by reproducible data workflows.\n\n\nWhere can I report bugs or request features?\nSubmit issues on GitHub: refloraR Issues.\n\n\nWhere can I ask questions and discuss refloraR?\nJoin our community via GitHub Discussions to ask questions, suggest ideas, or help others.\n\n\nWhat is the Reflora Virtual Herbarium?\nThe Reflora Virtual Herbarium is a digital repository for Brazilian plant specimens, particularly those collected in Brazil but historically stored in foreign herbaria. Through high-resolution imaging and curation tools, it enables researchers to view, determine, and typify specimens remotely.\n\n\nHow does refloraR relate to Reflora?\nThe refloraR package acts as a programmatic interface to query, retrieve, and explore data from Reflora Virtual Herbarium and its partner collections. It enhances access, encourages reproducibility, and supports large-scale taxonomic and biogeographic studies.\n\n\nCan my herbarium join the Reflora Virtual Herbarium?\nYes. Herbarium curators can contact reflora@jbrj.gov.br to initiate data and image contributions. Participating herbaria receive support to digitize and publish their collections."
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "",
+    "section": "",
+    "text": "Code\n\n\n \n\n\n\n\n\n\nMIT License\nCopyright (c) 2025 refloraR authors\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "authors/index.html",
+    "href": "authors/index.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "authors/index.html#the-reflorar-developers",
+    "href": "authors/index.html#the-reflorar-developers",
+    "title": "",
+    "section": "The refloraR Developers",
+    "text": "The refloraR Developers\n\n\n  \n    \n    \n      Domingos Cardoso\n      \n        \n        \n        \n      \n      Taxonomist and bioinformatician leading the refloraR package, responsible for designing and coding functions as well as developing the project website\n    \n  \n  \n  \n    \n    \n      Carlos Calderón\n      \n        \n        \n        \n      \n      Bioinformatician contributing to the refloraR package, with a focus on designing and implementing function workflows"
+  },
+  {
+    "objectID": "authors/index.html#the-reflora-team",
+    "href": "authors/index.html#the-reflora-team",
+    "title": "",
+    "section": "The Reflora Team",
+    "text": "The Reflora Team\n\n\n  \n    \n    \n      Rafaela Forzza\n      \n        \n        \n        \n      \n      Senior taxonomist and coordinator of the Reflora initiative in Brazil\n    \n  \n\n  \n    \n    \n      Paula Leitman\n      \n        \n        \n        \n      \n      Expert in biodiversity data integration and Reflora team member\n    \n  \n\n  \n    \n    \n      Fabiana Filardi\n      \n        \n        \n        \n      \n      Expert in biodiversity data integration and Reflora team member\n    \n  \n\n  \n    \n    \n      Flávia Versiane\n      \n        \n        \n        \n      \n      Research associate contributing to Reflora data curation"
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html",
+    "href": "articles/summarize_reflora_collections.html",
+    "title": "Summarize Reflora collections",
+    "section": "",
+    "text": "Here we present a practical guide to the reflora_summary() function of the refloraR package. This function provides summary statistics for plant specimen records available in the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden and published via the Integrated Publishing Toolkit (IPT).\nReflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT), even when the physical specimens remain curated in the holding herbarium. The reflora_summary() output includes a repatriation status field to help users identify these digitally repatriated collections.",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#function-overview",
+    "href": "articles/summarize_reflora_collections.html#function-overview",
+    "title": "Summarize Reflora collections",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe reflora_summary() function retrieves summary information for one or more Reflora-associated herbarium collections. It allows users to filter collections and optionally save the summary as a CSV file. It also provides metadata such as the number of records, publication version and date, and a direct link to each herbarium’s IPT page.",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#arguments",
+    "href": "articles/summarize_reflora_collections.html#arguments",
+    "title": "Summarize Reflora collections",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nA character vector of herbarium acronyms (e.g., \"RB\", \"K\"). Use NULL to summarize all collections.\n\n\nverbose\nLogical. If TRUE, messages describing summary progress will be shown.\n\n\nsave\nLogical. If TRUE, the summary will be saved as a CSV file.\n\n\ndir\nDirectory path to save the file. Default is \"reflora_summary\".",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#output-columns",
+    "href": "articles/summarize_reflora_collections.html#output-columns",
+    "title": "Summarize Reflora collections",
+    "section": "Output columns",
+    "text": "Output columns\nreflora_summary() returns one row per collection and includes, among others, the following fields:\n\ncollection_code / herbarium: Herbarium acronym (e.g., RB, K) identifying the collection.\nrecords: Number of specimen records currently published for the collection in the Reflora IPT.\nversion: The IPT resource release/version identifier for the currently published dataset (useful for reproducibility and citation).\npublication_date: Date when the current version was published/updated in the IPT.\nipt_link: Direct link to the collection’s IPT resource page.\nrepatriation_status: Indicates whether the collection is digitally repatriated (Brazilian specimens digitized from a foreign herbarium and served through Reflora) versus a non-repatriated collection.\ncontact / curator: Contact information provided in the IPT metadata for the collection.",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#summarize-all-reflora-collections",
+    "href": "articles/summarize_reflora_collections.html#summarize-all-reflora-collections",
+    "title": "Summarize Reflora collections",
+    "section": "Summarize All Reflora Collections",
+    "text": "Summarize All Reflora Collections\nUse the function with default settings to get a summary of all collections, including the herbarium acronym, curator’s contact, record count, and a direct IPT link:\nsummary_df &lt;- reflora_summary(\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_summary\"\n)",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#summarize-specific-collections",
+    "href": "articles/summarize_reflora_collections.html#summarize-specific-collections",
+    "title": "Summarize Reflora collections",
+    "section": "Summarize Specific Collections",
+    "text": "Summarize Specific Collections\nSpecify one or more herbaria with the herbarium argument:\nsummary_some_df &lt;- reflora_summary(\n  herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_summary\"\n)",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#save-summary-to-custom-directory",
+    "href": "articles/summarize_reflora_collections.html#save-summary-to-custom-directory",
+    "title": "Summarize Reflora collections",
+    "section": "Save Summary to Custom Directory",
+    "text": "Save Summary to Custom Directory\nYou can customize the output directory for the summary file:\nreflora_summary(\n  herbarium = \"RB\",\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"custom_summary\"\n)",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#disable-verbose-output",
+    "href": "articles/summarize_reflora_collections.html#disable-verbose-output",
+    "title": "Summarize Reflora collections",
+    "section": "Disable Verbose Output",
+    "text": "Disable Verbose Output\nSuppress progress messages with verbose = FALSE:\nreflora_summary(\n  verbose = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#additional-tips",
+    "href": "articles/summarize_reflora_collections.html#additional-tips",
+    "title": "Summarize Reflora collections",
+    "section": "Additional Tips",
+    "text": "Additional Tips\n\nThe summary is designed as a discovery step: it helps you identify which collections are available, how many records they contain, and where they are published in the IPT.\nUse repatriation_status to distinguish digitally repatriated collections (Brazilian specimens imaged/served via Reflora from foreign herbaria) from other published collections.\nUse version and publication_date to document exactly which IPT release you used, improving reproducibility when you later download or parse records.\nIf save = TRUE, the summary is written to disk as a CSV file for offline inspection and reporting.",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/summarize_reflora_collections.html#see-also",
+    "href": "articles/summarize_reflora_collections.html#see-also",
+    "title": "Summarize Reflora collections",
+    "section": "See Also",
+    "text": "See Also\n\nreflora_download(): Download Reflora specimen records\nreflora_parse(): Parse and clean downloaded records",
+    "crumbs": [
+      "Articles",
+      "Summarize Reflora collections",
+      "Summarize herbarium collections"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html",
+    "href": "articles/filter_reflora_records.html",
+    "title": "Filter Reflora specimen records",
+    "section": "",
+    "text": "This guide demonstrates how to use the reflora_records() function in the refloraR package to retrieve specimen occurrence records for specific taxa from the Reflora Virtual Herbarium, hosted by the Rio de Janeiro Botanical Garden.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#function-overview",
+    "href": "articles/filter_reflora_records.html#function-overview",
+    "title": "Filter Reflora specimen records",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe reflora_records() function retrieves filtered plant specimen records from Reflora collections based on taxon, herbarium, location, and date criteria. It handles downloading, parsing, filtering, and optionally saving the occurrence data.\nThis tool is ideal for floristic, taxonomic, or biogeographic research, especially when working with large datasets for a particular plant group.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#arguments",
+    "href": "articles/filter_reflora_records.html#arguments",
+    "title": "Filter Reflora specimen records",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nVector of herbarium codes (e.g., \"RB\", \"SP\"). Use NULL for all collections.\n\n\nrepatriated\nLogical. If FALSE, skips repatriated herbaria.\n\n\ntaxon\nOne or multiple family, genus, or species names to filter by.\n\n\nstate\nVector of Brazilian states (e.g., \"BA\", \"SP\").\n\n\nrecordYear\nA specific year (e.g., \"2001\") or range (e.g., c(\"1990\", \"2024\")).\n\n\nindets\nIf FALSE, filters out records not identified to species level.\n\n\nreorder\nControls column order of the final result (e.g., by herbarium, taxon, year).\n\n\npath\nOptional directory containing existing Reflora DwC-A files.\n\n\nupdates\nIf TRUE, checks for updated versions of data in the IPT.\n\n\nverbose\nIf TRUE, shows progress messages.\n\n\nsave\nIf TRUE, saves results as CSV and log files.\n\n\ndir\nFolder where output will be saved.\n\n\nfilename\nName of the resulting CSV and log files.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#basic-use-case",
+    "href": "articles/filter_reflora_records.html#basic-use-case",
+    "title": "Filter Reflora specimen records",
+    "section": "Basic Use Case",
+    "text": "Basic Use Case\nreflora_records(\n  taxon = c(\"Fabaceae\", \"Ochnaceae\"),\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_records\",\n  filename = \"fabaceae_ochnaceae_records\"\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#filter-by-herbarium-and-year-range",
+    "href": "articles/filter_reflora_records.html#filter-by-herbarium-and-year-range",
+    "title": "Filter Reflora specimen records",
+    "section": "Filter by Herbarium and Year Range",
+    "text": "Filter by Herbarium and Year Range\nreflora_records(\n  taxon = \"Fabaceae\",\n  herbarium = c(\"RB\", \"K\"),\n  recordYear = c(\"1995\", \"2023\"),\n  verbose = TRUE,\n  save = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#filter-by-state-and-remove-indeterminate-records",
+    "href": "articles/filter_reflora_records.html#filter-by-state-and-remove-indeterminate-records",
+    "title": "Filter Reflora specimen records",
+    "section": "Filter by State and Remove Indeterminate Records",
+    "text": "Filter by State and Remove Indeterminate Records\nreflora_records(\n  taxon = \"Malpighiaceae\",\n  state = c(\"BA\", \"PE\"),\n  indets = FALSE,\n  save = TRUE,\n  dir = \"malpighiaceae_ba_pe\"\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#using-a-pre-downloaded-dataset",
+    "href": "articles/filter_reflora_records.html#using-a-pre-downloaded-dataset",
+    "title": "Filter Reflora specimen records",
+    "section": "Using a Pre-Downloaded Dataset",
+    "text": "Using a Pre-Downloaded Dataset\nreflora_records(\n  path = \"reflora_download\",\n  taxon = \"Myrtaceae\",\n  updates = FALSE,\n  save = FALSE\n)",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#visualizing-specimens-by-year",
+    "href": "articles/filter_reflora_records.html#visualizing-specimens-by-year",
+    "title": "Filter Reflora specimen records",
+    "section": "Visualizing Specimens by Year",
+    "text": "Visualizing Specimens by Year\nlibrary(dplyr)\nlibrary(ggplot2)\n\nrecords &lt;- reflora_records(taxon = \"Fabaceae\", \n                           herbarium = \"RB\", \n                           recordYear = c(\"2000\", \"2025\"), \n                           save = FALSE)\n\nrecords %&gt;%\n  count(year) %&gt;%\n  ggplot(aes(x = year, y = n)) +\n  geom_col(fill = \"steelblue\") +\n  labs(title = \"Fabaceae Records by Year (RB Herbarium)\",\n       x = \"\",\n       y = \"Number of Records\")",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#tips",
+    "href": "articles/filter_reflora_records.html#tips",
+    "title": "Filter Reflora specimen records",
+    "section": "Tips",
+    "text": "Tips\n\nUse recordYear = c(\"YYYY\", \"YYYY\") to analyze records over a time span.\nUse reflora_summary() beforehand to check herbarium availability.\nSet save = TRUE for reproducible outputs and logs.",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/filter_reflora_records.html#see-also",
+    "href": "articles/filter_reflora_records.html#see-also",
+    "title": "Filter Reflora specimen records",
+    "section": "See Also",
+    "text": "See Also\n\nreflora_download(): Download REFLORA specimen records\nreflora_parse(): Parse REFLORA archive files\nreflora_summary(): Summarize REFLORA collections\nreflora_indets(): Extract indeterminate records",
+    "crumbs": [
+      "Articles",
+      "Filter Reflora records",
+      "Retrieve taxon-specific specimens"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html",
+    "href": "articles/download_reflora_collections.html",
+    "title": "Download Reflora specimen records",
+    "section": "",
+    "text": "Here we present a complete guide to the reflora_download() function of the refloraR package. This function allows users to retrieve plant specimen records in Darwin Core Format from the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden.",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#function-overview",
+    "href": "articles/download_reflora_collections.html#function-overview",
+    "title": "Download Reflora specimen records",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe reflora_download() function downloads specimen data for all or specific Reflora-associated herbarium collections. It offers flexibility through several arguments.",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#arguments",
+    "href": "articles/download_reflora_collections.html#arguments",
+    "title": "Download Reflora specimen records",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nA character vector of herbarium acronyms (e.g., \"RB\", \"K\"). Use NULL to download all collections.\n\n\nrepatriated\nLogical. If FALSE, repatriated herbaria will be skipped. Use reflora_summary() to identify them.\n\n\nverbose\nLogical. If TRUE, messages describing download progress will be shown.\n\n\ndir\nDirectory path to save the files. Default is \"reflora_download\".",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#download-all-reflora-specimen-records",
+    "href": "articles/download_reflora_collections.html#download-all-reflora-specimen-records",
+    "title": "Download Reflora specimen records",
+    "section": "Download All Reflora Specimen Records",
+    "text": "Download All Reflora Specimen Records\nUse the function with default settings to download all Reflora data.\nreflora_download(\n  verbose = TRUE, \n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#download-specimens-from-selected-collections",
+    "href": "articles/download_reflora_collections.html#download-specimens-from-selected-collections",
+    "title": "Download Reflora specimen records",
+    "section": "Download Specimens from Selected Collections",
+    "text": "Download Specimens from Selected Collections\nSpecify collection codes with the herbarium argument:\nreflora_download(\n  herbarium = c(\"ALCB\", \"HUEFS\", \"RB\", \"US\", \"K\"),\n  verbose = TRUE,\n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#skipping-repatriated-collections",
+    "href": "articles/download_reflora_collections.html#skipping-repatriated-collections",
+    "title": "Download Reflora specimen records",
+    "section": "Skipping Repatriated Collections",
+    "text": "Skipping Repatriated Collections\nTo exclude collections marked as repatriated:\nreflora_download(\n  repatriated = FALSE,\n  verbose = TRUE,\n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#example-custom-directory-without-verbose-messages",
+    "href": "articles/download_reflora_collections.html#example-custom-directory-without-verbose-messages",
+    "title": "Download Reflora specimen records",
+    "section": "Example: Custom Directory Without Verbose Messages",
+    "text": "Example: Custom Directory Without Verbose Messages\nreflora_download(\n  herbarium = \"RB\",\n  verbose = FALSE,\n  dir = \"custom_directory\"\n)",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#additional-tips",
+    "href": "articles/download_reflora_collections.html#additional-tips",
+    "title": "Download Reflora specimen records",
+    "section": "Additional Tips",
+    "text": "Additional Tips\n\nUse reflora_summary() to inspect which collections are available and whether they are repatriated.\nEnsure internet access is available when running reflora_download().\nReview the contents of the downloaded folder to verify occurrence.txt and metadata presence.",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "articles/download_reflora_collections.html#see-also",
+    "href": "articles/download_reflora_collections.html#see-also",
+    "title": "Download Reflora specimen records",
+    "section": "See Also",
+    "text": "See Also\n\nreflora_summary(): Get a summary of Reflora collections",
+    "crumbs": [
+      "Articles",
+      "Download and parse Reflora records",
+      "Download specimen records"
+    ]
+  },
+  {
+    "objectID": "index.html#the-reflora-programme",
+    "href": "index.html#the-reflora-programme",
+    "title": "refloraR",
+    "section": "The Reflora programme",
+    "text": "The Reflora programme\nThe study of Brazil’s flora, renowned as the richest in the world (BFG 2022), has a long and storied history. During the 18th and 19th centuries, European naturalists, along with a few Brazilian botanists, collected plant specimens while in Brazil, sending them to herbaria in Europe. The primary aim during this period was to investigate the flora and its potential uses. Many of these collections laid the groundwork for the description of new species or genera (serving as nomenclatural types), and were integral to the monumental work Flora Brasiliensis (Martius, Eichler & Urban, 1840–1906), which described over 22,000 species.\n\n\nIn 2010, In 2010, the Brazilian government, through CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico) launched the Reflora Programme, with the primary goal of retrieving and making accessible images and data related to Brazilian plant specimens stored primarily in overseas herbaria. These resources have been available since 2013 through the Reflora Virtual Herbarium. In 2014, this initiative was strengthened by the collaboration of SiBBr (Sistema de Informação sobre a Biodiversidade Brasileira) and the IFN (Inventário Florestal Nacional), which expanded the collections published by the Reflora project with the participation of Brazilian herbaria.\nThe Reflora Virtual Herbarium platform was developed through a partnership between the Rio de Janeiro Botanical Garden (JBRJ) and COPPE (Alberto Luiz Coimbra Institute for Graduate Studies and Research in Engineering, UFRJ). JBRJ hosts the system, overseeing the reception, storage, and publication of the herbarium data and images.\nComplementing the Reflora Virtual Herbarium is the “Flora platform”, first launched in 2008. This system has evolved through several stages — including the Lista de Espécies da Flora do Brasil, Flora do Brasil 2020, and now Flora e Funga do Brasil — and is also part of the broader Reflora Programme. Flora e Funga do Brasil serves as a critical validator for the nomenclature of the Reflora Virtual Herbarium’s images, which are continuously refined and enriched by taxonomists working collaboratively in an online system.\nThe Reflora Programme has played a crucial role in Brazil’s success in meeting the goals of the Global Strategy for Plant Conservation, part of the Convention on Biological Diversity, for 2010 and 2020. As the challenges of understanding and studying biodiversity persist, the Reflora systems will continue to provide unrestricted access to high-quality, accurate data on Brazil’s plants, algae, and fungi."
+  },
+  {
+    "objectID": "index.html#the-reflora-virtual-herbarium",
+    "href": "index.html#the-reflora-virtual-herbarium",
+    "title": "refloraR",
+    "section": "The Reflora Virtual Herbarium",
+    "text": "The Reflora Virtual Herbarium\nThe mission to build a virtual herbarium to display the images of Brazilian plants housed in foreign herbaria was presented by the Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq) to the Rio de Janeiro Botanical Garden (JBRJ) in December 2010. The objective was to provide the capacity to store and display high-quality data regarding Brazil’s Flora within a public institution. The Reflora Virtual Herbarium is designed to allow taxonomists to perform procedures similar to those they are accustomed to doing within physical collections. On this site, they have access to high-quality images rather than physical specimens, which can be consulted, re-determined, and typified, among other functionalities. Curators also have access to specimen determination reports to help update their physical collections. This innovative system has been available for study and update by a group of over 900 taxonomists involved in the Lista de Espécies da Flora do Brasil and Flora do Brasil 2020 projects.\nInitial partners of this initiative were the herbaria K (Royal Botanic Gardens, Kew), P (Muséum national d’histoire naturelle, Paris), and the RB (JBRJ) herbarium. From 2014 onwards, with the support of SiBBr (Sistema de Informação sobre a Biodiversidade Brasileira) and IFN (Inventário Florestal Nacional), other European, American, and Brazilian herbaria were included in this initiative, many of which received equipment and training to digitize their plant specimens.\nCurrently, 81 collections are published on the platform. Among them, 12 correspond to digitally repatriated collections, meaning sets of specimens collected in Brazil but physically housed in foreign herbaria, whose high-resolution images and associated metadata have been digitized by the holding institutions and made openly available through the Reflora Virtual Herbarium. This “digital repatriation” thereby supports taxonomic revision, curation, and national biodiversity assessments in Brazil. In this context, “repatriation” refers to the return of access to information (images, label data, determinations, and related metadata) to Brazil via a public national infrastructure, rather than the physical return of specimens.\n\n\nB (Berlin Botanical Garden and Botanical Museum), E (Royal Botanic Garden Edinburgh), EBC (Economic Botany Collection), K (Royal Botanic Gardens, Kew), MOH ( Missouri Botanical Garden), NY (The New York Botanical Garden), P (Muséum national d’Histoire naturelle), PC (Cryptogamy Collection at the Muséum national d’Histoire naturelle), S (Naturhistoriska Riksmuseet), SOF (Swiss Orchid Foundation), US (Smithsonian Institution), W (Naturhistorisches Museum Wien).\n\n\nThe following 69 collections are from Brazilian herbaria with digitized specimens:\n\n\nACAM (Universidade Estadual da Paraíba), ALCB (Universidade Federal da Bahia), ASE (Universidade Federal de Sergipe), BRBA (Universidade Federal do Oeste da Bahia), CEN ( Embrapa Recursos Genéticos e Biotecnologia), CEPEC (Centro de Pesquisas do Cacau), CESJ (Universidade Federal de Juiz de Fora), CGMS (Universidade Federal de Mato Grosso do Sul), COR (Universidade Federal de Mato Grosso do Sul), CRI (Universidade do Extremo Sul Catarinense), DVPR (Universidade Tecnológica Federal do Paraná), EAC (Universidade Federal do Ceará), ECT (Embrapa Clima Temperado), ESA (Universidade de São Paulo), EVB (Universidade Federal da Integração Latino-Americana), FLOR (Universidade Federal de Santa Catarina), FURB (Universidade Regional de Blumenau), GH (Harvard University), HBR (Universidade Federal de Santa Catarina), HCF (Universidade Tecnológica Federal do Paraná), HDCF (Universidade Estadual da Paraíba), HEPH (Jardim Botânico de Brasília), HERBAM (Universidade do Estado de Mato Grosso), HJ (Universidade Federal de Jataí), HRCB (Universidade Estadual Paulista), HSTM (Universidade Federal do Oeste do Pará), HTO (Universidade Federal do Tocantins), HUCP (Pontífica Universidade Católica do Paraná), HUEFS (Universidade Estadual de Feira de Santana), HUEM (Universidade Estadual de Maringá), HUEMG (Universidade do Estado de Minas Gerais), HUENF (Universidade Estadual do Norte Fluminense), HUFU (Universidade Federal de Uberlândia), HUNI (Universidade Federal do Estado do Rio de Janeiro), HURB (Universidade do Recôncavo da Bahia), HVASF (Universidade Federal do Vale do São Francisco), HVAT (Universidade do Vale do Taquari), IAN (Embrapa Amazônia Oriental), IBGE (Herbário IBGE), ICN (Universidade Federal do Rio Grande do Sul), JOI (Universidade da Região de Joinville), LUSC (Universidade do Estado de Santa Catarina), MAC (Instituto do Meio Ambiente do Estado de Alagoas), MBM (Museu Botânico Municipal), MBML (Museu de Biologia Mello Leitão), MG (Museu Paraense Emílio Goeldi), MUFAL (Universidade Federal de Alagoas), PEL (Universidade Federal de Pelotas), PMSP (Prefeitura do Município de São Paulo), R (Museu Nacional), RB (Instituto de Pesquisas Jardim Botânico do Rio de Janeiro), RBR (Universidade Federal Rural do Rio de Janeiro), REAL (Universidade Federal da Fronteira Sul), RFA (Universidade Federal do Rio de Janeiro), RFFP (Universidade do Estado do Rio de Janeiro), RON (Universidade Federal de Rondônia), RSPF (Universidade de Passo Fundo), SAMES (Universidade Federal do Espírito Santo), SJRP (Universidade Estadual Paulista Júlio de Mesquita Filho), SLUI (Universidade Estadual do Maranhão), SPF (Universidade de são Paulo), TEPB (Universidade Federal do Piauí), UB (Universidade de Brasília), UFG (Universidade Federal de Goiás), UFRN (Universidade Federal do Rio Grande do Norte), UNIP (Universidade Paulista), UNOP (Universidade Estadual do Oeste do Paraná), UPCB (Universidade Federal de Paraná), VIES (Universidade Federal do Espírito Santo).\n\n\nThere are now more than 4,800,000 images of specimens available in the Reflora Virtual Herbarium. Among them, 157,652 are nomenclatural types and 1,985,843 are georeferenced records.\nIf you are an herbarium curator and wish to publish images and data from your collection in Reflora Virtual Herbarium, send a request to the contact email reflora@jbrj.gov.br."
+  },
+  {
+    "objectID": "pt/authors/index.html",
+    "href": "pt/authors/index.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "pt/authors/index.html#os-desenvolvedores-do-reflorar",
+    "href": "pt/authors/index.html#os-desenvolvedores-do-reflorar",
+    "title": "",
+    "section": "Os Desenvolvedores do refloraR",
+    "text": "Os Desenvolvedores do refloraR\n\n\n  \n    \n    \n      Domingos Cardoso\n      \n        \n        \n        \n      \n      Taxonomista e bioinformata líder do pacote refloraR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto\n    \n  \n\n  \n    \n    \n      Carlos Calderón\n      \n        \n        \n        \n      \n      Bioinformata que contribui para o pacote refloraR, com foco no design e implementação dos fluxos de trabalho das funções"
+  },
+  {
+    "objectID": "pt/authors/index.html#a-equipe-reflora",
+    "href": "pt/authors/index.html#a-equipe-reflora",
+    "title": "",
+    "section": "A Equipe Reflora",
+    "text": "A Equipe Reflora\n\n\n  \n    \n    \n      Rafaela Forzza\n      \n        \n        \n        \n      \n      Taxonomista sênior e coordenadora da iniciativa Reflora no Brasil\n    \n  \n\n  \n    \n    \n      Paula Leitman\n      \n        \n        \n        \n      \n      Especialista em integração de dados de biodiversidade e membro da equipe Reflora\n    \n  \n\n  \n    \n    \n      Fabiana Filardi\n      \n        \n        \n        \n      \n      Especialista em integração de dados de biodiversidade e membro da equipe Reflora\n    \n  \n\n  \n    \n    \n      Flávia Versiane\n      \n        \n        \n        \n      \n      Pesquisadora associada que contribui para a curadoria de dados do Reflora"
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html",
+    "href": "pt/articles/summarize_reflora_collections.html",
+    "title": "Resumir coleções do Reflora",
+    "section": "",
+    "text": "Apresentamos aqui um guia prático para a função reflora_summary() do pacote refloraR. Essa função fornece estatísticas resumidas dos registros de espécimes vegetais disponíveis no Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro e publicados por meio do Integrated Publishing Toolkit (IPT).\nO Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros. Neste contexto, “repatriação digital” refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT), mesmo que os espécimes físicos permaneçam custodiados no herbário de origem. A saída de reflora_summary() inclui um campo de status de repatriação para ajudar os usuários a identificar essas coleções digitalmente repatriadas.",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#visão-geral-da-função",
+    "href": "pt/articles/summarize_reflora_collections.html#visão-geral-da-função",
+    "title": "Resumir coleções do Reflora",
+    "section": "Visão Geral da Função",
+    "text": "Visão Geral da Função\nA função reflora_summary() recupera informações resumidas de uma ou mais coleções de herbário associadas ao Reflora. Permite filtrar coleções e, opcionalmente, salvar o resumo como arquivo CSV. Também fornece metadados como número de registros, versão e data de publicação, além de link direto para a página IPT de cada herbário.",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#argumentos",
+    "href": "pt/articles/summarize_reflora_collections.html#argumentos",
+    "title": "Resumir coleções do Reflora",
+    "section": "Argumentos",
+    "text": "Argumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de siglas de herbário (ex.: \"RB\", \"K\"). Use NULL para resumir todas as coleções.\n\n\nverbose\nLógico. Se TRUE, mensagens sobre o progresso do resumo serão exibidas.\n\n\nsave\nLógico. Se TRUE, o resumo será salvo como arquivo CSV.\n\n\ndir\nCaminho do diretório para salvar o arquivo. Padrão: \"reflora_summary\".",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#colunas-de-saída",
+    "href": "pt/articles/summarize_reflora_collections.html#colunas-de-saída",
+    "title": "Resumir coleções do Reflora",
+    "section": "Colunas de Saída",
+    "text": "Colunas de Saída\nreflora_summary() retorna uma linha por coleção e inclui, entre outros, os seguintes campos:\n\ncollection_code / herbarium: Sigla do herbário (ex.: RB, K) que identifica a coleção.\nrecords: Número de registros de espécimes publicados atualmente para a coleção no IPT Reflora.\nversion: Identificador da versão/release atual do recurso IPT (útil para reprodutibilidade e citação).\npublication_date: Data em que a versão atual foi publicada/atualizada no IPT.\nipt_link: Link direto para a página do recurso IPT da coleção.\nrepatriation_status: Indica se a coleção é digitalmente repatriada (espécimes brasileiros digitalizados de herbário estrangeiro e disponibilizados pelo Reflora) ou não repatriada.\ncontact / curator: Informações de contato fornecidas nos metadados do IPT para a coleção.",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#resumir-todas-as-coleções-do-reflora",
+    "href": "pt/articles/summarize_reflora_collections.html#resumir-todas-as-coleções-do-reflora",
+    "title": "Resumir coleções do Reflora",
+    "section": "Resumir Todas as Coleções do Reflora",
+    "text": "Resumir Todas as Coleções do Reflora\nUse a função com as configurações padrão para obter um resumo de todas as coleções, incluindo sigla do herbário, contato do curador, contagem de registros e link direto para o IPT:\nsummary_df &lt;- reflora_summary(\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_summary\"\n)",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#resumir-coleções-específicas",
+    "href": "pt/articles/summarize_reflora_collections.html#resumir-coleções-específicas",
+    "title": "Resumir coleções do Reflora",
+    "section": "Resumir Coleções Específicas",
+    "text": "Resumir Coleções Específicas\nEspecifique um ou mais herbários com o argumento herbarium:\nsummary_some_df &lt;- reflora_summary(\n  herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_summary\"\n)",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#salvar-resumo-em-diretório-personalizado",
+    "href": "pt/articles/summarize_reflora_collections.html#salvar-resumo-em-diretório-personalizado",
+    "title": "Resumir coleções do Reflora",
+    "section": "Salvar Resumo em Diretório Personalizado",
+    "text": "Salvar Resumo em Diretório Personalizado\nVocê pode personalizar o diretório de saída para o arquivo de resumo:\nreflora_summary(\n  herbarium = \"RB\",\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"custom_summary\"\n)",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#desativar-saída-detalhada",
+    "href": "pt/articles/summarize_reflora_collections.html#desativar-saída-detalhada",
+    "title": "Resumir coleções do Reflora",
+    "section": "Desativar Saída Detalhada",
+    "text": "Desativar Saída Detalhada\nSuprima as mensagens de progresso com verbose = FALSE:\nreflora_summary(\n  verbose = FALSE\n)",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#dicas-adicionais",
+    "href": "pt/articles/summarize_reflora_collections.html#dicas-adicionais",
+    "title": "Resumir coleções do Reflora",
+    "section": "Dicas Adicionais",
+    "text": "Dicas Adicionais\n\nO resumo é projetado como uma etapa de descoberta: ajuda a identificar quais coleções estão disponíveis, quantos registros contêm e onde são publicadas no IPT.\nUse repatriation_status para distinguir coleções digitalmente repatriadas (espécimes brasileiros digitalizados/disponibilizados via Reflora de herbários estrangeiros) de outras coleções publicadas.\nUse version e publication_date para documentar exatamente qual versão do IPT você utilizou, melhorando a reprodutibilidade ao baixar ou analisar registros posteriormente.\nSe save = TRUE, o resumo é gravado em disco como arquivo CSV para inspeção e relatório offline.",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/summarize_reflora_collections.html#veja-também",
+    "href": "pt/articles/summarize_reflora_collections.html#veja-também",
+    "title": "Resumir coleções do Reflora",
+    "section": "Veja Também",
+    "text": "Veja Também\n\nreflora_download(): Baixar registros de espécimes do Reflora\nreflora_parse(): Analisar e limpar registros baixados",
+    "crumbs": [
+      "Overview",
+      "Resumir coleções do Reflora",
+      "Resumir coleções de herbário"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html",
+    "href": "pt/articles/filter_reflora_records.html",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "",
+    "text": "Este guia demonstra como usar a função reflora_records() do pacote refloraR para recuperar registros de ocorrência de espécimes para táxons específicos a partir do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#visão-geral-da-função",
+    "href": "pt/articles/filter_reflora_records.html#visão-geral-da-função",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Visão Geral da Função",
+    "text": "Visão Geral da Função\nA função reflora_records() recupera registros filtrados de espécimes vegetais de coleções do Reflora com base em critérios de táxon, herbário, localidade e data. Realiza download, análise, filtragem e, opcionalmente, salvamento dos dados de ocorrência.\nEssa ferramenta é ideal para pesquisa florística, taxonômica ou biogeográfica, especialmente ao trabalhar com grandes conjuntos de dados de um grupo vegetal específico.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#argumentos",
+    "href": "pt/articles/filter_reflora_records.html#argumentos",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Argumentos",
+    "text": "Argumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de códigos de herbário (ex.: \"RB\", \"SP\"). Use NULL para todas as coleções.\n\n\nrepatriated\nLógico. Se FALSE, ignora herbários repatriados.\n\n\ntaxon\nUm ou mais nomes de família, gênero ou espécie para filtrar.\n\n\nstate\nVetor de estados brasileiros (ex.: \"BA\", \"SP\").\n\n\nrecordYear\nAno específico (ex.: \"2001\") ou intervalo (ex.: c(\"1990\", \"2024\")).\n\n\nindets\nSe FALSE, filtra registros não identificados ao nível de espécie.\n\n\nreorder\nControla a ordem das colunas no resultado final (ex.: por herbário, táxon, ano).\n\n\npath\nDiretório opcional contendo arquivos DwC-A do Reflora já baixados.\n\n\nupdates\nSe TRUE, verifica versões atualizadas dos dados no IPT.\n\n\nverbose\nSe TRUE, exibe mensagens de progresso.\n\n\nsave\nSe TRUE, salva os resultados como arquivos CSV e log.\n\n\ndir\nPasta onde a saída será salva.\n\n\nfilename\nNome dos arquivos CSV e log resultantes.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#uso-básico",
+    "href": "pt/articles/filter_reflora_records.html#uso-básico",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Uso Básico",
+    "text": "Uso Básico\nreflora_records(\n  taxon = c(\"Fabaceae\", \"Ochnaceae\"),\n  verbose = TRUE,\n  save = TRUE,\n  dir = \"reflora_records\",\n  filename = \"fabaceae_ochnaceae_records\"\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#filtrar-por-herbário-e-intervalo-de-anos",
+    "href": "pt/articles/filter_reflora_records.html#filtrar-por-herbário-e-intervalo-de-anos",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Filtrar por Herbário e Intervalo de Anos",
+    "text": "Filtrar por Herbário e Intervalo de Anos\nreflora_records(\n  taxon = \"Fabaceae\",\n  herbarium = c(\"RB\", \"K\"),\n  recordYear = c(\"1995\", \"2023\"),\n  verbose = TRUE,\n  save = FALSE\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#filtrar-por-estado-e-remover-registros-indeterminados",
+    "href": "pt/articles/filter_reflora_records.html#filtrar-por-estado-e-remover-registros-indeterminados",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Filtrar por Estado e Remover Registros Indeterminados",
+    "text": "Filtrar por Estado e Remover Registros Indeterminados\nreflora_records(\n  taxon = \"Malpighiaceae\",\n  state = c(\"BA\", \"PE\"),\n  indets = FALSE,\n  save = TRUE,\n  dir = \"malpighiaceae_ba_pe\"\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#usando-um-conjunto-de-dados-pré-baixado",
+    "href": "pt/articles/filter_reflora_records.html#usando-um-conjunto-de-dados-pré-baixado",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Usando um Conjunto de Dados Pré-baixado",
+    "text": "Usando um Conjunto de Dados Pré-baixado\nreflora_records(\n  path = \"reflora_download\",\n  taxon = \"Myrtaceae\",\n  updates = FALSE,\n  save = FALSE\n)",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#visualizando-espécimes-por-ano",
+    "href": "pt/articles/filter_reflora_records.html#visualizando-espécimes-por-ano",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Visualizando Espécimes por Ano",
+    "text": "Visualizando Espécimes por Ano\nlibrary(dplyr)\nlibrary(ggplot2)\n\nrecords &lt;- reflora_records(taxon = \"Fabaceae\",\n                           herbarium = \"RB\",\n                           recordYear = c(\"2000\", \"2025\"),\n                           save = FALSE)\n\nrecords %&gt;%\n  count(year) %&gt;%\n  ggplot(aes(x = year, y = n)) +\n  geom_col(fill = \"steelblue\") +\n  labs(title = \"Registros de Fabaceae por Ano (Herbário RB)\",\n       x = \"\",\n       y = \"Número de Registros\")",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#dicas",
+    "href": "pt/articles/filter_reflora_records.html#dicas",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Dicas",
+    "text": "Dicas\n\nUse recordYear = c(\"AAAA\", \"AAAA\") para analisar registros ao longo de um período.\nUse reflora_summary() previamente para verificar a disponibilidade de herbários.\nDefina save = TRUE para saídas reprodutíveis com logs.",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/filter_reflora_records.html#veja-também",
+    "href": "pt/articles/filter_reflora_records.html#veja-também",
+    "title": "Filtrar registros de espécimes do Reflora",
+    "section": "Veja Também",
+    "text": "Veja Também\n\nreflora_download(): Baixar registros de espécimes do REFLORA\nreflora_parse(): Analisar arquivos do REFLORA\nreflora_summary(): Resumir coleções do REFLORA\nreflora_indets(): Extrair registros indeterminados",
+    "crumbs": [
+      "Overview",
+      "Filtrar registros do Reflora",
+      "Recuperar espécimes por táxon"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html",
+    "href": "pt/articles/download_reflora_collections.html",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "",
+    "text": "Apresentamos aqui um guia completo para a função reflora_download() do pacote refloraR. Essa função permite que os usuários recuperem registros de espécimes vegetais no formato Darwin Core do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro.",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#visão-geral-da-função",
+    "href": "pt/articles/download_reflora_collections.html#visão-geral-da-função",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Visão Geral da Função",
+    "text": "Visão Geral da Função\nA função reflora_download() baixa dados de espécimes de todas ou de coleções específicas de herbário associadas ao Reflora. Oferece flexibilidade por meio de vários argumentos.",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#argumentos",
+    "href": "pt/articles/download_reflora_collections.html#argumentos",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Argumentos",
+    "text": "Argumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de siglas de herbário (ex.: \"RB\", \"K\"). Use NULL para baixar todas as coleções.\n\n\nrepatriated\nLógico. Se FALSE, herbários repatriados serão ignorados. Use reflora_summary() para identificá-los.\n\n\nverbose\nLógico. Se TRUE, mensagens sobre o progresso do download serão exibidas.\n\n\ndir\nCaminho do diretório para salvar os arquivos. Padrão: \"reflora_download\".",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#baixar-todos-os-registros-do-reflora",
+    "href": "pt/articles/download_reflora_collections.html#baixar-todos-os-registros-do-reflora",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Baixar Todos os Registros do Reflora",
+    "text": "Baixar Todos os Registros do Reflora\nUse a função com as configurações padrão para baixar todos os dados do Reflora.\nreflora_download(\n  verbose = TRUE,\n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#baixar-espécimes-de-coleções-selecionadas",
+    "href": "pt/articles/download_reflora_collections.html#baixar-espécimes-de-coleções-selecionadas",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Baixar Espécimes de Coleções Selecionadas",
+    "text": "Baixar Espécimes de Coleções Selecionadas\nEspecifique os códigos de coleção com o argumento herbarium:\nreflora_download(\n  herbarium = c(\"ALCB\", \"HUEFS\", \"RB\", \"US\", \"K\"),\n  verbose = TRUE,\n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#ignorar-coleções-repatriadas",
+    "href": "pt/articles/download_reflora_collections.html#ignorar-coleções-repatriadas",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Ignorar Coleções Repatriadas",
+    "text": "Ignorar Coleções Repatriadas\nPara excluir coleções marcadas como repatriadas:\nreflora_download(\n  repatriated = FALSE,\n  verbose = TRUE,\n  dir = \"reflora_download\"\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#exemplo-diretório-personalizado-sem-mensagens-detalhadas",
+    "href": "pt/articles/download_reflora_collections.html#exemplo-diretório-personalizado-sem-mensagens-detalhadas",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Exemplo: Diretório Personalizado Sem Mensagens Detalhadas",
+    "text": "Exemplo: Diretório Personalizado Sem Mensagens Detalhadas\nreflora_download(\n  herbarium = \"RB\",\n  verbose = FALSE,\n  dir = \"custom_directory\"\n)",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#dicas-adicionais",
+    "href": "pt/articles/download_reflora_collections.html#dicas-adicionais",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Dicas Adicionais",
+    "text": "Dicas Adicionais\n\nUse reflora_summary() para verificar quais coleções estão disponíveis e se são repatriadas.\nCertifique-se de ter acesso à internet ao executar reflora_download().\nVerifique o conteúdo da pasta baixada para confirmar a presença de occurrence.txt e metadados.",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/articles/download_reflora_collections.html#veja-também",
+    "href": "pt/articles/download_reflora_collections.html#veja-também",
+    "title": "Baixar registros de espécimes do Reflora",
+    "section": "Veja Também",
+    "text": "Veja Também\n\nreflora_summary(): Obter um resumo das coleções do Reflora",
+    "crumbs": [
+      "Overview",
+      "Baixar e analisar registros do Reflora",
+      "Baixar registros de espécimes"
+    ]
+  },
+  {
+    "objectID": "pt/index.html#o-programa-reflora",
+    "href": "pt/index.html#o-programa-reflora",
+    "title": "refloraR",
+    "section": "O Programa Reflora",
+    "text": "O Programa Reflora\nO estudo da flora do Brasil, reconhecida como a mais rica do mundo (BFG 2022), tem uma longa história. Durante os séculos XVIII e XIX, naturalistas europeus, juntamente com poucos botânicos brasileiros, coletaram espécimes de plants no Brasil e os enviaram a herbários na Europa. O principal objetivo desse período era investigar a flora e seus usos potenciais. Muitas dessas coleções serviram de base para a descrição de novas espécies ou gêneros (tipos nomenclaturais) e foram fundamentais para a monumental obra Flora Brasiliensis (Martius, Eichler & Urban, 1840–1906), que descreveu mais de 22.000 espécies.\n\n\nEm 2010, o governo brasileiro, por meio do CNPq (Conselho Nacional de Desenvolvimento Científico e Tecnológico), lançou o Programa Reflora com o objetivo principal de recuperar e disponibilizar imagens e dados de espécimes de plantas brasileiras armazenados principalmente em herbários estrangeiros. Esses recursos estão disponíveis desde 2013 por meio do Herbário Virtual Reflora. Em 2014, essa iniciativa foi fortalecida com a colaboração do SiBBr (Sistema de Informação sobre a Biodiversidade Brasileira) e do IFN (Inventário Florestal Nacional), que ampliaram as coleções publicadas pelo projeto Reflora com a participação de herbários brasileiros.\nA plataforma Herbário Virtual Reflora foi desenvolvida em parceria entre o Jardim Botânico do Rio de Janeiro (JBRJ) e o COPPE (Instituto Alberto Luiz Coimbra de Pós-Graduação e Pesquisa de Engenharia, UFRJ). O JBRJ hospeda o sistema, supervisionando o recebimento, armazenamento e publicação dos dados e imagens dos herbários.\nComplementando o Herbário Virtual Reflora, uma plataforma dedicada à taxonomia da flora brasileira foi lançada inicialmente em 2008. Esse sistema evoluiu por várias etapas — incluindo a Lista de Espécies da Flora do Brasil, Flora do Brasil 2020 e, atualmente, Flora e Funga do Brasil — e também faz parte do Programa Reflora em sentido amplo. A Flora e Funga do Brasil atua como validador da nomenclatura das imagens do Herbário Virtual Reflora, continuamente aprimoradas e enriquecidas por taxonomistas que colaboram em um sistema online.\nO Programa Reflora desempenhou papel fundamental no sucesso do Brasil em cumprir as metas da Estratégia Global para a Conservação das Plantas, parte da Convenção sobre Diversidade Biológica, para 2010 e 2020. Diante dos desafios contínuos de compreender e estudar a biodiversidade, os sistemas Reflora continuarão a fornecer acesso irrestrito a dados de alta qualidade e precisão sobre plantas, algas e fungos do Brasil."
+  },
+  {
+    "objectID": "pt/index.html#o-herbário-virtual-reflora",
+    "href": "pt/index.html#o-herbário-virtual-reflora",
+    "title": "refloraR",
+    "section": "O Herbário Virtual Reflora",
+    "text": "O Herbário Virtual Reflora\nA missão de construir um herbário virtual para exibir as imagens de plantas brasileiras depositadas em herbários estrangeiros foi apresentada pelo Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq) ao Jardim Botânico do Rio de Janeiro (JBRJ) em dezembro de 2010. O objetivo era proporcionar capacidade de armazenamento e exibição de dados de alta qualidade sobre a Flora do Brasil em uma instituição pública. O Herbário Virtual Reflora foi projetado para permitir que taxonomistas realizem procedimentos similares aos que estão acostumados em coleções físicas. No sistema, têm acesso a imagens de alta resolução em vez de espécimes físicos, podendo consultá-los, redeterminá-los e tipificá-los, entre outras funcionalidades. Os curadores também têm acesso a relatórios de determinação de espécimes para auxiliar na atualização de suas coleções físicas. Esse inovador sistema tem sido utilizado por um grupo de mais de 900 taxonomistas envolvidos nos projetos Lista de Espécies da Flora do Brasil e Flora do Brasil 2020.\nOs parceiros iniciais dessa iniciativa foram os herbários K (Royal Botanic Gardens, Kew), P (Muséum national d’histoire naturelle, Paris) e RB (JBRJ). A partir de 2014, com o apoio do SiBBr (Sistema de Informação sobre a Biodiversidade Brasileira) e do IFN (Inventário Florestal Nacional), outros herbários europeus, americanos e brasileiros foram incluídos na iniciativa, muitos dos quais receberam equipamentos e treinamento para digitalizar seus espécimes vegetais.\nAtualmente, 81 coleções estão publicadas na plataforma. Entre elas, 12 correspondem a coleções digitalmente repatriadas, ou seja, conjuntos de espécimes coletados no Brasil mas fisicamente depositados em herbários estrangeiros, cujas imagens de alta resolução e metadados associados foram digitalizados pelas instituições depositárias e disponibilizados abertamente por meio do Herbário Virtual Reflora. Esse “repatriamento digital” apoia revisões taxonômicas, curadoria e avaliações nacionais de biodiversidade no Brasil. Neste contexto, “repatriamento” refere-se ao retorno do acesso à informação (imagens, dados de etiqueta, determinações e metadados relacionados) ao Brasil por meio de uma infraestrutura pública nacional, e não ao retorno físico dos espécimes.\n\n\nB (Berlin Botanical Garden and Botanical Museum), E (Royal Botanic Garden Edinburgh), EBC (Economic Botany Collection), K (Royal Botanic Gardens, Kew), MOH ( Missouri Botanical Garden), NY (The New York Botanical Garden), P (Muséum national d’Histoire naturelle), PC (Cryptogamy Collection at the Muséum national d’Histoire naturelle), S (Naturhistoriska Riksmuseet), SOF (Swiss Orchid Foundation), US (Smithsonian Institution), W (Naturhistorisches Museum Wien).\n\n\nAs seguintes 69 coleções são de herbários brasileiros com espécimes digitalizados:\n\n\nACAM (Universidade Estadual da Paraíba), ALCB (Universidade Federal da Bahia), ASE (Universidade Federal de Sergipe), BRBA (Universidade Federal do Oeste da Bahia), CEN ( Embrapa Recursos Genéticos e Biotecnologia), CEPEC (Centro de Pesquisas do Cacau), CESJ (Universidade Federal de Juiz de Fora), CGMS (Universidade Federal de Mato Grosso do Sul), COR (Universidade Federal de Mato Grosso do Sul), CRI (Universidade do Extremo Sul Catarinense), DVPR (Universidade Tecnológica Federal do Paraná), EAC (Universidade Federal do Ceará), ECT (Embrapa Clima Temperado), ESA (Universidade de São Paulo), EVB (Universidade Federal da Integração Latino-Americana), FLOR (Universidade Federal de Santa Catarina), FURB (Universidade Regional de Blumenau), GH (Harvard University), HBR (Universidade Federal de Santa Catarina), HCF (Universidade Tecnológica Federal do Paraná), HDCF (Universidade Estadual da Paraíba), HEPH (Jardim Botânico de Brasília), HERBAM (Universidade do Estado de Mato Grosso), HJ (Universidade Federal de Jataí), HRCB (Universidade Estadual Paulista), HSTM (Universidade Federal do Oeste do Pará), HTO (Universidade Federal do Tocantins), HUCP (Pontífica Universidade Católica do Paraná), HUEFS (Universidade Estadual de Feira de Santana), HUEM (Universidade Estadual de Maringá), HUEMG (Universidade do Estado de Minas Gerais), HUENF (Universidade Estadual do Norte Fluminense), HUFU (Universidade Federal de Uberlândia), HUNI (Universidade Federal do Estado do Rio de Janeiro), HURB (Universidade do Recôncavo da Bahia), HVASF (Universidade Federal do Vale do São Francisco), HVAT (Universidade do Vale do Taquari), IAN (Embrapa Amazônia Oriental), IBGE (Herbário IBGE), ICN (Universidade Federal do Rio Grande do Sul), JOI (Universidade da Região de Joinville), LUSC (Universidade do Estado de Santa Catarina), MAC (Instituto do Meio Ambiente do Estado de Alagoas), MBM (Museu Botânico Municipal), MBML (Museu de Biologia Mello Leitão), MG (Museu Paraense Emílio Goeldi), MUFAL (Universidade Federal de Alagoas), PEL (Universidade Federal de Pelotas), PMSP (Prefeitura do Município de São Paulo), R (Museu Nacional), RB (Instituto de Pesquisas Jardim Botânico do Rio de Janeiro), RBR (Universidade Federal Rural do Rio de Janeiro), REAL (Universidade Federal da Fronteira Sul), RFA (Universidade Federal do Rio de Janeiro), RFFP (Universidade do Estado do Rio de Janeiro), RON (Universidade Federal de Rondônia), RSPF (Universidade de Passo Fundo), SAMES (Universidade Federal do Espírito Santo), SJRP (Universidade Estadual Paulista Júlio de Mesquita Filho), SLUI (Universidade Estadual do Maranhão), SPF (Universidade de são Paulo), TEPB (Universidade Federal do Piauí), UB (Universidade de Brasília), UFG (Universidade Federal de Goiás), UFRN (Universidade Federal do Rio Grande do Norte), UNIP (Universidade Paulista), UNOP (Universidade Estadual do Oeste do Paraná), UPCB (Universidade Federal de Paraná), VIES (Universidade Federal do Espírito Santo).\n\n\nAtualmente, mais de 4.800.000 imagens de espécimes estão disponíveis no Herbário Virtual Reflora. Entre elas, 157.652 são tipos nomenclaturais e 1.985.843 são registros georreferenciados.\nSe você é curador de herbário e deseja publicar imagens e dados da sua coleção no Herbário Virtual Reflora, envie uma solicitação para o e-mail reflora@jbrj.gov.br."
+  },
+  {
+    "objectID": "pt/news/index.html#lançamento-inicial",
+    "href": "pt/news/index.html#lançamento-inicial",
+    "title": "Novidades",
+    "section": "Lançamento Inicial",
+    "text": "Lançamento Inicial\nPrimeira versão oficial do pacote R refloraR, desenvolvido para simplificar o acesso a dados de espécimes vegetais do Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro.\n\nFuncionalidades\n\nreflora_summary(): Recupera metadados e informações resumidas de todos ou herbários específicos do Reflora.\nreflora_download(): Baixa dados originais de espécimes no formato Darwin Core Archive (DwC-A).\nreflora_records(): Analisa, filtra e organiza registros do Reflora por táxon, herbário, região e ano.\nreflora_indets(): Recupera espécimes indeterminados (ex.: identificados apenas a nível de família ou gênero).\nFiltros opcionais por taxon, herbarium, state, recordYear e level.\nSuporte à integração com fluxos de trabalho do tidyverse para análises posteriores.\nFiltragem de coleções repatriadas (repatriated = TRUE por padrão).\nCobertura de testes &gt;95%, integração contínua via GitHub Actions.\n\n\n\nInfraestrutura\n\nLicença MIT.\nGitHub Actions: R-CMD-check e cobertura de testes.\nDocumentação hospedada: refloraR-website\n\n\n\nFeedback\nPor favor, reporte bugs ou problemas em: https://github.com/DBOSlab/refloraR/issues"
+  },
+  {
+    "objectID": "pt/reference/reflora_indets.html",
+    "href": "pt/reference/reflora_indets.html",
+    "title": "reflora_indets",
+    "section": "",
+    "text": "refloraR::reflora_indets()\n\n\nDescrição\nRecupera registros de ocorrência de espécimes indeterminados (ex.: identificados apenas a nível de família ou gênero) do Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro. A função baixa e analisa automaticamente arquivos Darwin Core Archive (DwC-A), aplica filtros opcionais por táxon, herbário, estado e ano, e exporta os resultados se desejado. Todos os registros retornados incluem links diretos para imagens de espécimes (coluna 'bibliographicCitation') e, quando disponíveis, URLs de download em alta resolução (coluna 'associatedMedia').\n\n\nDetalhes\nEsta função suporta download e processamento de arquivos Darwin Core Archive (DwC-A) diretamente do repositório Reflora. Permite filtragem flexível por táxon, herbário, localidade (estados brasileiros) e ano(s) de coleta. O parâmetro level permite filtrar registros indeterminados como aqueles identificados apenas ao nível 'FAMILY' ou 'GENUS'. A função usa funções auxiliares como .arg_check_herbarium() e .filter_occur_df() para validar entradas e refinar os registros de ocorrência. Se path não for fornecido, a função gerenciará automaticamente o download e armazenamento de novos arquivos DwC-A.\n\n\nArgumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nlevel\nVetor de caracteres. Filtra por nível taxonômico. Valores aceitos: \"FAMILY\", \"GENUS\", ou ambos. O padrão é NULL para incluir todos os níveis indeterminados.\n\n\nherbarium\nVetor de caracteres. Códigos de herbário (ex.: \"RB\", \"SP\") em letras maiúsculas. Use NULL para incluir todos os herbários.\n\n\nrepatriated\nLógico. Se FALSE, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é TRUE. Use reflora_summary() para verificar quais coleções são repatriadas.\n\n\ntaxon\nVetor de caracteres. Nomes específicos de táxons para filtrar (ex.: \"Fabaceae\").\n\n\nstate\nVetor de caracteres. Nome completo ou siglas de estados brasileiros (ex.: \"BA\", \"SP\") para filtrar por localidade.\n\n\nrecordYear\nVetor de caracteres ou numérico. Um único ano (ex.: \"2001\") ou um intervalo (ex.: c(\"2000\", \"2022\")).\n\n\nreorder\nVetor de caracteres. Reordena a saída por colunas. Padrão: c(\"herbarium\", \"taxa\", \"collector\", \"area\", \"year\").\n\n\npath\nCaractere. Caminho para arquivos dwca existentes do Reflora. Se NULL, baixa dados novos.\n\n\nupdates\nLógico. Se TRUE (padrão), verifica arquivos DwC-A atualizados do Reflora.\n\n\nverbose\nLógico. Se TRUE (padrão), imprime mensagens de progresso no console.\n\n\nsave\nLógico. Se TRUE (padrão), salva os resultados em arquivo CSV.\n\n\ndir\nCaractere. Caminho do diretório para salvar os arquivos de saída. Padrão: \"reflora_indets\".\n\n\nfilename\nCaractere. Nome do arquivo de saída (sem extensão). Padrão: \"reflora_indets_search\".\n\n\n\n\n\nValor\nUm data.frame contendo registros de ocorrência de espécimes indeterminados recuperados dos herbários do Reflora selecionados. Os registros são filtrados de acordo com os argumentos especificados pelo usuário (ex.: level, taxon, state, recordYear, herbarium e repatriated). Por padrão, táxons indeterminados de nível superior (ex.: \"FAMILY\", \"GENUS\", \"SUBFAMILY\", \"TRIBE\", \"DIVISION\", \"ORDER\", \"CLASS\") são incluídos, a menos que um level específico seja fornecido.\nO data frame retornado inclui metadados de espécimes e links diretos para imagens via as colunas bibliographicCitation (URL da página do espécime) e associatedMedia (URL(s) de imagem em alta resolução, quando disponível). Colunas contendo apenas valores NA são removidas antes de retornar o objeto.\nSe save = TRUE, a função também grava os resultados em arquivo CSV no diretório dir especificado (criando-o se necessário) e gera ou acrescenta um arquivo log.txt resumindo a sessão, incluindo registros totais e detalhamentos por herbário, família, gênero, país e estado.\n\n\nExemplos\n# Recuperar registros indeterminados de Fabaceae e Ochnaceae de todos os herbários\nreflora_indets(taxon = c(\"Fabaceae\", \"Ochnaceae\"),\n               level = \"FAMILY\",\n               save = TRUE,\n               dir = \"reflora_indets\",\n               filename = \"fabaceae_ochnaceae_records\")\n\n# Filtrar por herbário e estado específicos\nreflora_indets(taxon = \"Fabaceae\",\n               herbarium = \"RB\",\n               state = c(\"BA\", \"MG\"),\n               recordYear = c(\"1990\", \"2022\"))"
+  },
+  {
+    "objectID": "pt/reference/reflora_download.html",
+    "href": "pt/reference/reflora_download.html",
+    "title": "reflora_download",
+    "section": "",
+    "text": "refloraR::reflora_download()\n\n\nDescrição\nBaixa registros de espécimes vegetais no formato Darwin Core de qualquer coleção de herbário no Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro. O Reflora agrega coleções de herbários brasileiros e internacionais que possuem espécimes brasileiros.\n\n\nArgumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\nherbarium\nVetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como NULL para baixar registros de todos os herbários do Reflora.\n\n\nrepatriated\nLógico. Se FALSE, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é TRUE. Use reflora_summary() para verificar quais coleções são repatriadas. Neste contexto, “repatriação digital” refere-se a tornar imagens de alta resolução e metadados de espécimes acessíveis por meio de uma infraestrutura pública brasileira (HVR/IPT).\n\n\nverbose\nLógico; se FALSE, a mensagem mostrando as etapas ao baixar os registros de espécimes não será impressa integralmente no console.\n\n\ndir\nCaminho para o diretório do computador onde o arquivo será salvo. O padrão é criar um diretório chamado reflora_download e os resultados serão salvos em uma subpasta nomeada por cada coleção de herbário associada ao Reflora pesquisada.\n\n\n\n\n\nValor\nRetorna NULL de forma invisível. Esta função é chamada para baixar e extrair arquivos Darwin Core Archive (DwC-A) no diretório especificado.\n\n\nExemplos\nreflora_download(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                 verbose = TRUE,\n                 dir = \"reflora_download\")"
+  },
+  {
+    "objectID": "pt/reference/reflora_parse.html",
+    "href": "pt/reference/reflora_parse.html",
+    "title": "reflora_parse",
+    "section": "",
+    "text": "refloraR::reflora_parse()\n\n\nDescrição\nLê arquivos Darwin Core Archive (DwC-A) de qualquer pasta dwca baixada do Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro.\n\n\nArgumentos\n\n\n\n\n\n\n\nArgumento\nDescrição\n\n\n\n\npath\nCaminho para o diretório do computador onde as pastas dwca baixadas do Reflora estão.\n\n\nherbarium\nVetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como NULL para analisar os registros de espécimes de todas as pastas dwca de herbário no diretório definido.\n\n\nrepatriated\nLógico. Se FALSE, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é TRUE. Use reflora_summary() para verificar quais coleções são repatriadas.\n\n\nverbose\nLógico; se FALSE, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console.\n\n\n\n\n\nValor\nUma lista nomeada de objetos Darwin Core Archive, um por coleção de herbário analisada. Cada elemento corresponde à saída de finch::dwca_read() e contém:\n$dataUma lista de tabelas de dados incluídas no arquivo, incluindo um data frame occurrence.txt limpo e padronizado com campos Darwin Core selecionados. $metaMetadados extraídos do arquivo EML do arquivo. $filesInformações sobre a estrutura do arquivo e arquivos associados.\nA lista retornada é nomeada pelos códigos de coleção dos herbários. Quando disponíveis, arquivos CSV de resumo associados (gerados por reflora_download()) são adicionados como elementos adicionais dentro de cada objeto de herbário.\n\n\nExemplos\nreflora_download(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                 verbose = TRUE,\n                 dir = \"reflora_download\")\n\ndwca &lt;- reflora_parse(path = \"reflora_download\",\n                      verbose = TRUE)"
+  },
+  {
+    "objectID": "news/index.html#initial-release",
+    "href": "news/index.html#initial-release",
+    "title": "News",
+    "section": "Initial Release",
+    "text": "Initial Release\nThe first official release of the refloraR R package, designed to streamline access to plant specimen data from the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden.\n\nFeatures\n\nreflora_summary(): Retrieve metadata and summary info from all or specific Reflora herbaria.\nreflora_download(): Download original specimen data in Darwin Core Archive (DwC-A) format.\nreflora_records(): Parse, filter, and organize Reflora records based on taxon, herbarium, region, and year.\nreflora_indets(): Retrieve indeterminate specimens (e.g., identified only to family or genus rank).\nOptional filters by taxon, herbarium, state, recordYear, and level.\nSupports integration with tidyverse workflows for downstream analyses.\nRepatriated collection filtering (repatriated = TRUE by default).\nTest coverage &gt;95%, continuous integration via GitHub Actions.\n\n\n\nInfrastructure\n\nMIT license.\nGitHub Actions: R-CMD-check and test coverage.\nHosted documentation: refloraR-website\n\n\n\nFeedback\nPlease report bugs or issues at:\nhttps://github.com/DBOSlab/refloraR/issues"
+  },
+  {
+    "objectID": "reference/reflora_indets.html",
+    "href": "reference/reflora_indets.html",
+    "title": "reflora_indets",
+    "section": "",
+    "text": "refloraR::reflora_indets()\n\n\nDescription\nRetrieves occurrence records for indeterminate specimens (e.g., identified only to family or genus level) from the Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden. The function automatically downloads and parses Darwin Core Archive (DwC-A) files, applies optional filters by taxon, herbarium, state, and year, and exports the results if desired. All returned records include direct links to specimen images (column 'bibliographicCitation') and, when available, high-resolution download URLs (column 'associatedMedia').\n\n\nDetails\nThis function supports downloading and processing Darwin Core Archive (DwC-A) files directly from the Reflora repository. It allows for flexible filtering by taxon, herbarium, locality (Brazilian states), and collection year(s). The level parameter enables filtering for indeterminate records such as those identified only to 'FAMILY' or 'GENUS' rank. The function uses helper functions like .arg_check_herbarium() and .filter_occur_df() to validate inputs and refine the occurrence records. If path is not provided, the function will automatically manage downloading and storing fresh DwC-A archives.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nlevel\nCharacter vector. Filter by taxonomic level. Accepted values: \"FAMILY\", \"GENUS\", or both. Defaults to NULL to include all indeterminate ranks.\n\n\nherbarium\nCharacter vector. Herbarium codes (e.g., \"RB\", \"SP\") in uppercase. Use NULL to include all herbaria.\n\n\nrepatriated\nLogical. If FALSE, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is TRUE. Use reflora_summary() to check which collections are repatriated. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT), even when the physical specimens remain curated in the holding herbarium.\n\n\ntaxon\nCharacter vector. Specific taxon names to filter by (e.g., \"Fabaceae\").\n\n\nstate\nCharacter vector. Brazilian state full name or abbreviations (e.g., \"BA\", \"SP\") to filter by locality.\n\n\nrecordYear\nCharacter or numeric vector. A single year (e.g., \"2001\") or a range (e.g., c(\"2000\", \"2022\")).\n\n\nreorder\nCharacter vector. Reorder output by columns. Defaults to: c(\"herbarium\", \"taxa\", \"collector\", \"area\", \"year\").\n\n\npath\nCharacter. Path to existing Reflora dwca files. If NULL, downloads fresh data.\n\n\nupdates\nLogical. If TRUE (default), checks for updated DwC-A files from Reflora.\n\n\nverbose\nLogical. If TRUE (default), prints progress messages to the console.\n\n\nsave\nLogical. If TRUE (default), saves the results to a CSV file.\n\n\ndir\nCharacter. Directory path to save output files. Default: \"reflora_indets\".\n\n\nfilename\nCharacter. Name of the output file (without extension). Default: \"reflora_indets_search\".\n\n\n\n\n\nValue\nA data.frame containing occurrence records for indeterminate specimens retrieved from the selected Reflora herbaria. Records are filtered according to the user-specified arguments (e.g., level, taxon, state, recordYear, herbarium, and repatriated). By default, higher-rank indeterminate taxa (e.g., \"FAMILY\", \"GENUS\", \"SUBFAMILY\", \"TRIBE\", \"DIVISION\", \"ORDER\", \"CLASS\") are included unless a specific level is provided.\nThe returned data frame includes specimen metadata and direct links to images via the bibliographicCitation (specimen page URL) and associatedMedia (high-resolution image URL(s), when available) columns. Columns containing only NA values are removed before returning the object.\nIf save = TRUE, the function also writes the results to a CSV file in the specified dir directory (creating it if necessary) and generates or appends a log.txt file summarizing the session, including total records and breakdowns by herbarium, family, genus, country, and state.\n\n\nExamples\n# Retrieve indeterminate records for Fabaceae and Ochnaceae from all herbaria\nreflora_indets(taxon = c(\"Fabaceae\", \"Ochnaceae\"),\n               level = \"FAMILY\",\n               save = TRUE,\n               dir = \"reflora_indets\",\n               filename = \"fabaceae_ochnaceae_records\")\n\n# Filter by specific herbarium and state\nreflora_indets(taxon = \"Fabaceae\",\n               herbarium = \"RB\",\n               state = c(\"BA\", \"MG\"),\n               recordYear = c(\"1990\", \"2022\"))"
+  },
+  {
+    "objectID": "reference/reflora_download.html",
+    "href": "reference/reflora_download.html",
+    "title": "reflora_download",
+    "section": "",
+    "text": "refloraR::reflora_download()\n\n\nDescription\nDownload plant specimen records in Darwin Core Format from any herbarium collection at Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherbarium\nA vector of specific herbarium acronyms (collection code) in uppercase letters or leave it as NULL to download records for all Reflora herbaria.\n\n\nrepatriated\nLogical. If FALSE, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is TRUE. Use reflora_summary() to check which collections are repatriated. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT).\n\n\nverbose\nLogical, if FALSE, a message showing steps when downloading herbarium specimen records will not be printed in the console in full.\n\n\ndir\nPathway to the computer’s directory, where the file will be saved. The default is to create a directory named reflora_download and the results will be saved within a subfolder named by each searched Reflora-associated herbarium collection.\n\n\n\n\n\nValue\nInvisibly returns NULL. This function is called for downloading and extracting Darwin Core Archive (DwC-A) files into the specified directory.\n\n\nExamples\nreflora_download(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                 verbose = TRUE,\n                 dir = \"reflora_download\")"
+  },
+  {
+    "objectID": "reference/reflora_parse.html",
+    "href": "reference/reflora_parse.html",
+    "title": "reflora_parse",
+    "section": "",
+    "text": "refloraR::reflora_parse()\n\n\nDescription\nRead Darwin Core Archive (DwC-A) files from any downloaded dwca folder at Reflora Virtual Herbarium hosted by the Rio de Janeiro Botanical Garden.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\npath\nPathway to the computer’s directory, where the Reflora-downloaded dwca folders are.\n\n\nherbarium\nA vector of specific herbarium acronyms (collection code) in uppercase letters or leave it as NULL to parse specimen records for all herbarim dcwa folders in the defined path directory.\n\n\nrepatriated\nLogical. If FALSE, skips downloading records from Reflora-associated herbaria that have been repatriated. Default is TRUE. Use reflora_summary() to check which collections are repatriated. Reflora aggregates collections from both Brazilian and international herbaria that hold Brazilian specimens. In this context, “digital repatriation” refers to making high-resolution images and associated specimen metadata openly accessible through a Brazilian public infrastructure (HVR/IPT).\n\n\nverbose\nLogical, if FALSE, a message showing steps when summarizing specimen records will not be printed in the console in full.\n\n\n\n\n\nValue\nA named list of Darwin Core Archive objects, one per parsed herbarium collection. Each element corresponds to the output of finch::dwca_read() and contains:\n$dataA list of data tables included in the archive, including a cleaned and standardized occurrence.txt data frame with selected Darwin Core fields. $metaMetadata extracted from the archive’s EML file. $filesInformation about the archive structure and associated files.\nThe returned list is named by herbarium collection codes. When available, associated summary CSV files (generated by reflora_download()) are appended as additional elements within each herbarium object.\n\n\nExamples\nreflora_download(herbarium = c(\"ALCB\", \"HUEFS\", \"K\", \"RB\"),\n                 verbose = TRUE,\n                 dir = \"reflora_download\")\n\ndwca &lt;- reflora_parse(path = \"reflora_download\",\n                      verbose = TRUE)"
+  }
+]

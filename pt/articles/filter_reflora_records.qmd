@@ -1,0 +1,145 @@
+---
+title: "Filtrar registros de espécimes do Reflora"
+format: html
+sidebar: pt-articles
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+---
+
+```{r setup, include=FALSE}
+library(refloraR)
+```
+
+Este guia demonstra como usar a função `reflora_records()` do pacote `refloraR` para recuperar registros de ocorrência de espécimes para táxons específicos a partir do Herbário Virtual Reflora, hospedado pelo Jardim Botânico do Rio de Janeiro.
+
+## Visão Geral da Função
+
+A função `reflora_records()` recupera registros filtrados de espécimes vegetais de coleções do Reflora com base em critérios de táxon, herbário, localidade e data. Realiza download, análise, filtragem e, opcionalmente, salvamento dos dados de ocorrência.
+
+Essa ferramenta é ideal para pesquisa florística, taxonômica ou biogeográfica, especialmente ao trabalhar com grandes conjuntos de dados de um grupo vegetal específico.
+
+## Argumentos
+
+| Argumento     | Descrição |
+|---------------|-----------|
+| `herbarium`   | Vetor de códigos de herbário (ex.: `"RB"`, `"SP"`). Use `NULL` para todas as coleções. |
+| `repatriated` | Lógico. Se `FALSE`, ignora herbários repatriados. |
+| `taxon`       | Um ou mais nomes de família, gênero ou espécie para filtrar. |
+| `state`       | Vetor de estados brasileiros (ex.: `"BA"`, `"SP"`). |
+| `recordYear`  | Ano específico (ex.: `"2001"`) ou intervalo (ex.: `c("1990", "2024")`). |
+| `indets`      | Se `FALSE`, filtra registros não identificados ao nível de espécie. |
+| `reorder`     | Controla a ordem das colunas no resultado final (ex.: por herbário, táxon, ano). |
+| `path`        | Diretório opcional contendo arquivos DwC-A do Reflora já baixados. |
+| `updates`     | Se `TRUE`, verifica versões atualizadas dos dados no IPT. |
+| `verbose`     | Se `TRUE`, exibe mensagens de progresso. |
+| `save`        | Se `TRUE`, salva os resultados como arquivos CSV e log. |
+| `dir`         | Pasta onde a saída será salva. |
+| `filename`    | Nome dos arquivos CSV e log resultantes. |
+
+## Uso Básico
+
+```r
+reflora_records(
+  taxon = c("Fabaceae", "Ochnaceae"),
+  verbose = TRUE,
+  save = TRUE,
+  dir = "reflora_records",
+  filename = "fabaceae_ochnaceae_records"
+)
+```
+
+## Filtrar por Herbário e Intervalo de Anos
+
+```r
+reflora_records(
+  taxon = "Fabaceae",
+  herbarium = c("RB", "K"),
+  recordYear = c("1995", "2023"),
+  verbose = TRUE,
+  save = FALSE
+)
+```
+
+## Filtrar por Estado e Remover Registros Indeterminados
+
+```r
+reflora_records(
+  taxon = "Malpighiaceae",
+  state = c("BA", "PE"),
+  indets = FALSE,
+  save = TRUE,
+  dir = "malpighiaceae_ba_pe"
+)
+```
+
+## Usando um Conjunto de Dados Pré-baixado
+
+```r
+reflora_records(
+  path = "reflora_download",
+  taxon = "Myrtaceae",
+  updates = FALSE,
+  save = FALSE
+)
+```
+
+## Visualizando Espécimes por Ano
+
+```r
+library(dplyr)
+library(ggplot2)
+
+records <- reflora_records(taxon = "Fabaceae",
+                           herbarium = "RB",
+                           recordYear = c("2000", "2025"),
+                           save = FALSE)
+
+records %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Registros de Fabaceae por Ano (Herbário RB)",
+       x = "",
+       y = "Número de Registros")
+```
+
+```{r}
+#| echo: false
+library(dplyr)
+library(ggplot2)
+
+records <- reflora_records(taxon = "Fabaceae",
+                           herbarium = "RB",
+                           recordYear = c("2000", "2025"),
+                           verbose = FALSE,
+                           save = FALSE)
+
+records %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Registros de Fabaceae por Ano (Herbário RB)",
+       x = "",
+       y = "Número de Registros") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+## Dicas
+
+- Use `recordYear = c("AAAA", "AAAA")` para analisar registros ao longo de um período.
+- Use `reflora_summary()` previamente para verificar a disponibilidade de herbários.
+- Defina `save = TRUE` para saídas reprodutíveis com logs.
+
+## Veja Também
+
+- [`reflora_download()`](/pt/articles/download_reflora_collections.qmd): Baixar registros de espécimes do REFLORA
+- [`reflora_parse()`](/pt/articles/parse_reflora_dwca.qmd): Analisar arquivos do REFLORA
+- [`reflora_summary()`](/pt/articles/summarize_reflora_collections.qmd): Resumir coleções do REFLORA
+- [`reflora_indets()`](/pt/articles/filter_indeterminate_reflora_specimens.qmd): Extrair registros indeterminados

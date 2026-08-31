@@ -1,0 +1,55 @@
+---
+title: 'reflora_parse'
+description: 'Analisar arquivos Darwin Core Archive'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+refloraR::reflora_parse()
+```
+
+### Descrição
+
+Lê arquivos Darwin Core Archive (DwC-A) de qualquer pasta dwca baixada do
+[Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora/)
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| path | Caminho para o diretório do computador onde as pastas dwca baixadas do Reflora estão. |
+| herbarium | Vetor de siglas específicas de herbário (código de coleção) em letras maiúsculas, ou deixe como `NULL` para analisar os registros de espécimes de todas as pastas dwca de herbário no diretório definido. |
+| repatriated | Lógico. Se `FALSE`, ignora o download de registros de herbários associados ao Reflora que foram repatriados. O padrão é `TRUE`. Use `reflora_summary()` para verificar quais coleções são repatriadas. |
+| verbose | Lógico; se `FALSE`, a mensagem mostrando as etapas ao resumir os registros de espécimes não será impressa integralmente no console. |
+
+### Valor
+
+Uma lista nomeada de objetos Darwin Core Archive, um por coleção
+de herbário analisada. Cada elemento corresponde à saída de
+`finch::dwca_read()` e contém:
+
+`$data`Uma lista de tabelas de dados incluídas no arquivo,
+incluindo um data frame `occurrence.txt` limpo e padronizado
+com campos Darwin Core selecionados.
+`$meta`Metadados extraídos do arquivo EML do arquivo.
+`$files`Informações sobre a estrutura do arquivo e
+arquivos associados.
+
+A lista retornada é nomeada pelos códigos de coleção dos herbários. Quando disponíveis,
+arquivos CSV de resumo associados (gerados por `reflora_download()`)
+são adicionados como elementos adicionais dentro de cada objeto de herbário.
+
+### Exemplos
+
+```r
+reflora_download(herbarium = c("ALCB", "HUEFS", "K", "RB"),
+                 verbose = TRUE,
+                 dir = "reflora_download")
+
+dwca <- reflora_parse(path = "reflora_download",
+                      verbose = TRUE)
+```
