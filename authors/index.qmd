@@ -61,7 +61,7 @@ resources:
 </div>
 ```
 
-## The Flora e Funga do Brasil Team
+## The Flora e Funga do Brasil Coordination Team
 
 ```{=html}
 <div class="authors-group">
@@ -75,23 +75,23 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0002-7035-9313" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/6249814039461102" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Senior taxonomist and coordinator of the Flora e Funga do Brasil initiative</p>
+      <p>Expert in biodiversity data integration and coordinator of the Flora e Funga do Brasil initiative</p>
     </div>
   </div>
 
   <div class="author-card">
-    <img src="images/paula.jpg" alt="Paula Leitman" class="author-photo" />
+    <img src="images/domingos.jpg" alt="Domingos Cardoso" class="author-photo" />
     <div class="author-info">
-      <h3 class="author-name">Paula Leitman</h3>
+      <h3 class="author-name">Domingos Cardoso</h3>
       <p>
-        <a class="icon-link" href="mailto:reflora@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-2997-3784" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/6097135982786067" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+        <a class="icon-link" href="mailto:domingoscardoso@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Expert in biodiversity data integration and Flora e Funga do Brasil team member</p>
+      <p>Expert in biodiversity data integration and coordinator of the Flora e Funga do Brasil initiative</p>
     </div>
   </div>
-
+  
   <div class="author-card">
     <img src="images/fabiana.jpg" alt="Fabiana Filardi" class="author-photo" />
     <div class="author-info">
@@ -101,20 +101,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0002-0372-4325" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/5902829568480499" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Expert in biodiversity data integration and Flora e Funga do Brasil team member</p>
-    </div>
-  </div>
-
-  <div class="author-card">
-    <img src="images/anaflavia.jpg" alt="Flávia Versiane" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Flávia Versiane</h3>
-      <p>
-        <a class="icon-link" href="mailto:anaflaviaversiane@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0001-9634-0365" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/1843612090689191" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Research associate contributing to Flora e Funga do Brasil data curation</p>
+      <p>Expert in biodiversity data integration and coordinator of the Flora e Funga do Brasil initiative</p>
     </div>
   </div>
 
