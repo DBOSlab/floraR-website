@@ -1,151 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/get-started/index.html</loc>
-    <lastmod>2025-06-22T17:36:41.000Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/get-started/index.html</loc>
+    <lastmod>2026-08-31T20:54:01.125Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_summary.html</loc>
-    <lastmod>2026-05-29T00:44:05.840Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_parse.html</loc>
+    <lastmod>2026-08-31T20:40:15.865Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/index.html</loc>
-    <lastmod>2026-05-29T00:44:05.844Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_get_descriptions.html</loc>
+    <lastmod>2026-08-31T20:40:15.862Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_records.html</loc>
-    <lastmod>2026-05-29T00:44:05.839Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/index.html</loc>
+    <lastmod>2026-08-31T20:40:15.874Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/get-started/index.html</loc>
-    <lastmod>2026-05-30T13:09:50.155Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_search.html</loc>
+    <lastmod>2026-08-31T20:40:15.869Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/reflora_summary.html</loc>
-    <lastmod>2026-05-30T13:13:17.931Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_get_children_taxa.html</loc>
+    <lastmod>2026-08-31T20:40:15.860Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/index.html</loc>
-    <lastmod>2026-05-30T13:12:58.271Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/get-started/index.html</loc>
+    <lastmod>2026-08-31T20:53:41.540Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/reflora_records.html</loc>
-    <lastmod>2026-05-30T13:13:53.833Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_parse.html</loc>
+    <lastmod>2026-08-31T20:49:22.583Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/about.html</loc>
-    <lastmod>2026-05-30T13:09:43.446Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_get_descriptions.html</loc>
+    <lastmod>2026-08-31T20:50:51.596Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/filter_indeterminate_reflora_specimens.html</loc>
-    <lastmod>2026-05-30T13:50:07.739Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/index.html</loc>
+    <lastmod>2026-08-31T20:48:49.780Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/parse_reflora_dwca.html</loc>
-    <lastmod>2026-05-30T13:11:58.738Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_search.html</loc>
+    <lastmod>2026-08-31T20:50:02.725Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/index.html</loc>
-    <lastmod>2026-05-30T13:11:03.079Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_get_children_taxa.html</loc>
+    <lastmod>2026-08-31T20:50:40.497Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/faq/index.html</loc>
-    <lastmod>2026-05-30T14:18:29.539Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/about.html</loc>
+    <lastmod>2026-08-31T20:45:48.973Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/about.html</loc>
-    <lastmod>2026-05-29T00:49:49.087Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/filter_ffb_records.html</loc>
+    <lastmod>2026-08-31T20:47:53.766Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/filter_indeterminate_reflora_specimens.html</loc>
-    <lastmod>2026-05-30T13:47:23.486Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/explore_taxonomic_hierarchy.html</loc>
+    <lastmod>2026-08-31T20:48:25.957Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/parse_reflora_dwca.html</loc>
-    <lastmod>2026-05-29T00:52:48.687Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/index.html</loc>
+    <lastmod>2026-08-31T20:46:59.390Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/index.html</loc>
-    <lastmod>2026-05-29T00:50:27.408Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/parse_ffb_dwca.html</loc>
+    <lastmod>2026-08-31T20:47:37.705Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/faq/index.html</loc>
-    <lastmod>2026-05-29T00:48:29.060Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/faq/index.html</loc>
+    <lastmod>2026-08-31T20:46:18.168Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/LICENSE.html</loc>
-    <lastmod>2025-06-23T17:45:32.000Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/about.html</loc>
+    <lastmod>2026-08-31T20:42:16.168Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/authors/index.html</loc>
-    <lastmod>2026-05-29T00:49:13.203Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/filter_ffb_records.html</loc>
+    <lastmod>2026-08-31T20:44:20.418Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/summarize_reflora_collections.html</loc>
-    <lastmod>2026-05-29T00:53:56.343Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/explore_taxonomic_hierarchy.html</loc>
+    <lastmod>2026-08-31T20:44:45.885Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/filter_reflora_records.html</loc>
-    <lastmod>2026-05-29T00:52:29.932Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/index.html</loc>
+    <lastmod>2026-08-31T20:43:35.378Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/articles/download_reflora_collections.html</loc>
-    <lastmod>2026-05-29T00:50:56.798Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/parse_ffb_dwca.html</loc>
+    <lastmod>2026-08-31T20:44:06.264Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/index.html</loc>
-    <lastmod>2026-05-29T00:47:38.118Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/faq/index.html</loc>
+    <lastmod>2026-08-31T20:43:04.330Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/authors/index.html</loc>
-    <lastmod>2026-05-30T13:10:53.496Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/LICENSE.html</loc>
+    <lastmod>2026-08-31T20:43:22.397Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/summarize_reflora_collections.html</loc>
-    <lastmod>2026-05-30T13:11:31.746Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/authors/index.html</loc>
+    <lastmod>2026-08-31T20:42:45.923Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/filter_reflora_records.html</loc>
-    <lastmod>2026-05-30T13:12:22.934Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/download_ffb_dataset.html</loc>
+    <lastmod>2026-08-31T20:43:54.410Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/articles/download_reflora_collections.html</loc>
-    <lastmod>2026-05-30T13:11:44.127Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/check_ffb_versions.html</loc>
+    <lastmod>2026-08-31T20:43:44.683Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/index.html</loc>
-    <lastmod>2026-05-30T13:55:35.300Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/curate_ffb_descriptions.html</loc>
+    <lastmod>2026-08-31T20:44:58.279Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/news/index.html</loc>
-    <lastmod>2026-05-30T13:10:24.392Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/resolve_species_names.html</loc>
+    <lastmod>2026-08-31T20:44:35.135Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/reflora_indets.html</loc>
-    <lastmod>2026-05-30T13:14:20.595Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/index.html</loc>
+    <lastmod>2026-08-31T20:41:53.660Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/reflora_download.html</loc>
-    <lastmod>2026-05-30T13:13:27.733Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/authors/index.html</loc>
+    <lastmod>2026-08-31T20:46:49.328Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/pt/reference/reflora_parse.html</loc>
-    <lastmod>2026-05-30T13:14:34.891Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/download_ffb_dataset.html</loc>
+    <lastmod>2026-08-31T20:47:22.870Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/news/index.html</loc>
-    <lastmod>2026-05-29T00:46:27.233Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/check_ffb_versions.html</loc>
+    <lastmod>2026-08-31T20:47:10.996Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_indets.html</loc>
-    <lastmod>2026-05-29T00:44:05.837Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/curate_ffb_descriptions.html</loc>
+    <lastmod>2026-08-31T20:48:41.504Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_download.html</loc>
-    <lastmod>2026-05-29T00:44:05.831Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/resolve_species_names.html</loc>
+    <lastmod>2026-08-31T20:48:12.505Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/refloraR-website/reference/reflora_parse.html</loc>
-    <lastmod>2026-05-29T00:44:05.838Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/index.html</loc>
+    <lastmod>2026-08-31T20:45:32.643Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/news/index.html</loc>
+    <lastmod>2026-08-31T20:46:29.976Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_version.html</loc>
+    <lastmod>2026-08-31T20:48:56.834Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_build_matrix.html</loc>
+    <lastmod>2026-08-31T20:50:59.834Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_records.html</loc>
+    <lastmod>2026-08-31T20:49:42.780Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_download.html</loc>
+    <lastmod>2026-08-31T20:49:07.786Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_match.html</loc>
+    <lastmod>2026-08-31T20:50:27.362Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/news/index.html</loc>
+    <lastmod>2026-08-31T20:43:14.707Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_version.html</loc>
+    <lastmod>2026-08-31T20:40:15.870Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_build_matrix.html</loc>
+    <lastmod>2026-08-31T20:40:15.848Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_records.html</loc>
+    <lastmod>2026-08-31T20:40:15.868Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_download.html</loc>
+    <lastmod>2026-08-31T20:40:15.859Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_match.html</loc>
+    <lastmod>2026-08-31T20:40:15.864Z</lastmod>
   </url>
 </urlset>

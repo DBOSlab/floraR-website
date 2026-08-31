@@ -1,0 +1,60 @@
+---
+title: "Baixar a lista de espécies da FFB"
+format: html
+---
+
+Aqui apresentamos um guia prático para a função `flora_download()` do pacote `floraR`. Essa função baixa registros taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) no formato Darwin Core Archive (DwC-A), diretamente do [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil).
+
+## Visão Geral da Função
+
+A `flora_download()` recupera uma ou mais versões do conjunto de dados da FFB e salva cada uma em seu próprio subdiretório em disco. Ela verifica se a versão solicitada já está presente localmente e evita baixá-la novamente sem necessidade, portanto é seguro chamá-la repetidamente ao longo de um projeto.
+
+## Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `version` | Caractere. `"latest"` (padrão) baixa a versão mais recente; `"all"` baixa todas as versões disponíveis (download grande!); uma string ou vetor de versões (ex.: `"393.418"`) baixa versões específicas. Use `flora_version()` para consultar os números de versão válidos primeiro. |
+| `verbose` | Lógico. Se `TRUE` (padrão), imprime mensagens informativas durante o download. |
+| `dir` | Caractere. Diretório local para salvar os arquivos baixados. O padrão é `"flora_download"`. Cada versão é extraída em seu próprio subdiretório. |
+
+## Baixar o conjunto de dados mais recente
+
+```r
+library(floraR)
+
+flora_download(dir = "flora_download")
+```
+
+## Baixar uma versão específica
+
+Use [`flora_version()`](/pt/articles/check_ffb_versions.qmd) primeiro para encontrar uma string de versão válida:
+
+```r
+versions_df <- flora_version()
+
+flora_download(version = versions_df$Version[1], dir = "flora_download")
+```
+
+## Baixar múltiplas versões
+
+```r
+flora_download(version = c("393.418", "392.417"), dir = "flora_download")
+```
+
+## Baixar todas as versões disponíveis
+
+```r
+# Download grande! Necessário apenas para arquivamento ou comparações entre versões.
+flora_download(version = "all", dir = "flora_download")
+```
+
+## Dicas Adicionais
+
+- Você raramente precisa chamar `flora_download()` diretamente: `flora_records()`, `flora_search()`, `flora_match()` e `flora_get_children_taxa()` baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.
+- Se não houver conexão com a internet, a `flora_download()` recorre automaticamente a uma cópia local baixada anteriormente, se houver, em `dir`.
+- Mantenha a pasta baixada (o comportamento padrão `rm_flora_database = FALSE` nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.
+
+## Veja Também
+
+- [Verificar as versões disponíveis da FFB](/pt/articles/check_ffb_versions.qmd)
+- [Analisar arquivos Darwin Core da FFB](/pt/articles/parse_ffb_dwca.qmd)

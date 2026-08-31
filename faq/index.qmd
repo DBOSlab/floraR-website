@@ -7,7 +7,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -22,56 +22,67 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8); /* white with 80% opacity */
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
-### What can I use refloraR for?
+### What is Flora e Funga do Brasil?
 
-The `refloraR` package allows researchers and taxonomists to download, filter, and analyze plant specimen data from the [Reflora Virtual Herbarium](https://ipt.jbrj.gov.br/reflora). With dedicated functions, users can access large datasets in Darwin Core Format, explore taxonomic and geographic distributions, and summarize collections efficiently.
+Flora e Funga do Brasil (FFB) is the taxonomic checklist that documents Brazil's plant, algal, and fungal diversity — the richest in the world. Maintained by the Rio de Janeiro Botanical Garden and curated collaboratively by hundreds of taxonomists, it records accepted names, synonyms, taxonomic classification, geographic distribution, endemism, life form, habitat, and vegetation type for every documented species.
 
-### How do I install refloraR?
+### What can I use floraR for?
+
+The `floraR` package lets researchers and taxonomists download, parse, filter, and explore the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly from R. You can browse the checklist by taxonomic, geographic, or trait-based criteria, resolve your own species name lists against it (with fuzzy matching for typos), explore the taxonomic hierarchy, and curate new records for contribution back to FFB.
+
+### Do I need a list of species names to use floraR?
+
+No. `flora_records()` lets you browse and filter the FFB checklist directly (e.g. all accepted species in a family, or all endemics in a given state) without providing any input names. If you already have your own species list — from a herbarium, field survey, or collaborator — `flora_search()` and `flora_match()` resolve those names against the checklist instead, with exact matching first and fuzzy (Levenshtein-distance) matching as a fallback for typos.
+
+### Does floraR require an internet connection?
+
+Only the first time you query a given dataset version. `flora_download()` and `flora_parse()` fetch and cache the versioned Darwin Core Archive locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download.
+
+### How do I install floraR?
 
 Visit the [Get Started guide](/get-started/index.qmd) for installation instructions from GitHub.
 
-### Is refloraR free to use?
+### Is floraR free to use?
 
-Yes. `refloraR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
+Yes. `floraR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
 
-### What output can refloraR generate?
+### Is this website available in Portuguese?
 
-While `refloraR` itself does not generate formatted documents, it is designed for data retrieval and analysis. However, it integrates well with tools like Quarto and RMarkdown to produce documents, HTML pages, and interactive apps using filtered specimen data.
+Yes. Every page has an EN/PT toggle in the navigation bar. Once you switch languages, the choice is remembered for the rest of your visit — you won't need to switch again as you navigate between pages.
 
-### Who are the developers of refloraR?
+### What output can floraR generate?
 
-Development is sponsored by [JBRJ](https://www.gov.br/jbrj/pt-br), [FINEP](http://www.finep.gov.br), and [CNPq](https://www.gov.br/cnpq/pt-br). Main developers:
+`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix for comparative or phylogenetic analyses.
+
+### Who is the developer of floraR?
+
+Development is led by [JBRJ](https://www.gov.br/jbrj/pt-br), with financial support from [CNPq](https://www.gov.br/cnpq/pt-br) and [FINEP](http://www.finep.gov.br). Main developer:
 
 - Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
-- Carlos Calderón ([\@caldecid](https://github.com/caldecid))
 
-View the code and contribute on GitHub: [https://github.com/DBOSlab/refloraR](https://github.com/DBOSlab/refloraR)
+View the code and contribute on GitHub: [https://github.com/DBOSlab/floraR](https://github.com/DBOSlab/floraR)
 
-### Why the name refloraR?
+### Why the name floraR?
 
-The name pays tribute to Brazil's Reflora programme, with a clever nod to the R programming language. It symbolizes the repatriation and rediscovery of Brazil's botanical heritage, now enhanced by reproducible data workflows.
+The name pairs "Flora" — for Flora e Funga do Brasil, the checklist it interfaces with — with the R programming language, reflecting the package's goal of making the national checklist directly and reproducibly accessible from R.
 
 ### Where can I report bugs or request features?
 
-Submit issues on GitHub: [refloraR Issues](https://github.com/DBOSlab/refloraR/issues).
+Submit issues on GitHub: [floraR Issues](https://github.com/DBOSlab/floraR/issues).
 
-### Where can I ask questions and discuss refloraR?
+### Where can I ask questions and discuss floraR?
 
-Join our community via [GitHub Discussions](https://github.com/DBOSlab/refloraR/discussions) to ask questions, suggest ideas, or help others.
+Join our community via [GitHub Discussions](https://github.com/DBOSlab/floraR/discussions) to ask questions, suggest ideas, or help others.
 
-### What is the Reflora Virtual Herbarium?
+### How does floraR relate to Flora e Funga do Brasil?
 
-The Reflora Virtual Herbarium is a digital repository for Brazilian plant specimens, particularly those collected in Brazil but historically stored in foreign herbaria. Through high-resolution imaging and curation tools, it enables researchers to view, determine, and typify specimens remotely.
+The `floraR` package is a programmatic interface to the Flora e Funga do Brasil IPT data portal: it downloads, parses, and queries the same checklist data published on the platform, and also helps taxonomic experts prepare new names and records for contribution back to it.
 
-### How does refloraR relate to Reflora?
+### Can I contribute new names or records to Flora e Funga do Brasil?
 
-The `refloraR` package acts as a programmatic interface to query, retrieve, and explore data from Reflora Virtual Herbarium and its partner collections. It enhances access, encourages reproducibility, and supports large-scale taxonomic and biogeographic studies.
-
-### Can my herbarium join the Reflora Virtual Herbarium?
-
-Yes. Herbarium curators can contact **reflora@jbrj.gov.br** to initiate data and image contributions. Participating herbaria receive support to digitize and publish their collections.
+Yes. `floraR` includes `flora_get_descriptions()` and `flora_build_matrix()` specifically to help taxonomic experts assemble and curate new records — pulling controlled-field and free-text descriptions from existing FFB taxon pages and turning them into a comparable trait matrix. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.

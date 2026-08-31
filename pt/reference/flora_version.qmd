@@ -1,0 +1,42 @@
+---
+title: 'flora_version'
+description: 'Resumir os registros taxonômicos e de distribuição disponíveis na Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_version()
+```
+
+### Descrição
+
+Recupera e resume os metadados das versões atualmente disponíveis dos registros
+taxonômicos e de distribuição da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
+hospedada pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+Os metadados incluem número da versão, data de publicação, número de registros e
+URLs de acesso direto.
+
+### Detalhes
+
+Esta função acessa os [metadados do IPT para o conjunto de dados da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+e extrai as informações de versão de cada publicação de dados. Ela retorna
+um resumo limpo e estruturado como um data frame.
+
+### Valor
+
+Um `data.frame` com as seguintes colunas:
+
+- `Version`: Número da versão da publicação do conjunto de dados.
+- `Published_on`: Data/hora da publicação do conjunto de dados.
+- `Records`: Número de registros de espécimes de plantas na publicação.
+- `URL`: Link direto para a versão do conjunto de dados no portal IPT.
+
+### Exemplos
+
+```r
+ffb_version <- flora_version()
+  head(ffb_version)
+```

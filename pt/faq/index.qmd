@@ -7,7 +7,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -22,56 +22,67 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
-### Para que posso usar o refloraR?
+### O que é a Flora e Funga do Brasil?
 
-O pacote `refloraR` permite que pesquisadores e taxonomistas baixem, filtrem e analisem dados de espécimes vegetais do [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora). Com funções dedicadas, os usuários podem acessar grandes conjuntos de dados no formato Darwin Core, explorar distribuições taxonômicas e geográficas e resumir coleções de forma eficiente.
+A Flora e Funga do Brasil (FFB) é a lista de espécies taxonômica que documenta a diversidade de plantas, algas e fungos do Brasil — a mais rica do mundo. Mantida pelo Jardim Botânico do Rio de Janeiro e curada colaborativamente por centenas de taxonomistas, ela registra nomes aceitos, sinônimos, classificação taxonômica, distribuição geográfica, endemismo, forma de vida, hábitat e tipo de vegetação para cada espécie documentada.
 
-### Como instalo o refloraR?
+### Para que posso usar o floraR?
+
+O pacote `floraR` permite que pesquisadores e taxonomistas baixem, analisem, filtrem e explorem a lista de espécies da [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) diretamente do R. Você pode navegar pela lista de espécies por critérios taxonômicos, geográficos ou de atributos, resolver sua própria lista de nomes de espécies em relação a ela (com correspondência aproximada para erros de digitação), explorar a hierarquia taxonômica e curar novos registros para contribuir de volta à FFB.
+
+### Preciso de uma lista de nomes de espécies para usar o floraR?
+
+Não. A função `flora_records()` permite navegar e filtrar a lista de espécies da FFB diretamente (por exemplo, todas as espécies aceitas de uma família, ou todos os endemismos de um determinado estado) sem fornecer nenhum nome de entrada. Se você já tem sua própria lista de espécies — de um herbário, levantamento de campo ou colaborador — as funções `flora_search()` e `flora_match()` resolvem esses nomes em relação à lista de espécies, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação.
+
+### O floraR requer conexão com a internet?
+
+Apenas na primeira vez que você consultar uma determinada versão do conjunto de dados. As funções `flora_download()` e `flora_parse()` baixam e armazenam localmente o Arquivo Darwin Core versionado, e todas as demais funções reutilizam esse cache automaticamente, de modo que consultas repetidas e análises offline funcionam sem um novo download.
+
+### Como instalo o floraR?
 
 Visite o [guia de primeiros passos](/pt/get-started/index.qmd) para instruções de instalação a partir do GitHub.
 
-### O refloraR é gratuito?
+### O floraR é gratuito?
 
-Sim. `refloraR` é de código aberto, licenciado sob a [Licença MIT](https://opensource.org/license/mit/).
+Sim. `floraR` é de código aberto, licenciado sob a [Licença MIT](https://opensource.org/license/mit/).
 
-### Quais saídas o refloraR pode gerar?
+### Este site está disponível em português?
 
-Embora o `refloraR` em si não gere documentos formatados, ele foi desenvolvido para recuperação e análise de dados. No entanto, integra-se bem com ferramentas como Quarto e RMarkdown para produzir documentos, páginas HTML e aplicativos interativos a partir de dados filtrados de espécimes.
+Sim. Cada página tem um botão de alternância EN/PT na barra de navegação. Depois de trocar de idioma, a escolha é lembrada pelo resto da sua visita — você não precisará trocar novamente ao navegar entre as páginas.
 
-### Quem são os desenvolvedores do refloraR?
+### Quais saídas o floraR pode gerar?
 
-O desenvolvimento é patrocinado pelo [JBRJ](https://www.gov.br/jbrj/pt-br), [FINEP](http://www.finep.gov.br) e [CNPq](https://www.gov.br/cnpq/pt-br). Principais desenvolvedores:
+O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de caracteres por táxon para análises comparativas ou filogenéticas.
+
+### Quem é o desenvolvedor do floraR?
+
+O desenvolvimento é liderado pelo [JBRJ](https://www.gov.br/jbrj/pt-br), com apoio financeiro do [CNPq](https://www.gov.br/cnpq/pt-br) e da [FINEP](http://www.finep.gov.br). Desenvolvedor principal:
 
 - Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
-- Carlos Calderón ([\@caldecid](https://github.com/caldecid))
 
-Veja o código e contribua no GitHub: [https://github.com/DBOSlab/refloraR](https://github.com/DBOSlab/refloraR)
+Veja o código e contribua no GitHub: [https://github.com/DBOSlab/floraR](https://github.com/DBOSlab/floraR)
 
-### Por que o nome refloraR?
+### Por que o nome floraR?
 
-O nome presta homenagem ao programa Reflora do Brasil, com uma referência à linguagem de programação R. Simboliza o repatriamento e redescoberta do patrimônio botânico brasileiro, agora enriquecido por fluxos de trabalho reprodutíveis de dados.
+O nome combina "Flora" — referência à Flora e Funga do Brasil, a lista de espécies com a qual o pacote interage — com a linguagem de programação R, refletindo o objetivo do pacote de tornar a lista de espécies nacional acessível de forma direta e reprodutível a partir do R.
 
 ### Onde posso reportar bugs ou solicitar funcionalidades?
 
-Envie issues no GitHub: [refloraR Issues](https://github.com/DBOSlab/refloraR/issues).
+Envie issues no GitHub: [floraR Issues](https://github.com/DBOSlab/floraR/issues).
 
-### Onde posso fazer perguntas e discutir sobre o refloraR?
+### Onde posso fazer perguntas e discutir sobre o floraR?
 
-Participe da nossa comunidade nas [Discussões do GitHub](https://github.com/DBOSlab/refloraR/discussions) para fazer perguntas, sugerir ideias ou ajudar outros usuários.
+Participe da nossa comunidade nas [Discussões do GitHub](https://github.com/DBOSlab/floraR/discussions) para fazer perguntas, sugerir ideias ou ajudar outros usuários.
 
-### O que é o Herbário Virtual Reflora?
+### Como o floraR se relaciona com a Flora e Funga do Brasil?
 
-O Herbário Virtual Reflora é um repositório digital de espécimes de plantas e fungos, em especial aqueles coletados no Brasil, mas historicamente depositados em herbários estrangeiros. Por meio de imagens de alta resolução e ferramentas de curadoria, permite que pesquisadores visualizem, determinem e tipifiquem espécimes remotamente.
+O pacote `floraR` é uma interface programática para o portal de dados IPT da Flora e Funga do Brasil: ele baixa, analisa e consulta os mesmos dados da lista de espécies publicados na plataforma, e também ajuda especialistas taxonômicos a preparar novos nomes e registros para contribuição de volta a ela.
 
-### Como o refloraR se relaciona com o Reflora?
+### Posso contribuir com novos nomes ou registros para a Flora e Funga do Brasil?
 
-O pacote `refloraR` funciona como uma interface programática para consultar, recuperar e explorar dados do Herbário Virtual Reflora e suas coleções parceiras. Amplia o acesso, estimula a reprodutibilidade e apoia estudos taxonômicos e biogeográficos em larga escala.
-
-### Meu herbário pode integrar o Herbário Virtual Reflora?
-
-Sim. Curadores de herbário podem contatar **reflora@jbrj.gov.br** para iniciar a contribuição de dados e imagens. Os herbários participantes recebem suporte para digitalizar e publicar suas coleções.
+Sim. O `floraR` inclui as funções `flora_get_descriptions()` e `flora_build_matrix()` especificamente para ajudar especialistas taxonômicos a reunir e curar novos registros — extraindo descrições de campos controlados e texto livre de páginas de táxons já existentes na FFB e transformando-as em uma matriz de caracteres comparável. Para submeter novos nomes ou correções à própria plataforma, consulte as diretrizes de contribuição em [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.

@@ -1,0 +1,111 @@
+---
+title: 'flora_match'
+description: 'Match two plant name lists using the Flora e Funga do Brasil database'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_match()
+```
+
+### Description
+
+Matches and compares two lists of plant names based on their taxonomic
+resolution in the Flora e Funga do Brasil (FFB) database. Both lists are
+independently searched with `flora_search`, and names that
+resolve to the same accepted taxon are considered a match. The function
+returns a merged data frame that aligns names across both lists.
+
+### Details
+
+Each list is searched independently via `flora_search`. The
+accepted taxon IDs (`Accepted.taxon.ID`) are then used to determine
+which names in `splist2` correspond to names in `splist1`. Two
+names match when they resolve to the same accepted taxon — regardless of
+whether one or both are synonyms.
+
+The resulting data frame is ordered by `splist1`. When
+`include_all = TRUE`, names present only in `splist2` are appended
+at the end with `NA` in the `Species.List.1` column.
+
+The `Match.Position.2to1` column gives the row index of the matched
+name in `splist2`; use it to re-order `splist2` to align with
+`splist1`:
+`splist2[result$Match.Position.2to1]`.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| splist1 | A character vector of plant names — the reference list. Each element should include at least a genus and a specific epithet, and optionally infraspecific rank, infraspecific epithet, and author name. Only valid characters are allowed (see `base::validEnc`). |
+| splist2 | A character vector of plant names — the list to match against `splist1`. Same format requirements as `splist1`. |
+| version | Character. FFB dataset version to use. Defaults to `"latest"`. Passed to `flora_download` and `flora_parse`. |
+| max_distance | Numeric. Maximum string distance for fuzzy matching. Can be a positive integer (e.g., `2` allows up to 2 edits) or a fraction of the name length (e.g., `0.1` allows 1 edit per 10 characters). Default is `0.2`. |
+| genus_fuzzy | Logical. If `TRUE`, the fuzzy match also applies to the genus (slower). If `FALSE` (default), the genus must match exactly and only the epithet is matched fuzzily. |
+| include_all | Logical. If `TRUE` (default), names found only in `splist2` are appended to the result with `NA` in the `Species.List.1` column. If `FALSE`, only names from `splist1` appear in the output. |
+| identify_dups | Logical. If `TRUE` (default), a `Duplicated.Output.Position` column is added indicating the row position of the first other occurrence of the same `Accepted.taxon.Name`. This occurs when two input names are synonyms of the same accepted taxon. `NA` is returned when there is no duplicate. |
+| show_correct | Logical. If `TRUE`, a `Correct` column is appended indicating whether the input was exactly matched (`TRUE`) or fuzzily matched (`FALSE`) in the `flora_search` results for `splist1`. Default is `TRUE`. |
+| progress_bar | Logical. If `TRUE`, a progress bar is printed during name searches. Default is `TRUE`. |
+| rm_flora_database | Logical. If `TRUE`, the downloaded FFB database folder (`"flora_download"`) is deleted after the search is complete. If `FALSE` (default), the database is kept on disk. Keeping the database is **recommended** because subsequent searches will reuse the existing download, checking if the stored version matches the requested `version`. If the stored version is outdated or different from the requested version, the function automatically re-downloads the correct version. This caching behavior significantly speeds up repeated searches. |
+| verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing and download. If `FALSE`, runs quietly. |
+
+### Value
+
+A data frame with one row per input name (from `splist1` first, then
+any unmatched names from `splist2` when `include_all = TRUE`) and
+the following columns:
+
+  Species.List.1Names from `splist1` (`NA` for rows that
+    come only from `splist2`).
+  Species.List.2The matched name from `splist2`, or `NA`
+    if no match was found.
+  FFB.taxon.IDTaxon ID in the FFB database.
+  Input.GenusGenus extracted from the input name.
+  Input.EpithetSpecific epithet extracted from the input name.
+  taxonRankTaxonomic rank (e.g., `"ESPECIE"`, `"VARIEDADE"`).
+  Input.InfraspecificEpithetInfraspecific epithet if present.
+  scientificNameAuthorshipAuthor citation of the matched taxon.
+  taxonomicStatusFFB taxonomic status: `"NOME_ACEITO"`
+    (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"`.
+  Accepted.taxon.IDID of the accepted name.
+  Accepted.taxon.NameAccepted taxon name resolved from the FFB
+    database.
+  familyPlant family.
+  orderPlant order (when available in the FFB data).
+  Correct(Only when `show_correct = TRUE`) Logical indicating
+    an exact match (`TRUE`) vs. a fuzzy match (`FALSE`) for
+    `splist1`.
+  Match.Position.2to1Row index of the matched name in
+    `splist2`.
+  Duplicated.Output.Position(Only when `identify_dups = TRUE`)
+    Row index of the first other occurrence of the same
+    `Accepted.taxon.Name`, or `NA` if unique.
+
+### Examples
+
+```r
+# Two lists that may overlap or contain synonyms for the same accepted names
+splist1 <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+splist2 <- c("Swartzia simplex var. grandiflora", "Inga edulis",
+              "Mimosa pyrenea")
+
+# Match including all names from both lists (downloads + parses automatically)
+result <- flora_match(splist1, splist2, include_all = TRUE)
+
+# Match including only names from splist1
+result2 <- flora_match(splist1, splist2, include_all = FALSE)
+
+# Re-order splist2 to align with splist1
+splist2[result2$Match.Position.2to1]
+
+# Use a specific FFB version stored in a custom folder
+flora_match(splist1, splist2, version = "393.418")
+
+# Force fresh download by removing cached database after match
+flora_match(splist1, splist2, rm_flora_database = TRUE)
+```
+
+

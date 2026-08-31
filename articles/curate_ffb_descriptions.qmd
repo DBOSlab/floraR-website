@@ -1,0 +1,73 @@
+---
+title: "Curate and describe new records"
+format: html
+---
+
+Here we present a practical guide to the `flora_get_descriptions()` and `flora_build_matrix()` functions of the `floraR` package. Together, they support taxonomic experts curating and updating [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) records, by extracting existing taxon descriptions and turning them into a structured, comparable format.
+
+## `flora_get_descriptions()`: scrape taxon-page descriptions
+
+For each taxon supplied, `flora_get_descriptions()` downloads a printable PDF version of its FFB taxon page, extracts the text, and searches it for two kinds of descriptions: controlled-field descriptions ("Descrição com campos controlados") and free-text descriptions ("Descrição livre").
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `taxa` | A data frame with at least the columns `genus`, `specificEpithet`, and `references` (a link to each taxon's FFB page) — for example, the output of `flora_records()`. |
+| `delay` | Numeric. Seconds to wait for the page to load before capturing the PDF. Default `10`. |
+| `verbose` | Logical. If `TRUE` (default), prints progress messages. |
+
+### Value
+
+A named list with `descriptions_controlled` and `descriptions_free`, each a named list of extracted description text keyed by scientific name. If any taxon page fails to parse, that element instead becomes a two-part list: the successfully extracted descriptions, plus a character vector of the taxa that failed.
+
+### Example
+
+```r
+library(floraR)
+
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonomicStatus = "NOME_ACEITO")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+```
+
+## `flora_build_matrix()`: turn descriptions into a trait matrix
+
+`flora_build_matrix()` converts the description text extracted by `flora_get_descriptions()` into a character matrix — taxa as rows, character states as columns — ready for downstream comparison or trait analysis. It expects the semi-structured description format used on FFB taxon pages, where character categories are separated by periods, category names are separated from their values by colons, and multiple states are separated by semicolons.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `descriptions` | A named list of description strings, typically one element of the output of `flora_get_descriptions()` (e.g. `descriptions[[1]]`). |
+
+### Example
+
+```r
+trait_matrix <- flora_build_matrix(descriptions[[1]])
+```
+
+## Full workflow
+
+```r
+library(floraR)
+
+taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                rank = "genus",
+                                child_rank = "species")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+trait_matrix <- flora_build_matrix(descriptions[[1]])
+```
+
+## Additional Tips
+
+- `flora_get_descriptions()` scrapes live web pages, so it is slower than the other `floraR` functions and should be run on a curated, not overly long, taxon list rather than the whole checklist.
+- Increase `delay` if you notice missing or truncated descriptions — some taxon pages take longer to render before the printable PDF is captured.
+- `flora_build_matrix()` uses the *first* description in the list to define the expected matrix structure and column names, so make sure that first entry follows the standard semi-structured format before running it on the full set.
+
+## See Also
+
+- [Filter and retrieve checklist records](/articles/filter_ffb_records.qmd)
+- [Explore the taxonomic hierarchy](/articles/explore_taxonomic_hierarchy.qmd)

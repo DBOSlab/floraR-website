@@ -1,0 +1,74 @@
+---
+title: 'flora_get_children_taxa'
+description: 'Get child taxa from Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_get_children_taxa()
+```
+
+### Description
+
+Returns all child taxa (species, subspecies, varieties, etc.) for a given
+taxonomic name at a specified rank. Useful for getting all species in a genus,
+all genera in a family, etc.
+
+### Details
+
+The function first finds the parent taxon, then returns all children
+that have the parent's `taxonID` in their lineage.
+
+**Child rank behavior:**
+
+- If `child_rank = NULL`: Returns ALL descendant ranks
+- If `child_rank = "species"`: Returns only species (direct children)
+- If `child_rank = "subspecies"`: Returns only subspecies
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxon_name | Character. Scientific name to search for (e.g., "Luetzelburgia", "Fabaceae", "Magnoliopsida"). |
+| rank | Character. The taxonomic rank of the input name. Options: `"class"`, `"order"`, `"family"`, `"genus"`, `"species"`. Default is `"genus"`. |
+| child_rank | Character or NULL. The taxonomic rank(s) to return as children. If a single rank is provided (e.g., `"species"`), returns only that rank. If `NULL` (default), returns ALL descendant ranks (e.g., for a genus: species, subspecies, varieties, etc.). Options: `"class"`, `"order"`, `"family"`, `"genus"`, `"species"`, `"subspecies"`. |
+| include_synonyms | Logical. If `TRUE`, includes synonym names (`taxonomicStatus == "SINONIMO"`) in addition to accepted names. Default is `FALSE`. |
+| version | Character. FFB dataset version to use. Defaults to `"latest"`. Passed to `flora_download` and `flora_parse`. |
+| rm_flora_database | Logical. If `TRUE`, the downloaded FFB database folder (`"flora_download"`) is deleted after the search is complete. If `FALSE` (default), the database is kept on disk. Keeping the database is **recommended** because subsequent searches will reuse the existing download, checking if the stored version matches the requested `version`. If the stored version is outdated or different from the requested version, the function automatically re-downloads the correct version. This caching behavior significantly speeds up repeated searches. |
+| verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing. If `FALSE`, runs quietly. |
+
+### Value
+
+A data frame containing child taxa that match the requested parent
+  taxon after the applied filters.
+
+### Examples
+
+```r
+# Get all species in a genus (direct children)
+species <- flora_get_children_taxa(
+  taxon_name = "Luetzelburgia",
+  rank = "genus",
+  child_rank = "species"
+)
+
+# Get ALL descendants (species, subspecies, varieties)
+all_descendants <- flora_get_children_taxa(
+  taxon_name = "Luetzelburgia",
+  rank = "genus",
+  child_rank = NULL
+)
+
+# Get all genera in a family (including synonyms)
+genera <- flora_get_children_taxa(
+  taxon_name = "Fabaceae",
+  rank = "family",
+  child_rank = "genus",
+  include_synonyms = TRUE
+)
+```
+
+

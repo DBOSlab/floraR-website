@@ -1,0 +1,71 @@
+---
+title: "Filtrar e recuperar registros da lista de espécies"
+format: html
+---
+
+Aqui apresentamos um guia prático para a função `flora_records()` do pacote `floraR`. Diferente de `flora_search()` e `flora_match()`, que resolvem uma lista de nomes que *você já possui* em relação à lista de espécies, `flora_records()` navega e filtra a lista de espécies da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) diretamente — sem necessidade de uma lista de nomes de entrada.
+
+## Visão Geral da Função
+
+A `flora_records()` baixa e analisa o conjunto de dados da FFB automaticamente (assim como `flora_search()`, reutilizando o cache local em chamadas repetidas), e então aplica a combinação de filtros taxonômicos, geográficos e de atributos que você solicitar. Todos os filtros são combinados com um E lógico, e o resultado sempre tem uma linha por táxon correspondente.
+
+## Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Vetor de caracteres. Um ou mais nomes de família, gênero ou espécie para filtrar (ex.: `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). |
+| `taxonRank` | Vetor de caracteres. Nível(is) taxonômico(s) a manter (ex.: `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). |
+| `taxonomicStatus` | Vetor de caracteres. Status taxonômico da FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso). |
+| `state` | Vetor de caracteres. Estado(s) brasileiro(s), nome completo ou sigla, sem distinção de acentos (ex.: `"Bahia"` ou `"BA"`). |
+| `phytogeographicDomain` | Vetor de caracteres. Domínio(s) fitogeográfico(s) (ex.: `"Caatinga"`, `"Mata Atlantica"`). |
+| `endemism` | Lógico. `TRUE` mantém apenas endemismos brasileiros; `FALSE` mantém apenas não endêmicos. |
+| `lifeForm`, `habitat`, `vegetationType` | Vetores de caracteres. Forma de vida (ex.: `"Arbusto"`), hábitat (ex.: `"Terricola"`) e tipo de vegetação (ex.: `"Cerrado (lato sensu)"`). |
+| `version` | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. |
+| `rm_flora_database` | Lógico. Se `TRUE`, exclui o banco de dados baixado após a busca. O padrão `FALSE` mantém em cache para buscas repetidas mais rápidas. |
+| `verbose` | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+| `save` | Lógico. Se `TRUE`, grava os registros filtrados em um arquivo CSV. |
+| `dir`, `filename` | Onde e com qual nome salvar o CSV quando `save = TRUE`. |
+
+## Navegar por uma família inteira
+
+```r
+library(floraR)
+
+fabaceae <- flora_records(taxon = "Fabaceae",
+                          taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filtrar por estado e endemismo
+
+```r
+bahia_endemics <- flora_records(state = "Bahia",
+                                endemism = TRUE,
+                                taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filtrar por domínio fitogeográfico e forma de vida
+
+```r
+caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
+                                 lifeForm = "Arbusto")
+```
+
+## Salvar o resultado em um arquivo CSV
+
+```r
+flora_records(taxon = "Luetzelburgia",
+             save = TRUE,
+             dir = "flora_records",
+             filename = "luetzelburgia_records")
+```
+
+## Dicas Adicionais
+
+- `taxon` é comparado automaticamente com as colunas `family`, `genus` e `taxonName` — um nome de família terminado em `"aceae"`, um gênero de uma palavra, ou um nome de espécie com múltiplas palavras são detectados e correspondidos apropriadamente.
+- Combine múltiplos filtros livremente: eles sempre são combinados com E lógico, então `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` retorna espécies de Fabaceae endêmicas da Bahia.
+- Se você já possui sua própria lista de espécies para resolver em vez de navegar a lista de espécies por critérios, use [`flora_search()` ou `flora_match()`](/pt/articles/resolve_species_names.qmd).
+
+## Veja Também
+
+- [Analisar arquivos Darwin Core da FFB](/pt/articles/parse_ffb_dwca.qmd)
+- [Resolver sua própria lista de nomes de espécies](/pt/articles/resolve_species_names.qmd)

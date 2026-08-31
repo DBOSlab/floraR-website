@@ -1,6 +1,6 @@
 ---
-title: "Sobre o refloraR"
-subtitle: "Ferramentas de código aberto para explorar coleções de espécimes vegetais do Herbário Virtual Reflora"
+title: "Sobre o floraR"
+subtitle: "Ferramentas de código aberto para acessar, analisar e curar dados da plataforma Flora e Funga do Brasil"
 format:
   html:
     toc: true
@@ -8,7 +8,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -23,50 +23,46 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
 ## Visão Geral
 
-`refloraR` é um pacote R para explorar coleções de espécimes vegetais do [Herbário Virtual Reflora](https://ipt.jbrj.gov.br/reflora), hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj). O pacote interage com o Integrated Publishing Toolkit (IPT) do Reflora, permitindo o download completo de registros de espécimes no formato Darwin Core. Também fornece funções para resumir e filtrar dados por critérios taxonômicos ou geográficos.
+`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). Ele oferece uma interface completa para o [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.
 
-## O Programa Reflora
+Além da recuperação de dados, o `floraR` também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, REFLORA e GBIF.
 
-O Brasil possui a flora mais rica do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). Historicamente, muitos espécimes vegetais foram enviados a herbários europeus durante os séculos XVIII e XIX. Essas coleções fundamentaram inúmeras descrições de espécies e a monumental *Flora brasiliensis* ([Martius, Eichler & Urban, 1840–1906](https://www.biodiversitylibrary.org/bibliography/454)).
+## Flora e Funga do Brasil
 
-Lançado em 2010, o Programa Reflora/CNPq teve como objetivo digitalizar e repatriar informações sobre espécimes vegetais brasileiros armazenados no exterior. Em 2014, o programa se expandiu em parceria com o SiBBr e o IFN. Os dados são publicados pelo [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do).
+O Brasil abriga a maior diversidade de plantas, algas e fungos do mundo ([BFG 2022](https://doi.org/10.1002/tax.12640)). A lista de espécies que a documenta começou em 2008 como a *Lista de Espécies da Flora do Brasil*, evoluiu para o [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) para atender aos compromissos do Brasil com a Estratégia Global para a Conservação das Plantas, e — após a incorporação dos fungos — tornou-se a [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
 
-Desenvolvida pelo [JBRJ](https://www.gov.br/jbrj) e pelo [COPPE/UFRJ](https://coppe.ufrj.br/en/home-en/), a plataforma apoia validação taxonômica e colaboração por meio da iniciativa [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
-
-## O Herbário Virtual Reflora
-
-O Herbário Virtual Reflora foi encomendado pelo CNPq ao JBRJ em 2010 para fornecer dados centralizados, em alta resolução e de acesso público sobre espécimes brasileiros. O sistema replica as principais funções da curadoria de herbários físicos. Curadores podem redeterminar e tipificar espécimes, enquanto taxonomistas contribuem para a validação das espécies. Mais de 900 taxonomistas já contribuíram para a plataforma.
-
-Os parceiros iniciais incluíram os herbários [**K**](https://www.kew.org), [**P**](https://www.mnhn.fr/fr/collection-des-plantes-vasculaires) e [**RB**](https://www.gov.br/jbrj), com apoio posterior do [**SiBBr**](https://www.sibbr.gov.br) e do [**IFN**](https://www.gov.br/florestal/pt-br/assuntos/ifn). A iniciativa continua a digitalizar coleções brasileiras e internacionais.
+Para cada nome aceito, a FFB registra o status nomenclatural, a classificação taxonômica, a distribuição geográfica, o endemismo, a forma de vida, o hábitat e o tipo de vegetação — uma base taxonômica validada, reunida colaborativamente por centenas de taxonomistas e publicada como Arquivos Darwin Core versionados.
 
 ## Descrição do Pacote
 
-Pacote: `refloraR`
+Pacote: `floraR`
 Tipo: Pacote R
 Versão: 1.0.0
 
-Autores: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656)) e Carlos Calderón ([\@caldecid](https://github.com/caldecid) [ORCID](https://orcid.org/0000-0002-3897-4615))
+Autor: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656))
 
 Mantenedor: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
 
 ### Funcionalidades
 
-- Recuperar registros de espécimes por filtros taxonômicos e geográficos
-- Resumir coleções e disponibilidade de dados
-- Compatível com o padrão Darwin Core Archive (DwC-A)
-- Totalmente integrado com fluxos de trabalho do tidyverse
-- Inclui suporte a visualização de dados e mapeamento
+- Interface completa para o portal de dados IPT da Flora e Funga do Brasil
+- Controle de versões e análise de conjuntos de dados DwC-A baixados, com suporte a uso offline
+- Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos
+- Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies
+- Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie
+- Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade
+- Fluxos de trabalho integrados ao tidyverse
 
 ## Contribua
 
-Você pode contribuir com o `refloraR`:
+Você pode contribuir com o `floraR`:
 
 - Abrindo issues para feedback ou relatos de bugs
 - Enviando pull requests com correções ou melhorias
@@ -74,8 +70,8 @@ Você pode contribuir com o `refloraR`:
 
 ## Licença
 
-`refloraR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
+`floraR` é um [software de código aberto](/LICENSE.md). Ferramentas abertas fortalecem a ciência por meio da reprodutibilidade, acessibilidade e compartilhamento equitativo do conhecimento.
 
 ## Agradecimentos
 
-O desenvolvimento do `refloraR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).
+O desenvolvimento do `floraR` é liderado pelo [Jardim Botânico do Rio de Janeiro (JBRJ)](https://www.gov.br/jbrj), em colaboração com as comunidades de biodiversidade e informática. Agradecemos também o apoio financeiro do [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) e da [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br).

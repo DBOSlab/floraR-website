@@ -2,6 +2,7 @@
 (function () {
   'use strict';
 
+  var STORAGE_KEY = 'floraR_lang';
   var IS_PT = /\/pt(\/|$)/.test(window.location.pathname);
 
   function toAbsolute(href) {
@@ -36,6 +37,30 @@
 
     function toEn(absPath) {
       return absPath.replace('/pt/', '/');
+    }
+
+    // ── 0. Persisted language preference: keep the whole site in sync ──────
+    // If the visitor previously chose a language (via the toggle button),
+    // every subsequent page load — reached via nav links, sidebar links,
+    // in-article links, bookmarks, or a typed URL — is redirected to the
+    // equivalent page in that language. This means switching the button
+    // once applies for the whole site, not just the current page.
+    try {
+      var preferred = window.localStorage.getItem(STORAGE_KEY);
+      if (preferred) {
+        var currentLang = IS_PT ? 'pt' : 'en';
+        if (preferred !== currentLang) {
+          var herePath = window.location.pathname;
+          var target = preferred === 'pt' ? toPt(herePath) : toEn(herePath);
+          if (target && target !== herePath) {
+            window.location.replace(target + window.location.search + window.location.hash);
+            return; // stop: the page is navigating away
+          }
+        }
+      }
+    } catch (e) {
+      // localStorage unavailable (e.g. private browsing) — fall back to
+      // the existing per-page toggle behaviour, no persistence.
     }
 
     // ── 1. On PT pages: rewrite internal links to PT equivalents ──────────
@@ -95,6 +120,13 @@
     a.title     = hint;
     a.setAttribute('aria-label', hint);
     a.style.cssText = 'font-weight:700;letter-spacing:.04em;padding-left:.6rem;';
+    a.addEventListener('click', function () {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, IS_PT ? 'en' : 'pt');
+      } catch (e) {
+        // localStorage unavailable — the click still navigates normally.
+      }
+    });
 
     var li = document.createElement('li');
     li.className = 'nav-item';

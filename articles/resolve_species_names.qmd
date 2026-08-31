@@ -1,0 +1,77 @@
+---
+title: "Resolve your own species names"
+format: html
+---
+
+Here we present a practical guide to the `flora_search()` and `flora_match()` functions of the `floraR` package. Unlike [`flora_records()`](/articles/filter_ffb_records.qmd), which browses the checklist itself, these two functions take a list of names *you already have* — from your own herbarium, field survey, or collaborator — and resolve them against the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist.
+
+## `flora_search()`: resolve a single name list
+
+`flora_search()` matches each name in a character vector against the FFB checklist. It tries an exact match first; if none is found, it falls back to a fuzzy (generalized Levenshtein-distance) match, which is what catches typos and minor spelling variants. When several checklist entries could match, the one classified `"NOME_ACEITO"` (accepted) is preferred, so synonyms are automatically resolved to their accepted name.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `splist` | Character vector of plant names to search. |
+| `version` | FFB dataset version to use. Defaults to `"latest"`. |
+| `max_distance` | Maximum edit distance allowed for a fuzzy match — an integer number of edits, or a fraction of name length (e.g. `0.2` allows roughly 1 edit per 5 characters). Default `0.2`. |
+| `show_correct` | If `TRUE`, appends a `Correct` column flagging exact (`TRUE`) vs. fuzzy (`FALSE`) matches. |
+| `genus_fuzzy` | If `FALSE` (default), the genus must match exactly and only the epithet is fuzzily matched — considerably faster for large lists. |
+| `progress_bar` | If `TRUE`, shows a progress bar. |
+| `rm_flora_database` | If `TRUE`, deletes the cached database after searching. Default `FALSE` is recommended for repeated use. |
+
+### Examples
+
+```r
+library(floraR)
+
+# A single accepted name
+flora_search("Mimosa sensitiva")
+
+# A misspelled epithet, flagging exact vs. fuzzy matches
+flora_search("Mimosa sensittiva", max_distance = 0.2, show_correct = TRUE)
+
+# A synonym - resolves to the accepted name automatically
+flora_search("Mimosa pyrenea")
+
+# A whole list at once
+splist <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+flora_search(splist, show_correct = TRUE, progress_bar = TRUE)
+```
+
+## `flora_match()`: compare two independent name lists
+
+`flora_match()` searches two name lists independently with `flora_search()`, then aligns entries from both lists that resolve to the *same accepted taxon* — even when one or both sides used a synonym. This is useful for checking your species list against a collaborator's, or reconciling two datasets that used different nomenclature.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| `splist1`, `splist2` | Character vectors — the reference list and the list to match against it. |
+| `include_all` | If `TRUE` (default), names found only in `splist2` are appended to the result. |
+| `identify_dups` | If `TRUE` (default), flags rows where two input names are synonyms of the same accepted taxon. |
+| `show_correct`, `genus_fuzzy`, `max_distance`, `version`, `rm_flora_database`, `progress_bar` | Same meaning as in `flora_search()`. |
+
+### Example
+
+```r
+splist1 <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+splist2 <- c("Swartzia simplex var. grandiflora", "Inga edulis", "Mimosa pyrenea")
+
+result <- flora_match(splist1, splist2, include_all = TRUE)
+
+# Re-order splist2 to align with splist1
+splist2[result$Match.Position.2to1]
+```
+
+## Additional Tips
+
+- Keep `rm_flora_database = FALSE` (the default) across a session: the first `flora_search()`/`flora_match()` call downloads and parses the FFB dataset, and every subsequent call reuses that cache — repeated searches become nearly instant.
+- Use `show_correct = TRUE` when auditing a name list, so you can review every fuzzy match manually rather than trusting it blindly.
+- `flora_match()`'s `Duplicated.Output.Position` column is useful for spotting when two of your own names turn out to be synonyms of each other.
+
+## See Also
+
+- [Filter and retrieve checklist records](/articles/filter_ffb_records.qmd)
+- [Explore the taxonomic hierarchy](/articles/explore_taxonomic_hierarchy.qmd)

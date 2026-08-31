@@ -1,0 +1,44 @@
+---
+title: 'flora_version'
+description: 'Summarize Available Plant Taxonomic and Distributional Records from Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_version()
+```
+
+### Description
+
+Retrieves and summarizes metadata of the currently available versions of plant
+taxonomic and distributional records from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
+hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
+The metadata includes version number, publication date, number of records, and
+direct access URLs.
+
+### Details
+
+This function accesses the [IPT metadata for the FFB dataset](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+and extracts version information for each published data release. It returns
+a cleaned and structured summary as a data frame.
+
+### Value
+
+A `data.frame` with the following columns:
+
+- `Version`: Version number of the dataset release.
+- `Published_on`: Timestamp of the dataset release.
+- `Records`: Number of plant specimen records in the release.
+- `URL`: Direct link to the dataset version on the IPT portal.
+
+### Examples
+
+```r
+ffb_version <- flora_version()
+  head(ffb_version)
+```
+
+

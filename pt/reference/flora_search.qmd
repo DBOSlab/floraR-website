@@ -1,0 +1,90 @@
+---
+title: 'flora_search'
+description: 'Buscar nomes de plantas no banco de dados da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_search()
+```
+
+### Descrição
+
+Busca um vetor de nomes de plantas no banco de dados taxonômico localmente
+analisado da Flora e Funga do Brasil (FFB), retornando a melhor correspondência
+para cada nome de entrada, junto com seu nome aceito, status taxonômico e
+família. Uma correspondência exata é tentada primeiro; se nenhuma for
+encontrada, o algoritmo recorre a uma busca aproximada dentro da distância
+máxima de Levenshtein especificada.
+
+### Detalhes
+
+A função primeiro tenta uma correspondência exata na coluna `taxonName` da
+tabela de táxons da FFB (um binômio limpo construído a partir do gênero,
+epíteto específico e epíteto infraespecífico por `flora_parse`). Se nenhuma
+correspondência exata for encontrada, é realizada uma correspondência
+aproximada por distância de Levenshtein generalizada. Quando
+`genus_fuzzy = FALSE` (padrão), o gênero deve corresponder exatamente e
+apenas o epíteto é comparado de forma aproximada, o que é consideravelmente
+mais rápido para listas grandes.
+
+Quando várias entradas correspondem, a classificada como
+`"NOME_ACEITO"` (aceito) é preferida.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| splist | Um vetor de caracteres com os nomes de plantas a buscar. Cada elemento deve incluir pelo menos um gênero e um epíteto específico, e opcionalmente um nível infraespecífico, epíteto infraespecífico e nome de autor. Apenas caracteres válidos são permitidos (veja `base::validEnc`). |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `flora_download` e `flora_parse`. |
+| max_distance | Numérico. Distância máxima de string permitida para uma correspondência aproximada, expressa como uma distância de Levenshtein generalizada (inserções, exclusões e substituições). Pode ser um número inteiro positivo (ex.: `2` permite até 2 edições) ou uma fração do comprimento do nome (ex.: `0.1` permite 1 edição a cada 10 caracteres). Padrão `0.2`. |
+| show_correct | Lógico. Se `TRUE`, uma coluna `Correct` é adicionada indicando se a entrada foi correspondida exatamente (`TRUE`) ou de forma aproximada (`FALSE`). Padrão `FALSE`. |
+| genus_fuzzy | Lógico. Se `TRUE`, o algoritmo aproximado também se aplica ao gênero (mais lento). Se `FALSE` (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada. |
+| progress_bar | Lógico. Se `TRUE`, uma barra de progresso é exibida. Padrão `FALSE`. |
+| rm_flora_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"flora_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise e o download. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Um data frame com uma linha por nome de entrada e as seguintes colunas:
+
+- `Search`: O nome de entrada original fornecido pelo usuário.
+- `FFB.taxon.ID`: ID do táxon no banco de dados da FFB (coluna `id`).
+- `taxonRank`: Nível taxonômico (ex.: `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`).
+- `scientificNameAuthorship`: Citação de autor do táxon correspondido.
+- `taxonomicStatus`: Status taxonômico da FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso).
+- `Accepted.taxon.ID`: ID do nome aceito — igual a `FFB.taxon.ID` quando o registro correspondido já é aceito; o ID do pai quando é um sinônimo.
+- `Accepted.taxon.Name`: Nome do táxon aceito resolvido a partir do banco de dados da FFB.
+- `family`: Família da planta.
+- `order`: Ordem da planta (quando disponível nos dados da FFB).
+- `Correct`: (Apenas quando `show_correct = TRUE`) Lógico indicando uma correspondência exata (`TRUE`) vs. uma correspondência aproximada (`FALSE`).
+
+Retorna `NULL` com um aviso se nenhuma correspondência for encontrada para
+qualquer entrada. Linhas para nomes não correspondidos contêm `NA` em todas
+as colunas da FFB.
+
+### Exemplos
+
+```r
+# Buscar um único nome aceito (baixa + analisa automaticamente, armazena o resultado em cache)
+flora_search("Mimosa sensitiva")
+
+# Buscar com um epíteto com erro de digitação; sinalizar correspondências aproximadas
+flora_search("Mimosa sensittiva", max_distance = 0.2, show_correct = TRUE)
+
+# Buscar um sinônimo — o resultado resolve para o nome aceito
+flora_search("Mimosa pyrenea")
+
+# Buscar múltiplos nomes de uma vez
+splist <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+results <- flora_search(splist, progress_bar = TRUE)
+
+# Usar uma versão específica da FFB armazenada em uma pasta personalizada
+flora_search(splist, version = "393.418")
+
+# Forçar um novo download removendo o banco de dados em cache após a busca
+flora_search(splist, rm_flora_database = TRUE)  # Não recomendado para uso repetido
+```

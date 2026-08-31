@@ -1,0 +1,72 @@
+---
+title: 'flora_get_children_taxa'
+description: 'Obter táxons filhos da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_get_children_taxa()
+```
+
+### Descrição
+
+Retorna todos os táxons filhos (espécies, subespécies, variedades etc.) para
+um nome taxonômico especificado em um determinado nível. Útil para obter
+todas as espécies de um gênero, todos os gêneros de uma família, etc.
+
+### Detalhes
+
+A função primeiro encontra o táxon pai, e então retorna todos os filhos
+que têm o `taxonID` do pai em sua linhagem.
+
+**Comportamento do nível filho:**
+
+- Se `child_rank = NULL`: Retorna TODOS os níveis descendentes
+- Se `child_rank = "species"`: Retorna apenas espécies (filhos diretos)
+- Se `child_rank = "subspecies"`: Retorna apenas subespécies
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon_name | Caractere. Nome científico a buscar (ex.: "Luetzelburgia", "Fabaceae", "Magnoliopsida"). |
+| rank | Caractere. O nível taxonômico do nome de entrada. Opções: `"class"`, `"order"`, `"family"`, `"genus"`, `"species"`. Padrão `"genus"`. |
+| child_rank | Caractere ou NULL. O(s) nível(is) taxonômico(s) a retornar como filhos. Se um único nível for fornecido (ex.: `"species"`), retorna apenas esse nível. Se `NULL` (padrão), retorna TODOS os níveis descendentes (ex.: para um gênero: espécies, subespécies, variedades etc.). Opções: `"class"`, `"order"`, `"family"`, `"genus"`, `"species"`, `"subspecies"`. |
+| include_synonyms | Lógico. Se `TRUE`, inclui nomes sinônimos (`taxonomicStatus == "SINONIMO"`) além dos nomes aceitos. Padrão `FALSE`. |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `flora_download` e `flora_parse`. |
+| rm_flora_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"flora_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Um data frame contendo os táxons filhos que correspondem ao táxon pai
+solicitado após os filtros aplicados.
+
+### Exemplos
+
+```r
+# Obter todas as espécies de um gênero (filhos diretos)
+species <- flora_get_children_taxa(
+  taxon_name = "Luetzelburgia",
+  rank = "genus",
+  child_rank = "species"
+)
+
+# Obter TODOS os descendentes (espécies, subespécies, variedades)
+all_descendants <- flora_get_children_taxa(
+  taxon_name = "Luetzelburgia",
+  rank = "genus",
+  child_rank = NULL
+)
+
+# Obter todos os gêneros de uma família (incluindo sinônimos)
+genera <- flora_get_children_taxa(
+  taxon_name = "Fabaceae",
+  rank = "family",
+  child_rank = "genus",
+  include_synonyms = TRUE
+)
+```

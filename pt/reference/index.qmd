@@ -8,7 +8,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -27,14 +27,22 @@ format:
   }
 </style>
 
-## refloraR
+## floraR
 
-- [`reflora_download()`](/pt/reference/reflora_download.qmd)
+- [`flora_build_matrix()`](/pt/reference/flora_build_matrix.qmd)
 
-- [`reflora_indets()`](/pt/reference/reflora_indets.qmd)
+- [`flora_download()`](/pt/reference/flora_download.qmd)
 
-- [`reflora_parse()`](/pt/reference/reflora_parse.qmd)
+- [`flora_get_children_taxa()`](/pt/reference/flora_get_children_taxa.qmd)
 
-- [`reflora_records()`](/pt/reference/reflora_records.qmd)
+- [`flora_get_descriptions()`](/pt/reference/flora_get_descriptions.qmd)
 
-- [`reflora_summary()`](/pt/reference/reflora_summary.qmd)
+- [`flora_match()`](/pt/reference/flora_match.qmd)
+
+- [`flora_parse()`](/pt/reference/flora_parse.qmd)
+
+- [`flora_records()`](/pt/reference/flora_records.qmd)
+
+- [`flora_search()`](/pt/reference/flora_search.qmd)
+
+- [`flora_version()`](/pt/reference/flora_version.qmd)

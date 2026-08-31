@@ -1,16 +1,18 @@
 /*-- scss:defaults --*/
 
+$primary-accent: #2fa08c;
+$link-color: $primary-accent;
+
 // Base document colors
 $body-bg: #181818;
 $body-color: white;
-$link-color: #75AADB;
 
 $light: #525252;
 
 // Navigation element colors
-$footer-bg: #181818;
-$navbar-bg: #303030;
-$sidebar-bg: #303030;
+$navbar-bg: #17332f;
+$sidebar-bg: #17332f;
+$footer-bg: #17332f;
 
 // Code blocks
 $code-block-bg-alpha: -.8;
@@ -32,5 +34,18 @@ $input-bg: #242424;
 .mainbox h2 {
   border-bottom-width: 0px;
   font-weight: lighter;
+}
+
+.stat-card {
+  background: #1d2b1f;
+  border: 1px solid rgba(47, 160, 140, 0.35);
+}
+
+.stat-card .stat-number {
+  color: #2fa08c;
+}
+
+.stat-card .stat-label {
+  color: #cfd8d6;
 }
 

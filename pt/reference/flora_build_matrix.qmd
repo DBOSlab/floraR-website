@@ -1,0 +1,54 @@
+---
+title: 'flora_build_matrix'
+description: 'Construir uma matriz de caracteres a partir de descrições extraídas'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_build_matrix()
+```
+
+### Descrição
+
+Converte o texto de descrição extraído da Flora e Funga do Brasil em uma
+matriz de caracteres, onde as linhas correspondem a táxons e as colunas
+correspondem a estados de caráter analisados a partir das strings de
+descrição.
+
+### Detalhes
+
+Esta função é um wrapper em torno de um analisador interno que remove
+entradas `NULL` e trata a estrutura de saída aninhada retornada por
+`flora_get_descriptions()` quando há falhas presentes.
+
+Se `descriptions` tiver comprimento 2, a função assume que o primeiro
+elemento contém a lista de descrições real e o segundo elemento contém os
+nomes dos táxons que falharam. Em ambos os casos, descrições `NULL` são
+removidas antes que a matriz seja construída.
+
+Espera-se que as strings de descrição sigam um formato semiestruturado no
+qual categorias de caracteres são separadas por pontos, nomes de categoria
+são separados de seus valores por dois-pontos, e múltiplos estados são
+separados por ponto e vírgula. A primeira descrição é usada para definir a
+estrutura esperada da matriz e os nomes das colunas.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| descriptions | Uma lista nomeada de strings de descrição, geralmente uma das saídas de `flora_get_descriptions()`, como `descriptions[[1]]`. Se falhas foram retornadas junto com as descrições, a função usa apenas o componente de descrição extraída. |
+
+### Valor
+
+Uma matriz de caracteres com táxons como linhas e estados de caráter
+analisados como colunas.
+
+### Exemplos
+
+```r
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+mat_control <- flora_build_matrix(descriptions[[1]])
+```

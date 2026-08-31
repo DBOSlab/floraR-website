@@ -1,0 +1,62 @@
+---
+title: "Explorar a hierarquia taxonômica"
+format: html
+---
+
+Aqui apresentamos um guia prático para a função `flora_get_children_taxa()` do pacote `floraR`. Ela recupera todos os táxons filhos — espécies, subespécies, variedades e assim por diante — abaixo de um nome e nível taxonômico especificados, o que é útil para obter todas as espécies de um gênero, todos os gêneros de uma família, e outras travessias de hierarquia semelhantes.
+
+## Visão Geral da Função
+
+A `flora_get_children_taxa()` primeiro localiza o táxon pai na lista de espécies da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), e então retorna todo táxon cuja linhagem inclua o ID de táxon desse pai.
+
+## Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon_name` | Caractere. Nome científico a buscar (ex.: `"Luetzelburgia"`, `"Fabaceae"`, `"Magnoliopsida"`). |
+| `rank` | Caractere. Nível taxonômico de `taxon_name`: `"class"`, `"order"`, `"family"`, `"genus"`, ou `"species"`. Padrão `"genus"`. |
+| `child_rank` | Caractere ou `NULL`. Nível(is) a retornar como filhos. `NULL` (padrão) retorna **todos** os níveis descendentes; um único nível (ex.: `"species"`) restringe o resultado apenas a esse nível. |
+| `include_synonyms` | Lógico. Se `TRUE`, inclui nomes sinônimos além dos aceitos. Padrão `FALSE`. |
+| `version` | Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. |
+| `rm_flora_database` | Se `TRUE`, exclui o banco de dados em cache após a busca. O padrão `FALSE` é recomendado para uso repetido. |
+| `verbose` | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+
+## Obter todas as espécies de um gênero
+
+```r
+library(floraR)
+
+species <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                   rank = "genus",
+                                   child_rank = "species")
+```
+
+## Obter todos os descendentes de um gênero
+
+Espécies, subespécies e variedades juntas:
+
+```r
+all_descendants <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                           rank = "genus",
+                                           child_rank = NULL)
+```
+
+## Obter todos os gêneros de uma família, incluindo sinônimos
+
+```r
+genera <- flora_get_children_taxa(taxon_name = "Fabaceae",
+                                  rank = "family",
+                                  child_rank = "genus",
+                                  include_synonyms = TRUE)
+```
+
+## Dicas Adicionais
+
+- Defina `child_rank = NULL` quando quiser um panorama completo da diversidade de um grupo, incluindo táxons infraespecíficos; defina um único nível (ex.: `"species"`) quando precisar especificamente de uma lista de espécies para uso posterior.
+- `rank` deve descrever corretamente `taxon_name` (ex.: não passe um nome de gênero com `rank = "family"`) — a função busca o pai combinando os dois.
+- Combine com [`flora_records()`](/pt/articles/filter_ffb_records.qmd) quando precisar de filtros geográficos ou de atributos além da travessia de hierarquia (ex.: todas as espécies de um gênero que também sejam endêmicas de um determinado estado).
+
+## Veja Também
+
+- [Resolver sua própria lista de nomes de espécies](/pt/articles/resolve_species_names.qmd)
+- [Curar e descrever novos registros](/pt/articles/curate_ffb_descriptions.qmd)

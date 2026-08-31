@@ -7,7 +7,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -22,22 +22,46 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
 ## Instalar o pacote
 
-Você pode instalar a versão de desenvolvimento mais recente do pacote `refloraR` a partir do [GitHub](https://github.com/DBOSlab/refloraR) da seguinte forma:
+Você pode instalar a versão de desenvolvimento mais recente do pacote `floraR` a partir do [GitHub](https://github.com/DBOSlab/floraR) da seguinte forma:
 
 ```{r}
 #| eval: false
 
-#install.packages("devtools")
-devtools::install_github("DBOSlab/refloraR")
+if (!requireNamespace("BiocManager", quietly = TRUE)) 
+install.packages("BiocManager") 
+
+# Instale a versão de desenvolvimento do floraR a partir do GitHub,
+# juntamente com as dependências necessárias
+BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
 ```
 
 :::{.callout-caution}
-Os passos desta seção só são necessários se você precisar executar [...]. Se já tiver um ambiente configurado [...], pode pular esta seção.
+`floraR` requer R (>= 4.1.0). Se você já tem uma instalação recente do R, pode ir direto para o passo de instalação acima.
 :::
+
+```{r}
+#| eval: false
+
+library(floraR)
+```
+
+## Primeiros Passos
+
+Após a instalação, um bom primeiro passo é verificar quais versões do conjunto de dados da Flora e Funga do Brasil estão atualmente publicadas:
+
+```{r}
+#| eval: false
+
+flora_version()
+```
+
+A maioria das funções — incluindo `flora_records()`, `flora_search()` e `flora_get_children_taxa()` — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar `flora_download()`/`flora_parse()` diretamente, a menos que você queira inspecionar os dados brutos.
+
+A partir daí, navegue pelos [Artigos práticos](/pt/articles/index.qmd) para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e curar novos registros.

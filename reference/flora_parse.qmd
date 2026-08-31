@@ -1,0 +1,75 @@
+---
+title: 'flora_parse'
+description: 'Parse Darwin Core Archive (DwC-A) files from Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_parse()
+```
+
+### Description
+
+Reads and organizes locally downloaded Darwin Core Archive (DwC-A) datasets from the
+*Flora e Funga do Brasil* (FFB) repository, available via the
+[IPT Data Portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
+
+This function processes and cleans FFB DwC-A data by:
+
+- Reading all data tables (e.g., `taxon.txt`, `distribution.txt`, `speciesprofile.txt`) within each versioned DwC-A folder.
+- Generating a unified and standardized taxon name from available name components.
+- Extracting structured data such as endemism status, phytogeographic domains, life forms, habitats, and vegetation types.
+- Returning all cleaned and parsed tables as a list for further analysis, or via `flora_records` and other downstream functions, which reuse the same cached data automatically.
+
+### Details
+
+The function works entirely **offline**, provided that the DwC-A datasets have been
+previously downloaded with `flora_download`.
+It is designed as the second step in the workflow:
+
+1. `flora_download`: to download and store versioned DwC-A files.
+2. `flora_parse`: to parse and structure those files into a ready-to-use list.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| path | Character. Path to the local directory where the versioned FFB DwC-A folders were downloaded (usually created by `flora_download`). |
+| version | Character. One or more specific dataset versions to parse. Accepts: - `"latest"`: parses the most recent dataset available in `path`. - `"all"`: parses all downloaded versions within the specified path. - A version string or vector of versions (e.g., `"393.418"`). |
+| verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing. If `FALSE`, runs quietly. |
+
+### Value
+
+A named list of parsed DwC-A datasets, where each element corresponds to a versioned
+folder (e.g., `"dwca_ffb_v393_418"`).
+Each list element includes:
+
+- `$meta`: metadata describing the dataset structure.
+- `$data`: a nested list of parsed Darwin Core tables, including: - `taxon.txt`: with a new standardized `taxonName` field. - `distribution.txt`: with separate `endemism` and `phytogeographicDomain` columns. - `speciesprofile.txt`: with parsed `lifeForm`, `habitat`, and `vegetationType` information.
+
+### Examples
+
+```r
+# Step 1 - Download latest FFB DwC-A dataset
+flora_download(version = "latest",
+               dir = "flora_download")
+
+# Step 2 - Parse local DwC-A dataset (works offline)
+dwca <- flora_parse(path = "flora_download",
+                    version = "latest")
+
+# Step 3 - Explore parsed data
+names(dwca)
+names(dwca[["dwca_ffb_v393_418"]][["data"]])
+
+# Step 4 - Filter the checklist with flora_records() (downloads/parses
+# automatically and reuses the cached data from Steps 1-2 above)
+records <- flora_records(taxon = "Fabaceae",
+                         taxonomicStatus = "NOME_ACEITO")
+```
+
+

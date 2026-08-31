@@ -1,0 +1,66 @@
+---
+title: 'flora_download'
+description: 'Baixar conjuntos de dados de plantas da plataforma Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_download()
+```
+
+### Descrição
+
+Baixa registros taxonômicos e de distribuição de plantas em formato Darwin Core
+Archive (DwC-A) da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/)
+do [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+A função permite baixar a versão mais recente, versões específicas do conjunto
+de dados, ou todas as versões disponíveis.
+
+### Detalhes
+
+Cada versão do conjunto de dados é obtida diretamente do [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+e salva localmente em uma pasta estruturada. A função verifica se a versão
+solicitada já foi baixada e evita baixá-la novamente sem necessidade.
+
+Para baixar uma versão específica, recomenda-se usar `flora_version()`
+para consultar as versões disponíveis primeiro e extrair a string exata da versão.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| version | Caractere. Especifica qual(is) versão(ões) do conjunto de dados baixar: - `"latest"` (padrão): Baixa a versão mais recente do conjunto de dados. - `"all"`: Baixa todas as versões disponíveis do conjunto de dados (pode exigir bastante espaço em disco). - Uma string de versão específica (ex.: `"393.001"`) ou um vetor de caracteres com versões. Use `flora_version()` para consultar e selecionar números de versão válidos. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas durante o download. Se `FALSE`, executa silenciosamente. |
+| dir | Caractere. Caminho do diretório local para salvar os arquivos baixados. O padrão é criar uma pasta chamada `"flora_download"` no diretório de trabalho. Cada versão do conjunto de dados é extraída em seu próprio subdiretório. |
+
+### Valor
+
+Uma ou mais pastas contendo os arquivos Darwin Core Archive (DwC-A) da(s)
+versão(ões) selecionada(s) do conjunto de dados *Flora e Funga do Brasil*.
+Se não houver conexão com a internet disponível, conjuntos de dados locais
+previamente baixados serão usados automaticamente (se encontrados).
+
+### Exemplos
+
+```r
+# Ver as versões disponíveis do conjunto de dados
+versions_df <- flora_version()
+
+# Baixar o conjunto de dados mais recente
+flora_download()
+
+# Baixar uma versão específica
+flora_download(version = versions_df$Version[1])
+
+# Baixar múltiplas versões
+flora_download(version = c("393.001", "392.002"))
+
+# Baixar todas as versões (download grande!)
+flora_download(version = "all")
+
+# Trabalhar offline (usa dados previamente baixados, se disponíveis)
+flora_download(version = "latest", dir = "flora_download")
+```

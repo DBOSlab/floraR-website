@@ -1,6 +1,6 @@
 ---
-title: "About refloraR"
-subtitle: "Open source tools to explore plant specimen collections from Reflora Virtual Herbarium"
+title: "About floraR"
+subtitle: "Open source tools for accessing, analyzing, and curating data from the Flora e Funga do Brasil platform"
 format:
   html:
     toc: true
@@ -8,7 +8,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -23,50 +23,46 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8); /* white with 80% opacity */
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
 ## Overview
 
-`refloraR` is an R package for exploring plant specimen collections from the [Reflora Virtual Herbarium](https://ipt.jbrj.gov.br/reflora), hosted by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj). The package interacts with the Reflora Integrated Publishing Toolkit (IPT) by readily downloading full specimen records in Darwin Core Format. It also provides functions to summarize and filter data by taxonomic or geographical criteria.
+`floraR` is an R package for accessing, analyzing, and curating taxonomic and distributional data from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br). It offers a comprehensive interface to the FFB [IPT data portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): downloading, parsing, filtering, and exploring versioned Darwin Core Archive (DwC-A) checklist data — from browsing by taxonomic, geographic, or trait criteria to resolving your own species name lists against it.
 
-## The Reflora Programme
+Beyond data retrieval, `floraR` also assists taxonomic experts contributing to FFB by simplifying the integration of new species names and records from global biodiversity repositories such as IPNI, REFLORA, and GBIF.
 
-Brazil holds the richest plant diversity in the world ([BFG 2022](https://doi.org/10.1002/tax.12640)). Historically, many plant specimens were sent to European herbaria during the 18th–19th centuries. These collections formed the basis for many species descriptions and the monumental *Flora brasiliensis* ([Martius, Eichler & Urban, 1840–1906](https://www.biodiversitylibrary.org/bibliography/454)).
+## Flora e Funga do Brasil
 
-Launched in 2010, the Reflora/CNPq Programme aimed to digitize and repatriate information on Brazilian plant specimens stored abroad. In 2014, the programme expanded in partnership with SiBBr and IFN. The data are published via the [Reflora Virtual Herbarium](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/ConsultaPublicoHVUC/ConsultaPublicoHVUC.do).
+Brazil harbors the richest plant, algal, and fungal diversity in the world ([BFG 2022](https://doi.org/10.1002/tax.12640)). The checklist that documents it began in 2008 as the *Lista de Espécies da Flora do Brasil*, evolved into [Flora do Brasil 2020](http://doi.org/10.47871/jbrj2021004) to meet Brazil's Global Strategy for Plant Conservation commitments, and — after incorporating fungi — became [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/).
 
-Developed by the [JBRJ](https://www.gov.br/jbrj) and [COPPE/UFRJ](https://coppe.ufrj.br/en/home-en/), the platform supports taxonomic validation and collaboration via the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) initiative.
-
-## The Reflora Virtual Herbarium
-
-The Reflora Virtual Herbarium was commissioned by CNPq to JBRJ in 2010 to provide centralized, high-resolution, publicly accessible data on Brazilian specimens. It replicates key functions of physical herbarium curation. Curators can re-determine and typify specimens, while taxonomists contribute to species validation. Over 900 taxonomists have contributed to the platform.
-
-Early partners included herbaria [**K**](https://www.kew.org), [**P**](https://www.mnhn.fr/fr/collection-des-plantes-vasculaires), and [**RB**](https://www.gov.br/jbrj), with later support from [**SiBBr**](https://www.sibbr.gov.br) and [**IFN**](https://www.gov.br/florestal/pt-br/assuntos/ifn). The initiative continues to digitize Brazilian and international collections.
+For each accepted name, FFB records nomenclatural status, taxonomic classification, geographic distribution, endemism, life form, habitat, and vegetation type — a validated taxonomic backbone assembled collaboratively by hundreds of taxonomists and published as versioned Darwin Core Archives.
 
 ## Package Description
 
-Package: `refloraR`  
-Type: R Package  
-Version: 1.0.0  
+Package: `floraR`
+Type: R Package
+Version: 1.0.0
 
-Authors: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656)) and Carlos Calderón ([\@caldecid](https://github.com/caldecid) [ORCID](https://orcid.org/0000-0002-3897-4615))
+Author: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656))
 
 Maintainer: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
 
 ### Features
 
-- Retrieve specimen records by taxonomic/geographic filters
-- Summarize collections and data availability
-- Supports Darwin Core Archive (DwC-A) standards
-- Fully integrates with tidyverse workflows
-- Includes data visualization and mapping support
+- Comprehensive interface to the Flora e Funga do Brasil IPT data portal
+- Version tracking and offline-capable parsing of downloaded DwC-A datasets
+- Checklist filtering by taxonomic, geographic, and trait-based criteria
+- Exact and fuzzy (Levenshtein-distance) name resolution against the checklist
+- Taxonomic hierarchy traversal at any rank, from class down to species
+- Tools for data curation and integration with global biodiversity repositories
+- Tidyverse-integrated workflows throughout
 
 ## Contribute
 
-You can contribute to `refloraR` by:
+You can contribute to `floraR` by:
 
 - Opening issues for feedback or bug reports
 - Submitting pull requests for fixes or enhancements
@@ -74,8 +70,8 @@ You can contribute to `refloraR` by:
 
 ## License
 
-`refloraR` is [open source software](/LICENSE.md). Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing.
+`floraR` is [open source software](/LICENSE.md). Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing.
 
 ## Acknowledgements
 
-Development of `refloraR` is led by the [Rio de Janeiro Botanical Garden (JBRJ)](https://www.gov.br/jbrj), in collaboration with the biodiversity and informatics communities. We also gratefully acknowledge the financial support provided by [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br), Brazil's National Council for Scientific and Technological Development, and [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br), Brazil's Funding Authority for Studies and Projects.
+Development of `floraR` is led by the [Rio de Janeiro Botanical Garden (JBRJ)](https://www.gov.br/jbrj), in collaboration with the biodiversity and informatics communities. We also gratefully acknowledge the financial support provided by [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br), Brazil's National Council for Scientific and Technological Development, and [FINEP - Financiadora de Estudos e Projetos](https://www.gov.br/finep/pt-br), Brazil's Funding Authority for Studies and Projects.

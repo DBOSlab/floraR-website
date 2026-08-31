@@ -1,41 +1,50 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# refloraR <img src="figures/reflorar_hex_sticker.png" align="right" width="120" />
+# floraR <img src="figures/floraR_hex_sticker.png" align="right" width="120" />
 
 <!-- badges: start -->
 
 [![Codecov test
-coverage](https://codecov.io/gh/DBOSlab/refloraR/graph/badge.svg)](https://app.codecov.io/gh/DBOSlab/refloraR)
+coverage](https://codecov.io/gh/DBOSlab/floraR/graph/badge.svg)](https://app.codecov.io/gh/DBOSlab/floraR)
 [![Test
-Coverage](https://github.com/DBOSlab/refloraR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/DBOSlab/refloraR/actions/workflows/test-coverage.yaml)
-[![CRAN
-Downloads](https://cranlogs.r-pkg.org/badges/grand-total/refloraR)](https://cran.r-project.org/package=refloraR)
-[![R-CMD-check](https://github.com/DBOSlab/refloraR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DBOSlab/refloraR/actions/workflows/R-CMD-check.yaml)
+Coverage](https://github.com/DBOSlab/floraR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/DBOSlab/floraR/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/DBOSlab/floraR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DBOSlab/floraR/actions/workflows/R-CMD-check.yaml)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 <!-- badges: end -->
 
-`refloraR` is an R package for accessing and analyzing plant specimen
-data from the [Reflora Virtual
-Herbarium](https://reflora.jbrj.gov.br/reflora/herbarioVirtual/), hosted
-by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br).
-It provides tools for downloading, summarizing, and filtering herbarium
-records in Darwin Core Archive (DwC-A) format via the [Reflora
-IPT](https://ipt.jbrj.gov.br/reflora/).
+`floraR` is an R package for accessing, analyzing, and curating
+taxonomic and distributional data from the [Flora e Funga do Brasil
+(FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained
+by the Rio de Janeiro Botanical Garden. It provides a comprehensive
+interface to download, parse, filter, and explore Darwin Core Archive
+(DwC-A) datasets from the [FFB
+IPT](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+data portal — from browsing the checklist by taxonomic/geographic/trait
+criteria to resolving and matching your own species name lists against
+it.
+
+The package is designed to streamline both data exploration for
+researchers and data curation workflows for taxonomic experts
+contributing to the Flora e Funga do Brasil.
 
 ## Installation
 
-You can install the development version of `refloraR` from
-[GitHub](https://github.com/DBOSlab/refloraR) with:
+You can install the development version of `floraR` from
+[GitHub](https://github.com/DBOSlab/floraR) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("DBOSlab/refloraR")
+if (!requireNamespace("BiocManager", quietly = TRUE)) 
+install.packages("BiocManager") 
+
+# Install the development version of floraR from GitHub, 
+# together with its required dependencies 
+BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
 ```
 
 ``` r
-library(refloraR)
+library(floraR)
 ```
 
   
@@ -43,76 +52,244 @@ library(refloraR)
 
 ## Usage
 
-A general description of the available main functions
-(`reflora_download` and `reflora_summary`) that extract original Reflora
-collections are provided below.  
+`floraR` supports a full workflow for working with Flora e Funga do
+Brasil data:
+
+- Check available versions with `flora_version()`
+- Download datasets with `flora_download()`
+- Parse datasets with `flora_parse()`
+- Filter and retrieve checklist records with `flora_records()`
+- Resolve your own species names against the checklist with
+  `flora_search()` and `flora_match()`
+- Explore the taxonomic hierarchy with `flora_get_children_taxa()`
+- Curate new records with `flora_get_descriptions()` and
+  `flora_build_matrix()`
+
+Most functions download and parse the FFB dataset automatically and
+cache it locally, so you rarely need to call
+`flora_download()`/`flora_parse()` yourself unless you want to inspect
+the raw data directly.  
   
 
-#### *1. `reflora_summary`: Summarizing Reflora collections*
+#### *1. `flora_version`: Check available dataset versions*
 
-The following code can be used to extract a summary of all
-Reflora-associated collections, including herbarium acronym, curator’s
-email contact, number of records and a direct link to the original
-Reflora Integrated Publishing Toolkit
-([IPT](https://ipt.jbrj.gov.br/reflora)).  
+Get metadata about available Flora e Funga do Brasil dataset versions,
+including version numbers, release dates, and whether they are the
+latest version.  
 
 ``` r
-library(refloraR)
+library(floraR)
 
-summary_df <- reflora_summary(verbose = TRUE,
-                              save = TRUE,
-                              dir = "reflora_summary")
-```
+# Get all available versions
+versions_df <- flora_version()
+head(versions_df)
 
-  
-By specifying a vector of herbarium acronyms, the user can extract a
-summary for just the specific herbarium collection.  
-
-``` r
-summary_some_df <- reflora_summary(herbarium = c("ALCB", "RB", "HUEFS", "US", "K"),
-                                   verbose = TRUE,
-                                   save = TRUE,
-                                   dir = "reflora_summary")
-```
-
-  
-  
-
-#### *2. `reflora_download`: Downloading Reflora specimen records*
-
-The following code can be used to download original specimen records in
-DwC-A format and associated metada for all Reflora collections.  
-
-``` r
-library(refloraR)
-
-reflora_download(verbose = TRUE,
-                 dir = "reflora_download")
-```
-
-  
-By specifying a vector of herbarium acronyms, the user can download
-specimens records for just the specific herbarium collection.  
-
-``` r
-reflora_download(herbarium = c("ALCB", "HUEFS", "RB", "US", "K"),
-                 verbose = TRUE,
-                 dir = "reflora_download")
+# View specific version details
+versions_df[versions_df$Latest == TRUE, ]
 ```
 
   
   
+
+#### *2. `flora_download`: Download Flora e Funga do Brasil datasets*
+
+Download taxonomic and distributional records in Darwin Core Archive
+(DwC-A) format. The function supports downloading the latest version,
+specific versions, or all available versions.  
+
+``` r
+library(floraR)
+
+# Download the latest dataset version (default)
+flora_download(dir = "flora_download")
+
+# Download a specific version
+flora_download(version = "393.418", dir = "flora_download")
+
+# Download multiple versions
+flora_download(version = c("393.418", "392.417"), dir = "flora_download")
+
+# Download all available versions (large download!)
+flora_download(version = "all", dir = "flora_download")
+```
+
+  
+  
+
+#### *3. `flora_parse`: Parse downloaded DwC-A datasets*
+
+Parse and organize locally downloaded Flora e Funga do Brasil datasets
+for analysis. This function works offline once datasets are downloaded,
+and returns a named list with a `taxon.txt`, `distribution.txt`, and
+`speciesprofile.txt` table (among others) per downloaded version.  
+
+``` r
+library(floraR)
+
+# Parse the latest downloaded version
+dwca_data <- flora_parse(path = "flora_download",
+                         version = "latest")
+
+# View structure of the parsed data
+names(dwca_data)
+names(dwca_data[["dwca_ffb_v393_418"]][["data"]])
+
+# Access specific data tables directly
+taxon_data <- dwca_data[["dwca_ffb_v393_418"]][["data"]][["taxon.txt"]]
+distribution_data <- dwca_data[["dwca_ffb_v393_418"]][["data"]][["distribution.txt"]]
+```
+
+  
+  
+
+#### *4. `flora_records`: Filter and retrieve checklist records*
+
+Browse and filter the FFB checklist directly by taxonomic, geographic,
+and trait-based criteria — no input name list required. Downloads and
+parses the dataset automatically (like `flora_search()`, reusing the
+local cache on repeated calls).  
+
+``` r
+library(floraR)
+
+# All accepted species in Fabaceae
+fabaceae <- flora_records(taxon = "Fabaceae",
+                          taxonomicStatus = "NOME_ACEITO")
+
+# Accepted species endemic to Bahia
+bahia_endemics <- flora_records(state = "Bahia",
+                                endemism = TRUE,
+                                taxonomicStatus = "NOME_ACEITO")
+
+# Species in the Caatinga with a shrub life form
+caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
+                                 lifeForm = "Arbusto")
+
+# Save the result to a CSV file
+flora_records(taxon = "Luetzelburgia", save = TRUE, dir = "flora_records")
+```
+
+  
+  
+
+#### *5. `flora_search` and `flora_match`: Resolve your own species names*
+
+Unlike `flora_records()`, which browses the checklist itself,
+`flora_search()` and `flora_match()` take a list of names *you already
+have* (e.g. from your own herbarium or field data) and resolve them
+against the FFB checklist — with exact matching first, then fuzzy
+(Levenshtein-distance) matching as a fallback for typos.  
+
+``` r
+library(floraR)
+
+# Resolve a single name (synonyms are resolved to their accepted name)
+flora_search("Mimosa pyrenea")
+
+# Resolve a list, flagging exact vs. fuzzy matches
+splist <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edullis")
+flora_search(splist, show_correct = TRUE, progress_bar = TRUE)
+
+# Compare two independent name lists, aligning names that resolve to the
+# same accepted taxon (e.g. checking your list against a collaborator's)
+splist1 <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+splist2 <- c("Swartzia simplex var. grandiflora", "Inga edulis", "Mimosa pyrenea")
+flora_match(splist1, splist2, include_all = TRUE)
+```
+
+  
+  
+
+#### *6. `flora_get_children_taxa`: Explore the taxonomic hierarchy*
+
+Retrieve all child taxa (species, subspecies, varieties, genera, etc.)
+below a given taxonomic name and rank — useful for getting every species
+in a genus, every genus in a family, and so on.  
+
+``` r
+library(floraR)
+
+# All species in a genus
+flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                        rank = "genus",
+                        child_rank = "species")
+
+# All genera in a family, including synonyms
+flora_get_children_taxa(taxon_name = "Fabaceae",
+                        rank = "family",
+                        child_rank = "genus",
+                        include_synonyms = TRUE)
+```
+
+  
+  
+
+## Data Curation Workflow
+
+`floraR` also supports taxonomic experts in curating and updating Flora
+e Funga do Brasil records. The package facilitates integration of new
+species names and records from global biodiversity repositories such as
+IPNI, REFLORA, and GBIF.
+
+`flora_get_descriptions()` scrapes the controlled-field and free-text
+descriptions from FFB taxon pages, and `flora_build_matrix()` turns the
+extracted descriptions into a character matrix (taxa x character states)
+ready for downstream comparison or trait analysis:  
+
+``` r
+library(floraR)
+
+taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                rank = "genus",
+                                child_rank = "species")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+trait_matrix <- flora_build_matrix(descriptions[[1]])
+```
+
+  
+  
+
+## Key Features
+
+- Comprehensive Data Access: Direct interface to the Flora e Funga do
+  Brasil IPT data portal
+- Version Control: Track and download specific dataset versions
+- Offline Capability: Parse and analyze downloaded data without internet
+  connection
+- Checklist Filtering: Browse and filter the FFB checklist by taxonomic,
+  geographic, and trait-based criteria without an input name list
+- Name Resolution: Exact and fuzzy matching of your own species lists
+  against the FFB checklist, including synonym resolution
+- Taxonomic Hierarchy: Retrieve child taxa at any rank, from class down
+  to species
+- Data Cleaning: Automated parsing and standardization of DwC-A fields
+- Taxonomic Workflows: Tools for data curation and integration with
+  global repositories
+- Tidyverse Integration: Seamless integration with dplyr, tidyr, and
+  other tidyverse packages  
+    
 
 ## Documentation
 
-Full function documentation and articles are available at the `refloraR`
-[website](https://dboslab.github.io/refloraR-website/).  
+Full function documentation and articles are available at the `floraR`
+[website](https://dboslab.github.io/floraR-website/).  
   
 
 ## Citation
 
-Calderón del Cid, C.; Versiane, A.F.A.; Leitman, P.; Filardi, F.R.;
-Forzza, R.C. & Cardoso, D. 2026. *refloraR*: An R package for
-efficiently retrieving and analyzing plant specimen data from the
-Reflora Virtual Herbarium. Applications in Plant Sciences.
-<https://github.com/dboslab/refloraR>
+Cardoso, D. 2026. floraR: An R Package for Accessing, Analyzing, and
+Curating Data from the Flora e Funga do Brasil Platform.
+<https://github.com/dboslab/floraR>  
+  
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request or
+open an issue on [GitHub](https://github.com/DBOSlab/floraR/issues).  
+  
+
+## License
+
+`floraR` is released under the MIT license. See the LICENSE file for
+more details.

@@ -1,0 +1,84 @@
+---
+title: 'flora_records'
+description: 'Recuperar registros de táxons da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_records()
+```
+
+### Descrição
+
+Recupera e filtra registros de táxons vegetais do banco de dados taxonômico
+localmente analisado da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/),
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+Diferente de `flora_search`, que resolve uma lista de nomes de espécies
+que você já possui em relação ao banco de dados da FFB, `flora_records()`
+navega e filtra a própria lista de espécies da FFB por critérios taxonômicos,
+geográficos e de atributos; nenhuma lista de nomes de entrada é necessária.
+
+### Detalhes
+
+A função baixa (se necessário) e analisa o conjunto de dados da FFB exatamente
+como `flora_search`, e então aplica os filtros solicitados:
+
+- `taxon` é comparado com as colunas `family`, `genus` e `taxonName` da tabela de táxons da FFB (nomes de família terminados em `"aceae"`, nomes de gênero de uma palavra, e nomes de espécie com múltiplas palavras são detectados automaticamente).
+- `taxonRank` e `taxonomicStatus` são comparados diretamente com a tabela de táxons.
+- `state`, `phytogeographicDomain` e `endemism` são comparados com a tabela de distribuição da FFB (`distribution.txt`).
+- `lifeForm`, `habitat` e `vegetationType` são comparados com a tabela de perfil de espécies da FFB (`speciesprofile.txt`).
+
+Todos os filtros são combinados com um E lógico. O resultado sempre tem uma
+linha por táxon correspondente (filtros geográficos/de atributos restringem
+*quais* táxons são retornados, eles não multiplicam linhas).
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Vetor de caracteres. Um ou mais nomes de família, gênero ou espécie para filtrar (ex.: `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). `NULL` (padrão) não filtra por táxon. |
+| taxonRank | Vetor de caracteres. Nível(is) taxonômico(s) a manter (ex.: `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). `NULL` (padrão) mantém todos os níveis. |
+| taxonomicStatus | Vetor de caracteres. Status taxonômico da FFB a manter: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso). `NULL` (padrão) mantém todos os status. |
+| state | Vetor de caracteres. Estado(s) brasileiro(s) - nome completo ou sigla, sem distinção de acentos (ex.: `"Bahia"` ou `"BA"`) - para filtrar por ocorrência, com base na tabela de distribuição da FFB. `NULL` (padrão) não filtra por estado. |
+| phytogeographicDomain | Vetor de caracteres. Domínio(s) fitogeográfico(s) para filtrar (ex.: `"Caatinga"`, `"Mata Atlantica"`). `NULL` (padrão) não filtra por domínio. |
+| endemism | Lógico. Se `TRUE`, mantém apenas táxons marcados como endêmicos do Brasil; se `FALSE`, mantém apenas não endêmicos. `NULL` (padrão) não filtra por endemismo. |
+| lifeForm, habitat, vegetationType | Vetores de caracteres. Forma de vida (ex.: `"Arbusto"`, `"Arvore"`), hábitat (ex.: `"Terricola"`) e tipo de vegetação (ex.: `"Cerrado (lato sensu)"`) para filtrar, com base na tabela de perfil de espécies da FFB. `NULL` (padrão) não filtra. |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `flora_download` e `flora_parse`. |
+| rm_flora_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"flora_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco e reutilizado em chamadas subsequentes, o que acelera significativamente consultas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante o download e a análise. Se `FALSE`, executa silenciosamente. |
+| save | Lógico. Se `TRUE`, os registros filtrados são salvos em disco como um arquivo CSV. Padrão `FALSE`. |
+| dir | Caractere. Diretório onde o arquivo CSV será salvo quando `save = TRUE`. Padrão `"flora_records"`. |
+| filename | Caractere. Nome do arquivo CSV (sem extensão) a salvar quando `save = TRUE`. Padrão `"flora_records_search"`. |
+
+### Valor
+
+Um `data.frame` com os registros de táxons da FFB correspondentes aos
+filtros solicitados, com uma linha por táxon. Se `save = TRUE`, o resultado
+também é gravado em `<dir>/<filename>.csv`.
+
+### Exemplos
+
+```r
+# Todas as espécies aceitas em Fabaceae (baixa + analisa automaticamente, armazena o resultado em cache)
+fabaceae <- flora_records(taxon = "Fabaceae",
+                          taxonomicStatus = "NOME_ACEITO")
+
+# Espécies aceitas endêmicas da Bahia
+bahia_endemics <- flora_records(state = "Bahia",
+                                endemism = TRUE,
+                                taxonomicStatus = "NOME_ACEITO")
+
+# Espécies na Caatinga com forma de vida arbustiva
+caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
+                                 lifeForm = "Arbusto")
+
+# Usar uma versão específica da FFB armazenada em uma pasta personalizada, e salvar o resultado
+flora_records(taxon = "Luetzelburgia",
+             version = "393.418",
+             save = TRUE,
+             dir = "flora_records",
+             filename = "luetzelburgia_records")
+```

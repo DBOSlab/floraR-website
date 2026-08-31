@@ -1,0 +1,62 @@
+---
+title: "Explore the taxonomic hierarchy"
+format: html
+---
+
+Here we present a practical guide to the `flora_get_children_taxa()` function of the `floraR` package. It retrieves all child taxa — species, subspecies, varieties, and so on — below a given taxonomic name and rank, which is useful for getting every species in a genus, every genus in a family, and similar hierarchy traversals.
+
+## Function Overview
+
+`flora_get_children_taxa()` first locates the parent taxon in the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist, then returns every taxon whose lineage includes that parent's taxon ID.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon_name` | Character. Scientific name to search for (e.g. `"Luetzelburgia"`, `"Fabaceae"`, `"Magnoliopsida"`). |
+| `rank` | Character. Taxonomic rank of `taxon_name`: `"class"`, `"order"`, `"family"`, `"genus"`, or `"species"`. Default `"genus"`. |
+| `child_rank` | Character or `NULL`. Rank(s) to return as children. `NULL` (default) returns **all** descendant ranks; a single rank (e.g. `"species"`) restricts the result to that rank only. |
+| `include_synonyms` | Logical. If `TRUE`, includes synonym names in addition to accepted ones. Default `FALSE`. |
+| `version` | FFB dataset version to use. Defaults to `"latest"`. |
+| `rm_flora_database` | If `TRUE`, deletes the cached database after the search. Default `FALSE` is recommended for repeated use. |
+| `verbose` | Logical. If `TRUE` (default), prints progress messages. |
+
+## Get all species in a genus
+
+```r
+library(floraR)
+
+species <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                   rank = "genus",
+                                   child_rank = "species")
+```
+
+## Get every descendant of a genus
+
+Species, subspecies, and varieties together:
+
+```r
+all_descendants <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                           rank = "genus",
+                                           child_rank = NULL)
+```
+
+## Get all genera in a family, including synonyms
+
+```r
+genera <- flora_get_children_taxa(taxon_name = "Fabaceae",
+                                  rank = "family",
+                                  child_rank = "genus",
+                                  include_synonyms = TRUE)
+```
+
+## Additional Tips
+
+- Set `child_rank = NULL` when you want a complete picture of a group's diversity, including infraspecific taxa; set it to a single rank (e.g. `"species"`) when you specifically need a species-level checklist for downstream work.
+- `rank` must correctly describe `taxon_name` (e.g. don't pass a genus name with `rank = "family"`) — the function looks up the parent by matching both together.
+- Combine with [`flora_records()`](/articles/filter_ffb_records.qmd) when you need geographic or trait filters in addition to hierarchy traversal (e.g. all species in a genus that are also endemic to a given state).
+
+## See Also
+
+- [Resolve your own species names](/articles/resolve_species_names.qmd)
+- [Curate and describe new records](/articles/curate_ffb_descriptions.qmd)

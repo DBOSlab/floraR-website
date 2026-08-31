@@ -9,7 +9,7 @@ resources:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -24,7 +24,7 @@ resources:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 
@@ -40,7 +40,7 @@ resources:
   }
 </style>
 
-## Os Desenvolvedores do `refloraR`
+## O Desenvolvedor do `floraR`
 
 ```{=html}
 <div class="authors-group">
@@ -54,27 +54,14 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0001-7072-2656" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/2228981567893077" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Taxonomista e bioinformata líder do pacote refloraR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
-    </div>
-  </div>
-
-  <div class="author-card">
-    <img src="/authors/images/carlos.jpg" alt="Carlos Calderón" class="author-photo" />
-    <div class="author-info">
-      <h3 class="author-name">Carlos Calderón</h3>
-      <p>
-        <a class="icon-link" href="mailto:caldecid@gmail.com"><img src="/authors/images/email.png" alt="Email"/></a>
-        <a class="icon-link" href="https://orcid.org/0000-0002-3897-4615" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
-        <a class="icon-link" href="http://lattes.cnpq.br/3331732061175660" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
-      </p>
-      <p>Bioinformata que contribui para o pacote refloraR, com foco no design e implementação dos fluxos de trabalho das funções</p>
+      <p>Taxonomista e bioinformata, autor e mantenedor do pacote floraR, responsável pelo design e codificação das funções, bem como pelo desenvolvimento do site do projeto</p>
     </div>
   </div>
 
 </div>
 ```
 
-## A Equipe Reflora
+## A Equipe da Flora e Funga do Brasil
 
 ```{=html}
 <div class="authors-group">
@@ -88,7 +75,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0002-7035-9313" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/6249814039461102" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Taxonomista sênior e coordenadora da iniciativa Reflora no Brasil</p>
+      <p>Taxonomista sênior e coordenadora da iniciativa Flora e Funga do Brasil</p>
     </div>
   </div>
 
@@ -101,7 +88,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0002-2997-3784" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/6097135982786067" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Especialista em integração de dados de biodiversidade e membro da equipe Reflora</p>
+      <p>Especialista em integração de dados de biodiversidade e membro da equipe da Flora e Funga do Brasil</p>
     </div>
   </div>
 
@@ -114,7 +101,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0002-0372-4325" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/5902829568480499" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Especialista em integração de dados de biodiversidade e membro da equipe Reflora</p>
+      <p>Especialista em integração de dados de biodiversidade e membro da equipe da Flora e Funga do Brasil</p>
     </div>
   </div>
 
@@ -127,7 +114,7 @@ resources:
         <a class="icon-link" href="https://orcid.org/0000-0001-9634-0365" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
         <a class="icon-link" href="http://lattes.cnpq.br/1843612090689191" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
       </p>
-      <p>Pesquisadora associada que contribui para a curadoria de dados do Reflora</p>
+      <p>Pesquisadora associada que contribui para a curadoria de dados da Flora e Funga do Brasil</p>
     </div>
   </div>
 

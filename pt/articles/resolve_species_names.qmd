@@ -1,0 +1,77 @@
+---
+title: "Resolver sua própria lista de nomes de espécies"
+format: html
+---
+
+Aqui apresentamos um guia prático para as funções `flora_search()` e `flora_match()` do pacote `floraR`. Diferente de [`flora_records()`](/pt/articles/filter_ffb_records.qmd), que navega pela própria lista de espécies, essas duas funções recebem uma lista de nomes que *você já possui* — de um herbário próprio, levantamento de campo ou colaborador — e a resolvem em relação à lista de espécies da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/).
+
+## `flora_search()`: resolver uma única lista de nomes
+
+A `flora_search()` compara cada nome de um vetor de caracteres com a lista de espécies da FFB. Ela tenta uma correspondência exata primeiro; se nenhuma for encontrada, recorre a uma correspondência aproximada (distância de Levenshtein generalizada), que é o que captura erros de digitação e pequenas variações ortográficas. Quando várias entradas da lista de espécies poderiam corresponder, a classificada como `"NOME_ACEITO"` (aceito) é preferida, de modo que sinônimos são automaticamente resolvidos para seu nome aceito.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `splist` | Vetor de caracteres com os nomes de plantas a buscar. |
+| `version` | Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. |
+| `max_distance` | Distância máxima de edição permitida para uma correspondência aproximada — um número inteiro de edições, ou uma fração do comprimento do nome (ex.: `0.2` permite aproximadamente 1 edição a cada 5 caracteres). Padrão `0.2`. |
+| `show_correct` | Se `TRUE`, adiciona uma coluna `Correct` sinalizando correspondências exatas (`TRUE`) vs. aproximadas (`FALSE`). |
+| `genus_fuzzy` | Se `FALSE` (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada — consideravelmente mais rápido para listas grandes. |
+| `progress_bar` | Se `TRUE`, exibe uma barra de progresso. |
+| `rm_flora_database` | Se `TRUE`, exclui o banco de dados em cache após a busca. O padrão `FALSE` é recomendado para uso repetido. |
+
+### Exemplos
+
+```r
+library(floraR)
+
+# Um único nome aceito
+flora_search("Mimosa sensitiva")
+
+# Um epíteto com erro de digitação, sinalizando correspondências exatas vs. aproximadas
+flora_search("Mimosa sensittiva", max_distance = 0.2, show_correct = TRUE)
+
+# Um sinônimo - resolve automaticamente para o nome aceito
+flora_search("Mimosa pyrenea")
+
+# Uma lista inteira de uma vez
+splist <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+flora_search(splist, show_correct = TRUE, progress_bar = TRUE)
+```
+
+## `flora_match()`: comparar duas listas de nomes independentes
+
+A `flora_match()` busca duas listas de nomes independentemente com `flora_search()`, e então alinha as entradas de ambas as listas que resolvem para o *mesmo táxon aceito* — mesmo quando um ou ambos os lados usaram um sinônimo. É útil para comparar sua lista de espécies com a de um colaborador, ou reconciliar dois conjuntos de dados que usaram nomenclaturas diferentes.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `splist1`, `splist2` | Vetores de caracteres — a lista de referência e a lista a ser comparada com ela. |
+| `include_all` | Se `TRUE` (padrão), nomes encontrados apenas em `splist2` são adicionados ao resultado. |
+| `identify_dups` | Se `TRUE` (padrão), sinaliza linhas onde dois nomes de entrada são sinônimos do mesmo táxon aceito. |
+| `show_correct`, `genus_fuzzy`, `max_distance`, `version`, `rm_flora_database`, `progress_bar` | Mesmo significado que em `flora_search()`. |
+
+### Exemplo
+
+```r
+splist1 <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+splist2 <- c("Swartzia simplex var. grandiflora", "Inga edulis", "Mimosa pyrenea")
+
+result <- flora_match(splist1, splist2, include_all = TRUE)
+
+# Reordenar splist2 para alinhar com splist1
+splist2[result$Match.Position.2to1]
+```
+
+## Dicas Adicionais
+
+- Mantenha `rm_flora_database = FALSE` (o padrão) ao longo de uma sessão: a primeira chamada de `flora_search()`/`flora_match()` baixa e analisa o conjunto de dados da FFB, e cada chamada seguinte reutiliza esse cache — buscas repetidas se tornam quase instantâneas.
+- Use `show_correct = TRUE` ao auditar uma lista de nomes, para poder revisar cada correspondência aproximada manualmente em vez de confiar cegamente nela.
+- A coluna `Duplicated.Output.Position` de `flora_match()` é útil para identificar quando dois dos seus próprios nomes acabam sendo sinônimos um do outro.
+
+## Veja Também
+
+- [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)
+- [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)

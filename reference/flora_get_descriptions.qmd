@@ -1,0 +1,76 @@
+---
+title: 'flora_get_descriptions'
+description: 'Extract species descriptions from Flora e Funga do Brasil pages'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_get_descriptions()
+```
+
+### Description
+
+Downloads printable PDF versions of Flora e Funga do Brasil (FFB) taxon pages
+for a set of species and extracts text from the description sections. The
+function attempts to recover two kinds of descriptions from each page:
+controlled descriptions ("Descricao com campos controlados") and free
+descriptions ("Descricao livre").
+
+### Details
+
+For each taxon, the function:
+
+1. builds a printable page URL from the `references` column;
+2. saves the page temporarily as `temp.pdf`;
+3. extracts text with pdftools;
+4. searches for the controlled-description section;
+5. searches for the free-description section;
+6. stores extracted text in named lists using the scientific name.
+
+Failed extractions are returned together with the extracted descriptions.
+
+The function assumes that the printable FFB page contains recognizable
+section headers in Portuguese and/or English, such as:
+
+- `"Descricao com campos controlados|Description with controlled"`
+- `"Descricao livre|Free description"`
+- `"Comentarios|Commentaries"`
+- `"Vouchers"`
+- `"Origem|Origin"`
+- `"Bibliografia Referencia|Reference"`
+
+Text is extracted from the first PDF page only. Temporary output is always
+written to a file named `temp.pdf` in the working directory.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxa | A data frame containing the taxa to process. It must include at least the columns `genus`, `specificEpithet`, and `references`. Each row is treated as one taxon page to download and parse. |
+| delay | Numeric. Delay in seconds passed to `webshot::webshot()` to allow the page to load before the PDF is captured. Default is `10`. |
+| verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing. If `FALSE`, runs quietly. |
+
+### Value
+
+A named list with two elements:
+
+  `descriptions_controlled`A named list of controlled
+  descriptions. If any failures occur, this element becomes a list of length
+  two: extracted descriptions and a character vector of failed taxon names.
+  `descriptions_free`A named list of free descriptions. If any
+  failures occur, this element becomes a list of length two: extracted
+  descriptions and a character vector of failed taxon names.
+
+### Examples
+
+```r
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonomicStatus = "NOME_ACEITO")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+```
+
+

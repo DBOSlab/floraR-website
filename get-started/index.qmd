@@ -7,7 +7,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -22,23 +22,46 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8); /* white with 80% opacity */
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
 ## Install the package
 
-You can install the latest development version of `refloraR` package from [GitHub](https://github.com/DBOSlab/refloraR) as follows:
-
+You can install the latest development version of `floraR` package from [GitHub](https://github.com/DBOSlab/floraR) as follows:
 
 ```{r}
 #| eval: false
 
-#install.packages("devtools")
-devtools::install_github("DBOSlab/refloraR")
+if (!requireNamespace("BiocManager", quietly = TRUE)) 
+install.packages("BiocManager") 
+
+# Install the development version of floraR from GitHub, 
+# together with its required dependencies 
+BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
 ```
 
 :::{.callout-caution}
-The steps in this section are only needed if you need to run [...]. If you already have a running [...], then skip this section. 
+`floraR` requires R (>= 4.1.0). If you already have a recent R installation, you can skip straight to the install step above.
 :::
+
+```{r}
+#| eval: false
+
+library(floraR)
+```
+
+## Quick Start
+
+Once installed, a good first step is to check which Flora e Funga do Brasil dataset versions are currently published:
+
+```{r}
+#| eval: false
+
+flora_version()
+```
+
+Most functions — including `flora_records()`, `flora_search()`, and `flora_get_children_taxa()` — download and parse the FFB dataset automatically the first time you call them, and reuse the same local cache on subsequent calls, so you rarely need to call `flora_download()`/`flora_parse()` yourself unless you want to inspect the raw data directly.
+
+From there, browse the [How-To Articles](/articles/index.qmd) to learn how to download and parse checklist data, filter records by taxonomic or geographic criteria, resolve your own species names against the checklist, explore the taxonomic hierarchy, and curate new records.

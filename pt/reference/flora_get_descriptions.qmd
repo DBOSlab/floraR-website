@@ -1,0 +1,70 @@
+---
+title: 'flora_get_descriptions'
+description: 'Extrair descrições de espécies das páginas da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_get_descriptions()
+```
+
+### Descrição
+
+Baixa versões em PDF imprimíveis das páginas de táxons da Flora e Funga do
+Brasil (FFB) para um conjunto de espécies e extrai o texto das seções de
+descrição. A função tenta recuperar dois tipos de descrição de cada página:
+descrições controladas ("Descrição com campos controlados") e descrições
+livres ("Descrição livre").
+
+### Detalhes
+
+Para cada táxon, a função:
+
+1. constrói uma URL de página imprimível a partir da coluna `references`;
+2. salva a página temporariamente como `temp.pdf`;
+3. extrai o texto com pdftools;
+4. busca a seção de descrição controlada;
+5. busca a seção de descrição livre;
+6. armazena o texto extraído em listas nomeadas usando o nome científico.
+
+Extrações que falham são retornadas junto com as descrições extraídas.
+
+A função assume que a página imprimível da FFB contém cabeçalhos de seção
+reconhecíveis em português e/ou inglês, tais como:
+
+- `"Descricao com campos controlados|Description with controlled"`
+- `"Descricao livre|Free description"`
+- `"Comentarios|Commentaries"`
+- `"Vouchers"`
+- `"Origem|Origin"`
+- `"Bibliografia Referencia|Reference"`
+
+O texto é extraído apenas da primeira página do PDF. A saída temporária é
+sempre gravada em um arquivo chamado `temp.pdf` no diretório de trabalho.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxa | Um data frame contendo os táxons a processar. Deve incluir pelo menos as colunas `genus`, `specificEpithet` e `references`. Cada linha é tratada como uma página de táxon a baixar e analisar. |
+| delay | Numérico. Atraso em segundos passado para `webshot::webshot()` para permitir que a página carregue antes que o PDF seja capturado. Padrão `10`. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Uma lista nomeada com dois elementos:
+
+- `descriptions_controlled`: Uma lista nomeada de descrições controladas. Se houver falhas, este elemento se torna uma lista de dois elementos: descrições extraídas e um vetor de caracteres com os nomes dos táxons que falharam.
+- `descriptions_free`: Uma lista nomeada de descrições livres. Se houver falhas, este elemento se torna uma lista de dois elementos: descrições extraídas e um vetor de caracteres com os nomes dos táxons que falharam.
+
+### Exemplos
+
+```r
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonomicStatus = "NOME_ACEITO")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+```

@@ -1,0 +1,49 @@
+---
+title: "Check available FFB dataset versions"
+format: html
+---
+
+Here we present a practical guide to the `flora_version()` function of the `floraR` package. This function retrieves metadata about the dataset versions of the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist currently published on the [FFB IPT data portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil), hosted by the Rio de Janeiro Botanical Garden.
+
+Because FFB is a living checklist, continuously updated as taxonomists review and add names, every dataset release is versioned. Checking which versions exist — and which one is current — is normally the first step before downloading, parsing, or filtering FFB data, since it lets you pin your analysis to a specific, citable release.
+
+## Function Overview
+
+`flora_version()` takes no arguments: it simply queries the FFB IPT metadata and returns a data frame summarizing every published version.
+
+## Output columns
+
+| Column | Description |
+|---|---|
+| `Version` | Version number of the dataset release. |
+| `Published_on` | Timestamp of the dataset release. |
+| `Records` | Number of records included in the release. |
+| `URL` | Direct link to the dataset version on the IPT portal. |
+| `Latest` | Logical. `TRUE` for the row corresponding to the most recently published version. |
+
+## List all available versions
+
+```r
+library(floraR)
+
+versions_df <- flora_version()
+head(versions_df)
+```
+
+## Identify the latest version
+
+```r
+latest <- versions_df[versions_df$Latest == TRUE, ]
+latest$Version
+```
+
+## Additional Tips
+
+- `flora_download()` and `flora_parse()`, and every function built on top of them (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`), default to `version = "latest"`. You only need `flora_version()` directly when you want to pin an analysis to a specific, older release for reproducibility.
+- Pass a specific version string from the `Version` column (e.g. `flora_download(version = versions_df$Version[1])`) to work with that exact release instead of the current one.
+- The `Records` column is a quick way to sanity-check that a download completed correctly: the number of parsed rows should be in the same order of magnitude.
+
+## See Also
+
+- [Download the FFB checklist](/articles/download_ffb_dataset.qmd)
+- [Parse FFB Darwin Core Archives](/articles/parse_ffb_dwca.qmd)

@@ -1,0 +1,96 @@
+---
+title: 'flora_search'
+description: 'Search plant names against the Flora e Funga do Brasil database'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_search()
+```
+
+### Description
+
+Searches a vector of plant names against the locally parsed Flora e Funga do
+Brasil (FFB) taxonomic database, returning the best match for each input name
+along with its accepted name, taxonomic status, and family. An exact match is
+attempted first; if none is found the algorithm falls back to a fuzzy search
+within the specified maximum Levenshtein distance.
+
+### Details
+
+The function first attempts an exact match on the `taxonName` column of
+the FFB taxon table (a clean binomial constructed from genus, specific
+epithet, and infraspecific epithet by `flora_parse`). If no exact
+match is found, a generalized Levenshtein distance fuzzy match is performed.
+When `genus_fuzzy = FALSE` (default), the genus must match exactly and
+only the epithet is fuzzily matched, which is considerably faster for large
+lists.
+
+When multiple entries are matched, the one classified as
+`"NOME_ACEITO"` (accepted) is preferred.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| splist | A character vector of plant names to search. Each element should include at least a genus and a specific epithet, and optionally an infraspecific rank, infraspecific epithet, and author name. Only valid characters are allowed (see `base::validEnc`). |
+| version | Character. FFB dataset version to use. Defaults to `"latest"`. Passed to `flora_download` and `flora_parse`. |
+| max_distance | Numeric. Maximum string distance allowed for a fuzzy match, expressed as a generalized Levenshtein distance (insertions, deletions, and substitutions). Can be a positive integer (e.g., `2` allows up to 2 edits) or a fraction of the name length (e.g., `0.1` allows 1 edit per 10 characters). Default is `0.2`. |
+| show_correct | Logical. If `TRUE`, a `Correct` column is appended indicating whether the input was exactly matched (`TRUE`) or fuzzily matched (`FALSE`). Default is `FALSE`. |
+| genus_fuzzy | Logical. If `TRUE`, the fuzzy algorithm also applies to the genus (slower). If `FALSE` (default), the genus must match exactly and only the epithet is matched fuzzily. |
+| progress_bar | Logical. If `TRUE`, a progress bar is printed. Default is `FALSE`. |
+| rm_flora_database | Logical. If `TRUE`, the downloaded FFB database folder (`"flora_download"`) is deleted after the search is complete. If `FALSE` (default), the database is kept on disk. Keeping the database is **recommended** because subsequent searches will reuse the existing download, checking if the stored version matches the requested `version`. If the stored version is outdated or different from the requested version, the function automatically re-downloads the correct version. This caching behavior significantly speeds up repeated searches. |
+| verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing and download. If `FALSE`, runs quietly. |
+
+### Value
+
+A data frame with one row per input name and the following columns:
+
+  SearchThe original input name supplied by the user.
+  FFB.taxon.IDTaxon ID in the FFB database (`id` column).
+  taxonRankTaxonomic rank (e.g., `"ESPECIE"`,
+    `"VARIEDADE"`, `"SUBESPECIE"`).
+  scientificNameAuthorshipAuthor citation of the matched taxon.
+  taxonomicStatusFFB taxonomic status: `"NOME_ACEITO"`
+    (accepted), `"SINONIMO"` (synonym), or
+    `"NOME_DUVIDOSO"` (doubtful).
+  Accepted.taxon.IDID of the accepted name — same as
+    `FFB.taxon.ID` when the matched record is itself accepted; the
+    parent ID when it is a synonym.
+  Accepted.taxon.NameAccepted taxon name resolved from the FFB
+    database.
+  familyPlant family.
+  orderPlant order (when available in the FFB data).
+  Correct(Only when `show_correct = TRUE`) Logical indicating
+    an exact match (`TRUE`) vs. a fuzzy match (`FALSE`).
+
+Returns `NULL` with a warning if no match is found for any input.
+Rows for unmatched names contain `NA` in all FFB columns.
+
+### Examples
+
+```r
+# Search a single accepted name (downloads + parses automatically, caches result)
+flora_search("Mimosa sensitiva")
+
+# Search with a misspelled epithet; flag fuzzy matches
+flora_search("Mimosa sensittiva", max_distance = 0.2, show_correct = TRUE)
+
+# Search a synonym — the result resolves to the accepted name
+flora_search("Mimosa pyrenea")
+
+# Search multiple names at once
+splist <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+results <- flora_search(splist, progress_bar = TRUE)
+
+# Use a specific FFB version stored in a custom folder
+flora_search(splist, version = "393.418")
+
+# Force fresh download by removing cached database after search
+flora_search(splist, rm_flora_database = TRUE)  # Not recommended for repeated use
+```
+
+

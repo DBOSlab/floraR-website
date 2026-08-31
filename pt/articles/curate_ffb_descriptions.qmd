@@ -1,0 +1,73 @@
+---
+title: "Curar e descrever novos registros"
+format: html
+---
+
+Aqui apresentamos um guia prático para as funções `flora_get_descriptions()` e `flora_build_matrix()` do pacote `floraR`. Juntas, elas apoiam especialistas taxonômicos na curadoria e atualização de registros da [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), extraindo descrições de táxons já existentes e transformando-as em um formato estruturado e comparável.
+
+## `flora_get_descriptions()`: extrair descrições de páginas de táxons
+
+Para cada táxon fornecido, a `flora_get_descriptions()` baixa uma versão em PDF imprimível de sua página de táxon na FFB, extrai o texto e busca dois tipos de descrição: descrições de campos controlados ("Descrição com campos controlados") e descrições de texto livre ("Descrição livre").
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxa` | Um data frame com pelo menos as colunas `genus`, `specificEpithet` e `references` (um link para a página de cada táxon na FFB) — por exemplo, a saída de `flora_records()`. |
+| `delay` | Numérico. Segundos de espera para o carregamento da página antes de capturar o PDF. Padrão `10`. |
+| `verbose` | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+
+### Valor
+
+Uma lista nomeada com `descriptions_controlled` e `descriptions_free`, cada uma uma lista nomeada com o texto de descrição extraído, indexada pelo nome científico. Se alguma página de táxon falhar ao ser analisada, esse elemento se torna, em vez disso, uma lista de duas partes: as descrições extraídas com sucesso, mais um vetor de caracteres com os táxons que falharam.
+
+### Exemplo
+
+```r
+library(floraR)
+
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonomicStatus = "NOME_ACEITO")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+```
+
+## `flora_build_matrix()`: transformar descrições em uma matriz de caracteres
+
+A `flora_build_matrix()` converte o texto de descrição extraído por `flora_get_descriptions()` em uma matriz de caracteres — táxons como linhas, estados de caráter como colunas — pronta para comparação posterior ou análise de caracteres. Ela espera o formato semiestruturado usado nas páginas de táxons da FFB, no qual categorias de caracteres são separadas por pontos, nomes de categoria são separados de seus valores por dois-pontos, e múltiplos estados são separados por ponto e vírgula.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `descriptions` | Uma lista nomeada de strings de descrição, tipicamente um elemento da saída de `flora_get_descriptions()` (ex.: `descriptions[[1]]`). |
+
+### Exemplo
+
+```r
+trait_matrix <- flora_build_matrix(descriptions[[1]])
+```
+
+## Fluxo de trabalho completo
+
+```r
+library(floraR)
+
+taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
+                                rank = "genus",
+                                child_rank = "species")
+
+descriptions <- flora_get_descriptions(taxa, delay = 10)
+trait_matrix <- flora_build_matrix(descriptions[[1]])
+```
+
+## Dicas Adicionais
+
+- A `flora_get_descriptions()` extrai dados de páginas web ao vivo, portanto é mais lenta que as demais funções do `floraR` e deve ser executada em uma lista de táxons curada e não muito longa, em vez de toda a lista de espécies.
+- Aumente `delay` se notar descrições faltando ou truncadas — algumas páginas de táxon demoram mais para renderizar antes que o PDF imprimível seja capturado.
+- A `flora_build_matrix()` usa a *primeira* descrição da lista para definir a estrutura esperada da matriz e os nomes das colunas, portanto certifique-se de que essa primeira entrada siga o formato semiestruturado padrão antes de executá-la no conjunto completo.
+
+## Veja Também
+
+- [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)
+- [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)

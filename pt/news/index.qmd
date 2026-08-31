@@ -8,7 +8,7 @@ format:
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -23,35 +23,39 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
-# refloraR 1.0.0
+# floraR 1.0.0
 
 ## Lançamento Inicial
 
-Primeira versão oficial do pacote R `refloraR`, desenvolvido para simplificar o acesso a dados de espécimes vegetais do Herbário Virtual Reflora hospedado pelo Jardim Botânico do Rio de Janeiro.
+Primeira versão oficial do pacote R `floraR`, desenvolvido para oferecer ferramentas completas de acesso, análise e curadoria de dados da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), hospedada pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
 
 ### Funcionalidades
 
-- `reflora_summary()`: Recupera metadados e informações resumidas de todos ou herbários específicos do Reflora.
-- `reflora_download()`: Baixa dados originais de espécimes no formato Darwin Core Archive (DwC-A).
-- `reflora_records()`: Analisa, filtra e organiza registros do Reflora por táxon, herbário, região e ano.
-- `reflora_indets()`: Recupera espécimes indeterminados (ex.: identificados apenas a nível de família ou gênero).
-- Filtros opcionais por `taxon`, `herbarium`, `state`, `recordYear` e `level`.
-- Suporte à integração com fluxos de trabalho do tidyverse para análises posteriores.
-- Filtragem de coleções repatriadas (`repatriated = TRUE` por padrão).
-- Cobertura de testes >95%, integração contínua via GitHub Actions.
+- `flora_version()`: Recupera metadados e verifica as versões disponíveis do conjunto de dados no portal IPT da FFB.
+- `flora_download()`: Baixa dados taxonômicos e de distribuição em formato Darwin Core Archive (DwC-A) para versões específicas ou todas as disponíveis.
+- `flora_parse()`: Analisa e organiza conjuntos de dados da FFB baixados localmente em uma lista de tabelas pronta para uso.
+- `flora_records()`: Navega e filtra a lista de espécies da FFB diretamente por critérios taxonômicos, geográficos e de atributos, sem exigir uma lista de nomes de entrada.
+- `flora_search()`: Resolve sua própria lista de nomes de espécies em relação à lista de espécies da FFB, com correspondência exata primeiro e correspondência aproximada (distância de Levenshtein) como alternativa para erros de digitação, incluindo resolução de sinônimos.
+- `flora_match()`: Compara duas listas independentes de nomes de espécies, alinhando nomes que resolvem para o mesmo táxon aceito.
+- `flora_get_children_taxa()`: Recupera todos os táxons filhos (espécies, subespécies, variedades etc.) abaixo de um nome e nível taxonômico especificados.
+- `flora_get_descriptions()`: Extrai descrições de campos controlados e texto livre de páginas de táxons da FFB, para auxiliar especialistas na curadoria de novos registros.
+- `flora_build_matrix()`: Transforma as descrições de táxons extraídas em uma matriz de caracteres por táxon.
+- A maioria das funções baixa e analisa o conjunto de dados da FFB automaticamente e o armazena em cache local, de modo que consultas repetidas e análises offline funcionam sem a necessidade de novo download.
+- Integração completa com fluxos de trabalho do tidyverse para análises posteriores.
+- Conjunto abrangente de testes com testthat, integração contínua via GitHub Actions.
 
 ### Infraestrutura
 
 - Licença MIT.
 - GitHub Actions: R-CMD-check e cobertura de testes.
-- Documentação hospedada: [refloraR-website](https://dboslab.github.io/refloraR-website/)
+- Documentação hospedada: [floraR-website](https://dboslab.github.io/floraR-website/), com artigos práticos para cada função e tradução completa para o português (alternância de idioma EN/PT).
 
 ### Feedback
 
 Por favor, reporte bugs ou problemas em:
-<https://github.com/DBOSlab/refloraR/issues>
+<https://github.com/DBOSlab/floraR/issues>

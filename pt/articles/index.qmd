@@ -6,7 +6,7 @@ sidebar: pt-articles
 
 <style>
   body {
-    background-image: url('/figures/reflora_bg.png');
+    background-image: url('/figures/ffb-background.png');
     background-repeat: repeat-y;
     background-size: cover;
     background-attachment: fixed;
@@ -21,26 +21,36 @@ sidebar: pt-articles
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
   }
 </style>
 
 ::: {layout-ncol="2"}
 ::: {style="display: block;"}
-### Resumir coleções do Reflora
-- [Resumir coleções](/pt/articles/summarize_reflora_collections.qmd)
+### Verificar versões do conjunto de dados
+- [Verificar as versões disponíveis da FFB](/pt/articles/check_ffb_versions.qmd)
 
 ::: {style="display: block;"}
 :::
-### Baixar e analisar registros do Reflora
-- [Baixar registros de espécimes](/pt/articles/download_reflora_collections.qmd)
-- [Analisar arquivos Darwin Core do Reflora](/pt/articles/parse_reflora_dwca.qmd)
+### Baixar e analisar dados da FFB
+- [Baixar a lista de espécies da FFB](/pt/articles/download_ffb_dataset.qmd)
+- [Analisar arquivos Darwin Core da FFB](/pt/articles/parse_ffb_dwca.qmd)
 
 ::: {style="display: block;"}
 :::
-### Filtrar registros do Reflora
-- [Recuperar espécimes por táxon](/pt/articles/filter_reflora_records.qmd)
-- [Filtrar espécimes indeterminados](/pt/articles/filter_indeterminate_reflora_specimens.qmd)
+### Navegar e filtrar a lista de espécies
+- [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)
+
+::: {style="display: block;"}
+:::
+### Resolver e explorar a taxonomia
+- [Resolver sua própria lista de nomes de espécies](/pt/articles/resolve_species_names.qmd)
+- [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)
+
+::: {style="display: block;"}
+:::
+### Curar novos registros
+- [Curar e descrever novos registros](/pt/articles/curate_ffb_descriptions.qmd)
 :::
 :::

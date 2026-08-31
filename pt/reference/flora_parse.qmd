@@ -1,0 +1,76 @@
+---
+title: 'flora_parse'
+description: 'Analisar arquivos Darwin Core Archive (DwC-A) da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_parse()
+```
+
+### Descrição
+
+Lê e organiza conjuntos de dados Darwin Core Archive (DwC-A) baixados localmente
+do repositório *Flora e Funga do Brasil* (FFB), disponíveis através do
+[Portal de Dados IPT](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil)
+hospedado pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br).
+
+Esta função processa e limpa os dados DwC-A da FFB ao:
+
+- Ler todas as tabelas de dados (ex.: `taxon.txt`, `distribution.txt`, `speciesprofile.txt`) dentro de cada pasta DwC-A versionada.
+- Gerar um nome de táxon unificado e padronizado a partir dos componentes de nome disponíveis.
+- Extrair dados estruturados como status de endemismo, domínios fitogeográficos, formas de vida e hábitats.
+- Retornar todas as tabelas limpas e analisadas como uma lista para análise posterior, ou via `flora_records` e outras funções que a utilizam, as quais reutilizam automaticamente os mesmos dados em cache.
+
+### Detalhes
+
+A função funciona inteiramente **offline**, desde que os conjuntos de dados DwC-A
+tenham sido previamente baixados com `flora_download`.
+Foi projetada como o segundo passo do fluxo de trabalho:
+
+1. `flora_download`: para baixar e armazenar arquivos DwC-A versionados.
+2. `flora_parse`: para analisar e estruturar esses arquivos em uma lista pronta para uso.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| path | Caractere. Caminho para o diretório local onde as pastas DwC-A versionadas da FFB foram baixadas (normalmente criado por `flora_download`). |
+| version | Caractere. Uma ou mais versões específicas do conjunto de dados a analisar. Aceita: - `"latest"`: analisa o conjunto de dados mais recente disponível em `path`. - `"all"`: analisa todas as versões baixadas dentro do caminho especificado. - Uma string de versão ou vetor de versões (ex.: `"393.418"`). |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Uma lista nomeada de conjuntos de dados DwC-A analisados, onde cada elemento
+corresponde a uma pasta versionada (ex.: `"dwca_ffb_v393_418"`).
+Cada elemento da lista inclui:
+
+- `$meta`: metadados descrevendo a estrutura do conjunto de dados.
+- `$data`: uma lista aninhada de tabelas Darwin Core analisadas, incluindo:
+  - `taxon.txt`: com um novo campo `taxonName` padronizado.
+  - `distribution.txt`: com colunas separadas de `endemism` e `phytogeographicDomain`.
+  - `speciesprofile.txt`: com informações analisadas de `lifeForm`, `habitat` e `vegetationType`.
+
+### Exemplos
+
+```r
+# Passo 1 - Baixar o conjunto de dados DwC-A mais recente da FFB
+flora_download(version = "latest",
+               dir = "flora_download")
+
+# Passo 2 - Analisar o conjunto de dados DwC-A local (funciona offline)
+dwca <- flora_parse(path = "flora_download",
+                    version = "latest")
+
+# Passo 3 - Explorar os dados analisados
+names(dwca)
+names(dwca[["dwca_ffb_v393_418"]][["data"]])
+
+# Passo 4 - Filtrar a lista de espécies com flora_records() (baixa/analisa
+# automaticamente e reutiliza os dados em cache dos Passos 1-2 acima)
+records <- flora_records(taxon = "Fabaceae",
+                         taxonomicStatus = "NOME_ACEITO")
+```

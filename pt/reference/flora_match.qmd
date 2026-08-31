@@ -1,0 +1,99 @@
+---
+title: 'flora_match'
+description: 'Comparar duas listas de nomes de plantas usando o banco de dados da Flora e Funga do Brasil'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_match()
+```
+
+### Descrição
+
+Compara e alinha duas listas de nomes de plantas com base na sua resolução
+taxonômica no banco de dados da Flora e Funga do Brasil (FFB). Ambas as
+listas são buscadas independentemente com `flora_search`, e nomes que
+resolvem para o mesmo táxon aceito são considerados uma correspondência.
+A função retorna um data frame combinado que alinha os nomes das duas listas.
+
+### Detalhes
+
+Cada lista é buscada independentemente via `flora_search`. Os IDs de
+táxon aceito (`Accepted.taxon.ID`) são então usados para determinar quais
+nomes em `splist2` correspondem a nomes em `splist1`. Dois nomes
+correspondem quando resolvem para o mesmo táxon aceito — independentemente
+de um ou ambos serem sinônimos.
+
+O data frame resultante é ordenado por `splist1`. Quando
+`include_all = TRUE`, nomes presentes apenas em `splist2` são adicionados
+ao final com `NA` na coluna `Species.List.1`.
+
+A coluna `Match.Position.2to1` fornece o índice da linha do nome
+correspondente em `splist2`; use-a para reordenar `splist2` de modo a
+alinhá-la com `splist1`: `splist2[result$Match.Position.2to1]`.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| splist1 | Um vetor de caracteres com nomes de plantas — a lista de referência. Cada elemento deve incluir pelo menos um gênero e um epíteto específico, e opcionalmente nível infraespecífico, epíteto infraespecífico e nome de autor. Apenas caracteres válidos são permitidos (veja `base::validEnc`). |
+| splist2 | Um vetor de caracteres com nomes de plantas — a lista a ser comparada com `splist1`. Mesmos requisitos de formato de `splist1`. |
+| version | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. Passado para `flora_download` e `flora_parse`. |
+| max_distance | Numérico. Distância máxima de string para correspondência aproximada. Pode ser um número inteiro positivo (ex.: `2` permite até 2 edições) ou uma fração do comprimento do nome (ex.: `0.1` permite 1 edição a cada 10 caracteres). Padrão `0.2`. |
+| genus_fuzzy | Lógico. Se `TRUE`, a correspondência aproximada também se aplica ao gênero (mais lento). Se `FALSE` (padrão), o gênero deve corresponder exatamente e apenas o epíteto é comparado de forma aproximada. |
+| include_all | Lógico. Se `TRUE` (padrão), nomes encontrados apenas em `splist2` são adicionados ao resultado com `NA` na coluna `Species.List.1`. Se `FALSE`, apenas nomes de `splist1` aparecem na saída. |
+| identify_dups | Lógico. Se `TRUE` (padrão), uma coluna `Duplicated.Output.Position` é adicionada indicando a posição da linha da primeira outra ocorrência do mesmo `Accepted.taxon.Name`. Isso ocorre quando dois nomes de entrada são sinônimos do mesmo táxon aceito. `NA` é retornado quando não há duplicata. |
+| show_correct | Lógico. Se `TRUE`, uma coluna `Correct` é adicionada indicando se a entrada foi correspondida exatamente (`TRUE`) ou de forma aproximada (`FALSE`) nos resultados de `flora_search` para `splist1`. Padrão `TRUE`. |
+| progress_bar | Lógico. Se `TRUE`, uma barra de progresso é exibida durante as buscas de nomes. Padrão `TRUE`. |
+| rm_flora_database | Lógico. Se `TRUE`, a pasta do banco de dados da FFB baixado (`"flora_download"`) é excluída após a busca ser concluída. Se `FALSE` (padrão), o banco de dados é mantido em disco. Manter o banco de dados é **recomendado** porque buscas subsequentes reutilizarão o download existente, verificando se a versão armazenada corresponde à versão solicitada. Se a versão armazenada estiver desatualizada ou for diferente da versão solicitada, a função baixa automaticamente a versão correta. Esse comportamento de cache acelera significativamente buscas repetidas. |
+| verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise e o download. Se `FALSE`, executa silenciosamente. |
+
+### Valor
+
+Um data frame com uma linha por nome de entrada (de `splist1` primeiro,
+depois quaisquer nomes não correspondidos de `splist2` quando
+`include_all = TRUE`) e as seguintes colunas:
+
+- `Species.List.1`: Nomes de `splist1` (`NA` para linhas que vêm apenas de `splist2`).
+- `Species.List.2`: O nome correspondente de `splist2`, ou `NA` se nenhuma correspondência foi encontrada.
+- `FFB.taxon.ID`: ID do táxon no banco de dados da FFB.
+- `Input.Genus`: Gênero extraído do nome de entrada.
+- `Input.Epithet`: Epíteto específico extraído do nome de entrada.
+- `taxonRank`: Nível taxonômico (ex.: `"ESPECIE"`, `"VARIEDADE"`).
+- `Input.InfraspecificEpithet`: Epíteto infraespecífico, se presente.
+- `scientificNameAuthorship`: Citação de autor do táxon correspondido.
+- `taxonomicStatus`: Status taxonômico da FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"`.
+- `Accepted.taxon.ID`: ID do nome aceito.
+- `Accepted.taxon.Name`: Nome do táxon aceito resolvido a partir do banco de dados da FFB.
+- `family`: Família da planta.
+- `order`: Ordem da planta (quando disponível nos dados da FFB).
+- `Correct`: (Apenas quando `show_correct = TRUE`) Lógico indicando uma correspondência exata (`TRUE`) vs. uma correspondência aproximada (`FALSE`) para `splist1`.
+- `Match.Position.2to1`: Índice da linha do nome correspondente em `splist2`.
+- `Duplicated.Output.Position`: (Apenas quando `identify_dups = TRUE`) Índice da linha da primeira outra ocorrência do mesmo `Accepted.taxon.Name`, ou `NA` se único.
+
+### Exemplos
+
+```r
+# Duas listas que podem se sobrepor ou conter sinônimos dos mesmos nomes aceitos
+splist1 <- c("Mimosa sensitiva", "Swartzia simplex", "Inga edulis")
+splist2 <- c("Swartzia simplex var. grandiflora", "Inga edulis",
+              "Mimosa pyrenea")
+
+# Comparar incluindo todos os nomes de ambas as listas (baixa + analisa automaticamente)
+result <- flora_match(splist1, splist2, include_all = TRUE)
+
+# Comparar incluindo apenas nomes de splist1
+result2 <- flora_match(splist1, splist2, include_all = FALSE)
+
+# Reordenar splist2 para alinhar com splist1
+splist2[result2$Match.Position.2to1]
+
+# Usar uma versão específica da FFB armazenada em uma pasta personalizada
+flora_match(splist1, splist2, version = "393.418")
+
+# Forçar um novo download removendo o banco de dados em cache após a comparação
+flora_match(splist1, splist2, rm_flora_database = TRUE)
+```

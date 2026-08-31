@@ -1,0 +1,71 @@
+---
+title: "Filter and retrieve checklist records"
+format: html
+---
+
+Here we present a practical guide to the `flora_records()` function of the `floraR` package. Unlike `flora_search()` and `flora_match()`, which resolve a list of names *you already have* against the checklist, `flora_records()` browses and filters the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly — no input name list required.
+
+## Function Overview
+
+`flora_records()` downloads and parses the FFB dataset automatically (like `flora_search()`, reusing the local cache on repeated calls), then applies whichever combination of taxonomic, geographic, and trait-based filters you request. All filters are combined with a logical AND, and the result always has one row per matching taxon.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon` | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). |
+| `taxonRank` | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). |
+| `taxonomicStatus` | Character vector. FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). |
+| `state` | Character vector. Brazilian state(s), full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`). |
+| `phytogeographicDomain` | Character vector. Phytogeographic domain(s) (e.g. `"Caatinga"`, `"Mata Atlantica"`). |
+| `endemism` | Logical. `TRUE` keeps only Brazilian endemics; `FALSE` keeps only non-endemics. |
+| `lifeForm`, `habitat`, `vegetationType` | Character vectors. Life form (e.g. `"Arbusto"`), habitat (e.g. `"Terricola"`) and vegetation type (e.g. `"Cerrado (lato sensu)"`). |
+| `version` | Character. FFB dataset version to use. Defaults to `"latest"`. |
+| `rm_flora_database` | Logical. If `TRUE`, deletes the downloaded database after the search. Default `FALSE` keeps it cached for faster repeated queries. |
+| `verbose` | Logical. If `TRUE` (default), prints progress messages. |
+| `save` | Logical. If `TRUE`, writes the filtered records to a CSV file. |
+| `dir`, `filename` | Where and under what name to save the CSV when `save = TRUE`. |
+
+## Browse a whole family
+
+```r
+library(floraR)
+
+fabaceae <- flora_records(taxon = "Fabaceae",
+                          taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filter by state and endemism
+
+```r
+bahia_endemics <- flora_records(state = "Bahia",
+                                endemism = TRUE,
+                                taxonomicStatus = "NOME_ACEITO")
+```
+
+## Filter by phytogeographic domain and life form
+
+```r
+caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
+                                 lifeForm = "Arbusto")
+```
+
+## Save the result to a CSV file
+
+```r
+flora_records(taxon = "Luetzelburgia",
+             save = TRUE,
+             dir = "flora_records",
+             filename = "luetzelburgia_records")
+```
+
+## Additional Tips
+
+- `taxon` is matched against the `family`, `genus` and `taxonName` columns automatically — a family name ending in `"aceae"`, a single-word genus, or a multi-word species name are all detected and matched appropriately.
+- Combine multiple filters freely: they are always ANDed together, so `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` returns Fabaceae species endemic to Bahia.
+- If you already have your own species list to resolve rather than browse the checklist by criteria, use [`flora_search()` or `flora_match()`](/articles/resolve_species_names.qmd) instead.
+
+## See Also
+
+- [Parse FFB Darwin Core Archives](/articles/parse_ffb_dwca.qmd)
+- [Resolve your own species names](/articles/resolve_species_names.qmd)

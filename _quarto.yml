@@ -5,12 +5,12 @@ project:
     - figures/**
 
 website:
-  title: "refloraR"
-  site-url: https://dboslab.github.io/refloraR-website/
+  title: "floraR"
+  site-url: https://dboslab.github.io/floraR-website/
   page-navigation: true
-  reader-mode: true  
-  favicon: "figures/refloraR_hex_sticker.png"
-  
+  reader-mode: true
+  favicon: "figures/floraR_hex_sticker.png"
+
   page-footer:
     center:
       - text: "About"
@@ -21,15 +21,15 @@ website:
         href: LICENSE.md
     right:
       - icon: github
-        href: https://github.com/DBOSlab/refloraR
-        aria-label: refloraR GitHub
-  
+        href: https://github.com/DBOSlab/floraR
+        aria-label: floraR GitHub
+
   navbar:
     search: true
     background: light
     collapse-below: lg
     type: light
-    logo: "figures/refloraR_hex_sticker.png"
+    logo: "figures/floraR_hex_sticker.png"
     href: index.qmd
     left:
       - text: "Overview"
@@ -39,7 +39,7 @@ website:
       - text: "Articles"
         href: articles/index.qmd
       - text: "News"
-        href: news/index.qmd 
+        href: news/index.qmd
       - text: "Reference"
         href: reference/index.qmd
       - text: "Authors"
@@ -48,19 +48,19 @@ website:
         menu:
           - text: "Report a Bug"
             icon: "bug"
-            href: "https://github.com/DBOSlab/refloraR/issues"
+            href: "https://github.com/DBOSlab/floraR/issues"
           - text: "Ask a Question"
             icon: "chat-right-text"
-            href: "https://github.com/DBOSlab/refloraR/discussions"
+            href: "https://github.com/DBOSlab/floraR/discussions"
           - text: "FAQ"
             icon: "question-circle"
             href: faq/index.qmd
-        
+
     tools:
       - icon: github
-        href: https://github.com/DBOSlab/refloraR
-        text: refloraR GitHub
-        
+        href: https://github.com/DBOSlab/floraR
+        text: floraR GitHub
+
   sidebar:
     - id: articles
       title: Articles
@@ -69,22 +69,30 @@ website:
       contents:
         - text: Overview
           href: articles/index.qmd
-        - section: Summarize Reflora collections
+        - section: Check dataset versions
           contents:
-          - text: Summarize herbarium collections
-            href: articles/summarize_reflora_collections.qmd
-        - section: Download and parse Reflora records
+          - text: Check available FFB dataset versions
+            href: articles/check_ffb_versions.qmd
+        - section: Download and parse FFB data
           contents:
-          - text: Download specimen records
-            href: articles/download_reflora_collections.qmd
-          - text: Parse Reflora Darwin Core Archives
-            href: articles/parse_reflora_dwca.qmd
-        - section: Filter Reflora records
+          - text: Download the FFB checklist
+            href: articles/download_ffb_dataset.qmd
+          - text: Parse FFB Darwin Core Archives
+            href: articles/parse_ffb_dwca.qmd
+        - section: Browse and filter the checklist
           contents:
-          - text: Retrieve taxon-specific specimens
-            href: articles/filter_reflora_records.qmd
-          - text: Filter indeterminate specimens
-            href: articles/filter_indeterminate_reflora_specimens.qmd
+          - text: Filter and retrieve checklist records
+            href: articles/filter_ffb_records.qmd
+        - section: Resolve and explore taxonomy
+          contents:
+          - text: Resolve your own species names
+            href: articles/resolve_species_names.qmd
+          - text: Explore the taxonomic hierarchy
+            href: articles/explore_taxonomic_hierarchy.qmd
+        - section: Curate new records
+          contents:
+          - text: Curate and describe new records
+            href: articles/curate_ffb_descriptions.qmd
 
     - id: pt-articles
       title: Artigos
@@ -93,22 +101,30 @@ website:
       contents:
         - text: Visão Geral
           href: pt/articles/index.qmd
-        - section: Resumir coleções do Reflora
+        - section: Verificar versões do conjunto de dados
           contents:
-          - text: Resumir coleções de herbário
-            href: pt/articles/summarize_reflora_collections.qmd
-        - section: Baixar e analisar registros do Reflora
+          - text: Verificar as versões disponíveis da FFB
+            href: pt/articles/check_ffb_versions.qmd
+        - section: Baixar e analisar dados da FFB
           contents:
-          - text: Baixar registros de espécimes
-            href: pt/articles/download_reflora_collections.qmd
-          - text: Analisar arquivos Darwin Core do Reflora
-            href: pt/articles/parse_reflora_dwca.qmd
-        - section: Filtrar registros do Reflora
+          - text: Baixar a lista de espécies da FFB
+            href: pt/articles/download_ffb_dataset.qmd
+          - text: Analisar arquivos Darwin Core da FFB
+            href: pt/articles/parse_ffb_dwca.qmd
+        - section: Navegar e filtrar a lista de espécies
           contents:
-          - text: Recuperar espécimes por táxon
-            href: pt/articles/filter_reflora_records.qmd
-          - text: Filtrar espécimes indeterminados
-            href: pt/articles/filter_indeterminate_reflora_specimens.qmd
+          - text: Filtrar e recuperar registros da lista de espécies
+            href: pt/articles/filter_ffb_records.qmd
+        - section: Resolver e explorar a taxonomia
+          contents:
+          - text: Resolver sua própria lista de nomes de espécies
+            href: pt/articles/resolve_species_names.qmd
+          - text: Explorar a hierarquia taxonômica
+            href: pt/articles/explore_taxonomic_hierarchy.qmd
+        - section: Curar novos registros
+          contents:
+          - text: Curar e descrever novos registros
+            href: pt/articles/curate_ffb_descriptions.qmd
 
 format:
   html:
@@ -119,6 +135,7 @@ format:
     code-tools: true
     css: styles.css
     eval: false
+    lightbox: true
     theme:
       light: [spacelab, theme.scss]
       dark: [spacelab, theme-dark.scss]

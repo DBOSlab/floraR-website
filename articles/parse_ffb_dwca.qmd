@@ -1,0 +1,66 @@
+---
+title: "Parse FFB Darwin Core Archives"
+format: html
+---
+
+Here we present a practical guide to the `flora_parse()` function of the `floraR` package. This function reads and organizes locally downloaded Darwin Core Archive (DwC-A) datasets from [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), turning the raw archive files into a clean, ready-to-use list of tables. It is the second step in the workflow, after [`flora_download()`](/articles/download_ffb_dataset.qmd).
+
+## Function Overview
+
+`flora_parse()` reads every data table (`taxon.txt`, `distribution.txt`, `speciesprofile.txt`, and others) within each versioned DwC-A folder, then:
+
+- generates a unified, standardized `taxonName` field from genus, specific epithet, and infraspecific epithet;
+- extracts structured endemism status and phytogeographic domain fields from the distribution table;
+- extracts structured life form, habitat, and vegetation type fields from the species profile table.
+
+The function works entirely **offline**, provided the datasets were previously downloaded with `flora_download()`.
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `path` | Character. Path to the local directory where the versioned FFB DwC-A folders were downloaded (usually created by `flora_download()`). |
+| `version` | Character. `"latest"` parses the most recent downloaded version; `"all"` parses every downloaded version; a version string or vector parses specific versions. |
+| `verbose` | Logical. If `TRUE` (default), prints informative progress messages. |
+
+## Output structure
+
+`flora_parse()` returns a named list, one element per versioned folder (e.g. `"dwca_ffb_v393_418"`), each containing:
+
+- `$meta`: metadata describing the dataset structure.
+- `$data`: a nested list of parsed Darwin Core tables, including `taxon.txt` (with the new `taxonName` field), `distribution.txt` (with `endemism` and `phytogeographicDomain` columns), and `speciesprofile.txt` (with `lifeForm`, `habitat`, and `vegetationType` columns).
+
+## Parse the latest downloaded version
+
+```r
+library(floraR)
+
+# Step 1 - download (skip if already downloaded)
+flora_download(version = "latest", dir = "flora_download")
+
+# Step 2 - parse (works offline once downloaded)
+dwca <- flora_parse(path = "flora_download", version = "latest")
+
+# Step 3 - explore the parsed structure
+names(dwca)
+names(dwca[["dwca_ffb_v393_418"]][["data"]])
+```
+
+## Access individual tables
+
+```r
+taxon_data        <- dwca[["dwca_ffb_v393_418"]][["data"]][["taxon.txt"]]
+distribution_data <- dwca[["dwca_ffb_v393_418"]][["data"]][["distribution.txt"]]
+profile_data       <- dwca[["dwca_ffb_v393_418"]][["data"]][["speciesprofile.txt"]]
+```
+
+## Additional Tips
+
+- You rarely need to call `flora_parse()` directly: [`flora_records()`](/articles/filter_ffb_records.qmd) and the name-resolution functions call it automatically and reuse the cached, parsed result on repeated calls.
+- Because parsing works offline, it is a good way to inspect the raw structure of a dataset version without re-downloading it.
+- The generated `taxonName` field is the same clean binomial used internally by `flora_search()` for name matching, so it is a reliable join key if you need to merge FFB data with your own tables.
+
+## See Also
+
+- [Download the FFB checklist](/articles/download_ffb_dataset.qmd)
+- [Filter and retrieve checklist records](/articles/filter_ffb_records.qmd)

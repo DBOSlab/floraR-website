@@ -10,8 +10,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Configuration ----------------------------------------------------------
-pkg_name <- "refloraR"                                   # package name
-pkg_dir  <- "/Users/domingoscardoso/Library/Mobile Documents/com~apple~CloudDocs/Publications_Bioinformatics/refloraR_package_and_website/refloraR"
+pkg_name <- "floraR"                                   # package name
+pkg_dir  <- "/Users/domingoscardoso/Library/Mobile Documents/com~apple~CloudDocs/Publications_Bioinformatics/floraR_package_and_website/floraR"
 ref_dir  <- path("reference")                             # output dir (relative to wd)
 
 # --- Helpers ----------------------------------------------------------------
@@ -51,17 +51,45 @@ rd_render <- function(x) {
            paste0("[", trimws(txt), "](", trimws(url), ")")
          },
          "\\link" = rend_children(),
-         "\\itemize" = {
-           vals <- vapply(children, rd_render, character(1))
-           paste0("\n", paste(paste0("- ", vals), collapse = "\n"))
-         },
-         "\\enumerate" = {
-           vals <- vapply(children, rd_render, character(1))
-           paste0("\n", paste(paste0(seq_along(vals), ". ", vals), collapse = "\n"))
-         },
+         "\\itemize" = rd_list_render(children, ordered = FALSE),
+         "\\enumerate" = rd_list_render(children, ordered = TRUE),
          "\\item" = rend_children(),
          rend_children()
   )
+}
+
+# In classic (non-markdown) Rd, \itemize{\item ... \item ...} parses \item
+# markers and their following text/code content as FLAT SIBLINGS under
+# \itemize - the content is NOT nested inside the \item node itself (an
+# \item node here carries no children of its own). So rendering every
+# sibling as its own bullet (as a naive vapply-over-children would) shreds
+# each logical bullet into one fragment per TEXT/\code run. Instead, walk
+# the flat list and accumulate everything between consecutive \item
+# markers into a single bullet.
+rd_list_render <- function(children, ordered = FALSE) {
+  bullets <- character(0)
+  current <- character(0)
+  started <- FALSE
+  flush <- function() {
+    txt <- trimws(gsub("[ \t]*\n[ \t]*", " ", paste0(current, collapse = "")))
+    txt <- gsub("[ \t]{2,}", " ", txt)
+    if (nzchar(txt)) bullets <<- c(bullets, txt)
+  }
+  for (ch in children) {
+    if (identical(rd_tag(ch), "\\item")) {
+      if (started) flush()
+      current <- character(0)
+      started <- TRUE
+    } else if (started) {
+      current <- c(current, rd_render(ch))
+    }
+  }
+  if (started) flush()
+  if (!length(bullets)) return("")
+  marker <- if (ordered) paste0(seq_along(bullets), ". ") else "- "
+  # Trailing blank line so a paragraph immediately following the list in the
+  # Rd source isn't parsed as a lazy-continuation of the last bullet.
+  paste0("\n", paste(paste0(marker, bullets), collapse = "\n"), "\n\n")
 }
 
 rd_get_section <- function(rd, tag) {
@@ -245,7 +273,7 @@ index_lines <- c(
   "",
   "<style>",
   "  body {",
-  "    background-image: url('/figures/reflora_bg.png');",
+  "    background-image: url('/figures/ffb-background.png');",
   "    background-repeat: repeat-y;",
   "    background-size: cover;",
   "    background-attachment: fixed;",
