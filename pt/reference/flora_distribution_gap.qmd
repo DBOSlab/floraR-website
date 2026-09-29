@@ -1,0 +1,73 @@
+---
+title: 'flora_distribution_gap'
+description: 'Encontrar candidatos a novos registros estaduais para um táxon de plantas ou algas'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_distribution_gap()
+```
+
+### Descrição
+
+Dado um gênero ou espécie de plantas ou algas, consulta o [GBIF](https://www.gbif.org) e, opcionalmente, o [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e o [speciesLink](https://specieslink.net) em busca de evidências de espécimes e ocorrências do táxon em estados brasileiros que *não* constam atualmente da sua distribuição oficial na Flora e Funga do Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para verificação por um taxonomista - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco - para que as distribuições nas monografias da FFB se mantenham completas.
+
+### Detalhes
+
+**Lado da FFB.** Os estados listados oficialmente vêm das tabelas de táxons e de distribuição da FFB (o mesmo conjunto de dados armazenado localmente por `flora_records`). Para um gênero, os estados de todas as suas espécies e táxons infraespecíficos são combinados; para uma espécie, os da espécie e dos seus táxons infraespecíficos. Se o nome for um sinônimo na FFB, é usada a distribuição do seu nome aceito.
+
+**Evidência de ocorrência.** Até três fontes podem ser consultadas (veja `sources`):
+
+- `"gbif"` (padrão): A API pública do GBIF, que agrega a maioria dos herbários brasileiros. O nome é primeiro resolvido para a sua chave no esqueleto taxonômico do GBIF apenas entre plantas e algas (de modo que, por exemplo, a alga vermelha *Gracilaria* não é confundida com o gênero de mariposas homônimo), e assim os registros dos seus sinônimos e táxons infraespecíficos são incluídos. Todos os estados são contados em uma única requisição.
+- `"reflora"`: Espécimes dos herbários do REFLORA, por meio de `reflora_records` (requer o pacote refloraR). Observe que o primeiro uso baixa os arquivos dos herbários do REFLORA - vários gigabytes - que o refloraR então armazena para as chamadas seguintes.
+- `"speciesLink"`: A API do speciesLink, que requer uma chave de API gratuita (`specieslink_key`; crie uma em https://specieslink.net).
+
+Os valores de estado em texto livre dessas fontes (ex.: `"Ba"`, `"Est. do Bahia"`, `"Paraiba"`) são normalizados para os nomes de estados da FFB antes da comparação; valores que não são estados brasileiros são ignorados.
+
+Registros de ocorrência são evidências a revisar, não provas: um registro em um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento; por isso, o relatório HTML lista os registros individuais por trás de cada estado candidato.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Caractere. Um único nome de gênero ou espécie de plantas ou algas (ex.: `"Luetzelburgia auriculata"` ou `"Luetzelburgia"`). |
+| state | Vetor de caracteres. Subconjunto opcional de estados brasileiros (nome completo ou sigla) ao qual restringir a verificação. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
+| sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer combinação de `"gbif"`, `"reflora"` e `"speciesLink"`. Padrão `"gbif"`, a mais rápida. Veja em Detalhes os requisitos das outras duas. |
+| specieslink_key | Caractere. Chave de API do speciesLink, usada quando `"speciesLink"` está entre as `sources`. Padrão: a variável de ambiente `SPECIESLINK_KEY`. |
+| version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
+| verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
+| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
+| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_distribution_gap"`. |
+| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_distribution_gap_<taxon>"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado e os registros de ocorrência individuais encontrados nos estados candidatos a novos registros - cada um com link para o registro na sua base de dados de origem - todos como widgets DT ordenáveis e filtráveis, com botões para copiá-los ou baixá-los como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador após gerá-lo. |
+
+### Valor
+
+Um `data.frame`, com uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas), com as colunas:
+
+- Taxon: O nome do táxon consultado.
+- State: Nome do estado brasileiro.
+- In_FFB_distribution: Lógico; se a FFB já lista este estado para o táxon.
+- GBIF_records: Número de registros de ocorrência do GBIF neste estado (quando `"gbif"` está entre as `sources`).
+- REFLORA_records: Número de espécimes do REFLORA neste estado (quando `"reflora"` está entre as `sources` e o refloraR está instalado).
+- speciesLink_records: Número de registros do speciesLink neste estado (quando `"speciesLink"` está entre as `sources` e uma chave é fornecida).
+- New_state_record_candidate: `TRUE` quando o estado tem evidência de pelo menos uma fonte, mas *não* consta da distribuição da FFB - um candidato para revisão taxonômica.
+
+### Exemplos
+
+```r
+# Candidatos a novos registros estaduais para uma espécie
+gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+
+# Um gênero inteiro, restrito a dois estados
+gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
+                                 state = c("Pernambuco", "Paraiba"))
+
+# Incluindo espécimes dos herbários do REFLORA (requer o refloraR)
+gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                      sources = c("gbif", "reflora"))
+```

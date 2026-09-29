@@ -51,6 +51,16 @@ rd_render <- function(x) {
            paste0("[", trimws(txt), "](", trimws(url), ")")
          },
          "\\link" = rend_children(),
+         "\\describe" = {
+           # Each \item{term}{description} becomes "- term: description"
+           items <- Filter(function(ch) identical(rd_tag(ch), "\\item"), children)
+           lines <- vapply(items, function(it) {
+             term <- trimws(rd_render(it[[1]]))
+             desc <- if (length(it) >= 2) trimws(gsub("\\s+", " ", rd_render(it[[2]]))) else ""
+             paste0("- ", term, ": ", desc)
+           }, character(1))
+           paste0("\n\n", paste(lines, collapse = "\n"), "\n\n")
+         },
          "\\itemize" = rd_list_render(children, ordered = FALSE),
          "\\enumerate" = rd_list_render(children, ordered = TRUE),
          "\\item" = rend_children(),

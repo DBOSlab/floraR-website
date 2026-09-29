@@ -33,7 +33,11 @@ Flora e Funga do Brasil (FFB) is the taxonomic checklist that documents Brazil's
 
 ### What can I use floraR for?
 
-The `floraR` package lets researchers and taxonomists download, parse, filter, and explore the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly from R. You can browse the checklist by taxonomic, geographic, or trait-based criteria, resolve your own species name lists against it (with fuzzy matching for typos), explore the taxonomic hierarchy, and curate new records for contribution back to FFB.
+The `floraR` package lets researchers and taxonomists download, parse, filter, and explore the [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) checklist directly from R. You can browse the checklist by taxonomic, geographic, or trait-based criteria, resolve your own species name lists against it (with fuzzy matching for typos), explore the taxonomic hierarchy, and curate new records for contribution back to FFB. Beyond retrieving data, it helps taxonomists expand the FFB monographs: `flora_species_gap()` finds species recorded in Brazil - by Plants of the World Online distributions or by type specimens collected in Brazil (GBIF) - that FFB does not list yet, and `flora_distribution_gap()` finds Brazilian states with specimen evidence missing from a taxon's FFB distribution.
+
+### Does floraR cover fungi?
+
+No. `floraR` works with the plant and algal data of Flora e Funga do Brasil. For fungi, use its companion package [fungaR](https://dboslab.github.io/fungaR-website/).
 
 ### Do I need a list of species names to use floraR?
 
@@ -41,7 +45,7 @@ No. `flora_records()` lets you browse and filter the FFB checklist directly (e.g
 
 ### Does floraR require an internet connection?
 
-Only the first time you query a given dataset version. `flora_download()` and `flora_parse()` fetch and cache the versioned Darwin Core Archive locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download.
+Only the first time you query a given dataset version. `flora_download()` and `flora_parse()` fetch and cache the versioned Darwin Core Archive locally, and every other function reuses that cache automatically, so repeated queries and offline analysis work without a new download. The exceptions are the curation tools `flora_species_gap()` and `flora_distribution_gap()`, which query online sources (GBIF, and ChecklistBank if chosen) every time they run.
 
 ### How do I install floraR?
 
@@ -57,7 +61,7 @@ Yes. Every page has an EN/PT toggle in the navigation bar. Once you switch langu
 
 ### What output can floraR generate?
 
-`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix for comparative or phylogenetic analyses.
+`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix for comparative or phylogenetic analyses. The curation tools `flora_species_gap()` and `flora_distribution_gap()` also save an `.xlsx` spreadsheet and a self-contained, interactive HTML report of their results.
 
 ### Who is the developer of floraR?
 
@@ -85,4 +89,4 @@ The `floraR` package is a programmatic interface to the Flora e Funga do Brasil 
 
 ### Can I contribute new names or records to Flora e Funga do Brasil?
 
-Yes. `floraR` includes `flora_get_descriptions()` and `flora_build_matrix()` specifically to help taxonomic experts assemble and curate new records — pulling controlled-field and free-text descriptions from existing FFB taxon pages and turning them into a comparable trait matrix. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.
+Yes. `floraR` includes tools specifically to help taxonomic experts expand FFB: `flora_species_gap()` lists species recorded in Brazil but missing from FFB, `flora_distribution_gap()` lists candidate new state records, and `flora_get_descriptions()` and `flora_build_matrix()` pull controlled-field and free-text descriptions from existing FFB taxon pages and turn them into a comparable trait matrix. To submit new names or corrections to the platform itself, see the contribution guidelines at [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) or contact the FFB coordination team at **floraefungadobrasil\@jbrj.gov.br**.

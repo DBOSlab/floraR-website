@@ -30,7 +30,10 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
   if (nrow(latest_row) == 0) latest_row <- ffb_versions[1, ]
   n_versions     <- nrow(ffb_versions)
   latest_version <- latest_row$Version[1]
-  latest_records <- format(as.numeric(latest_row$Records[1]), big.mark = ",")
+  # flora_version() returns counts as text with thousands separators
+  # (e.g. "165,841"), which as.numeric() cannot parse on its own
+  n_records      <- suppressWarnings(as.numeric(gsub("[^0-9]", "", latest_row$Records[1])))
+  latest_records <- if (is.na(n_records)) NA else format(n_records, big.mark = ",")
   latest_date    <- latest_row$Published_on[1]
 } else {
   n_versions     <- NA
@@ -71,7 +74,9 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 ::: {style="text-align: left;"}
 
 \
-`floraR` is an R package for accessing, analyzing, and curating taxonomic and distributional data from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br). It provides a comprehensive interface to download, parse, filter, and explore checklist data from the FFB IPT data portal — from browsing by taxonomic, geographic, or trait criteria to resolving your own species name lists against it.\
+`floraR` is an R package for accessing, analyzing, and curating taxonomic and distributional data on plants and algae from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br). It provides a comprehensive interface to download, parse, filter, and explore checklist data from the FFB IPT data portal — from browsing by taxonomic, geographic, or trait criteria to resolving your own species name lists against it.\
+\
+But `floraR` is designed to do more than retrieve data from FFB: it is meant to help taxonomists expand the current FFB monographs. By cross-checking FFB against global resources - the species distributions of [Plants of the World Online](https://powo.science.kew.org) and the type specimens collected in Brazil that herbaria publish through [GBIF](https://www.gbif.org) - it points to species that are recorded in Brazil but not yet treated in FFB, giving specialists a concrete starting point for bringing each monograph closer to a complete account of the Brazilian flora.\
 \
 
 ```{=html}

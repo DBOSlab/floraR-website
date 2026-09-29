@@ -1,0 +1,100 @@
+---
+title: 'flora_species_gap'
+description: 'Encontrar espécies que ocorrem no Brasil, mas estão ausentes da FFB'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_species_gap()
+```
+
+### Descrição
+
+Dado um gênero de plantas ou algas, encontra os nomes em nível de espécie que fontes globais registram para o Brasil, mas que ainda não estão registrados na Flora e Funga do Brasil (FFB) - candidatos à inclusão na monografia da FFB do grupo. Dois tipos independentes de evidência são combinados (veja `sources`):
+
+- **Distribuições do POWO**: espécies que o [Plants of the World Online](https://powo.science.kew.org) (POWO, Royal Botanic Gardens, Kew) mapeia no Brasil;
+- **Espécimes-tipo no GBIF**: espécies cujos espécimes-tipo - holótipos, isótipos, lectótipos, síntipos, parátipos e assim por diante - foram coletados no Brasil, segundo os herbários que os publicam no [Global Biodiversity Information Facility](https://www.gbif.org) (GBIF).
+
+O resultado é uma única tabela, com uma linha por nome, indicando qual(is) fonte(s) o relatou: os nomes relatados por ambas são os candidatos mais fortes. Não se trata de uma comparação geral entre as bases de dados: um nome ausente da FFB só é retornado quando há evidência de que a espécie ocorre no Brasil.
+
+### Detalhes
+
+**Lado da FFB.** Os nomes são comparados com o conjunto de dados da FFB armazenado localmente (como em `flora_download` e `flora_parse`). Um nome conta como "já presente na FFB" se o próprio nome ou o seu nome *aceito* (no POWO ou no GBIF) coincidir com qualquer nome da FFB - aceito ou sinônimo, em qualquer parte da lista, pois as listas divergem quanto à posição genérica (ex.: um sinônimo de *Myrcia* aceito como *Eugenia florida*). Os nomes são comparados ignorando maiúsculas, acentos, hífens, *y*/*i* e a terminação genitiva *-ii*/*-i*, de modo que variantes ortográficas como *Luetzelburgia andrade-limae* e *L. andradelimae*, da FFB, não são relatadas. Apenas nomes em nível de espécie são relatados.
+
+**POWO** (`"powo"`). Os nomes, a sinonímia e os mapas de distribuição do POWO vêm da [World Checklist of Vascular Plants](https://powo.science.kew.org/about-wcvp) (WCVP), lida de uma de duas fontes escolhidas com `powo_source`:
+
+- `"rWCVPdata"` (padrão): Toda a WCVP, instalada localmente pelo pacote [rWCVPdata](https://github.com/matildabrown/rWCVPdata): todos os nomes e distribuições do gênero são resolvidos de uma só vez, em memória. Os dados são tão atuais quanto a versão instalada (veja `rWCVPdata::wcvp_check_version()`). O rWCVPdata não está no CRAN; instale-o com `install.packages("rWCVPdata", repos = c("https://matildabrown.github.io/drat", "https://cloud.r-project.org"))`.
+- `"checklistbank"`: A exportação semanal do próprio POWO e a WCVP, hospedadas no [ChecklistBank](https://www.checklistbank.org) (a API do próprio POWO bloqueia clientes programáticos). Sempre atualizada e sem necessidade de pacote extra, mas mais lenta: uma requisição por nome ausente da FFB.
+
+Um nome do POWO tem evidência de ocorrência no Brasil quando o seu nome aceito ocorre em pelo menos uma das cinco áreas TDWG de nível 3 que cobrem o Brasil - Norte (`BZN`), Nordeste (`BZE`), Centro-Oeste (`BZC`), Sudeste (`BZL`) e Sul (`BZS`) do Brasil; nativo, introduzido ou extinto, mas não duvidoso. Sem distribuição mapeada, a descrição textual da distribuição no POWO (ex.: `"Brazil (Bahia)"`) é verificada. O POWO cobre apenas plantas vasculares, então não encontra nada para algas.
+
+**GBIF** (`"gbif"`). O gênero é procurado apenas entre plantas e algas - os reinos do GBIF Plantae (plantas terrestres, algas vermelhas e verdes), Chromista (algas pardas, diatomáceas) e Protozoa (euglenófitas) - de modo que um nome de gênero compartilhado com um animal (ex.: *Gracilaria*, tanto uma alga vermelha quanto uma mariposa) corresponde à planta ou alga. Uma única busca com facetas lista todos os nomes do gênero com espécimes-tipo coletados no Brasil; apenas para os nomes ausentes da FFB, os próprios espécimes são então recuperados, vários nomes por requisição, e resumidos. Os tipos são registrados no GBIF sob a sua identificação atual - geralmente o nome tipificado - que `GBIF_Specimen_names` mostra.
+
+### Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| taxon | Caractere. Um único nome de gênero de plantas ou algas (ex.: `"Myrcia"`, `"Gracilaria"`). Fungos não são consultados. |
+| sources | Vetor de caracteres. Quais tipos de evidência usar: `"powo"` (distribuições do POWO), `"gbif"` (espécimes-tipo brasileiros no GBIF) ou ambos (padrão). |
+| powo_source | Caractere. De onde os dados do POWO são lidos: `"rWCVPdata"` (padrão; rápido, local) ou `"checklistbank"` (sempre atualizado, mais lento). Veja Detalhes. |
+| require_brazil_evidence | Lógico. Aplica-se ao POWO. Se `TRUE` (padrão), os nomes do POWO só são mantidos quando o POWO registra a espécie no Brasil. Defina como `FALSE` para também retornar os nomes do POWO ausentes da FFB independentemente da distribuição, para revisão manual. (Os nomes do GBIF sempre têm evidência de ocorrência no Brasil: os seus tipos foram coletados lá.) |
+| type_status | Caractere ou `NULL`. Aplica-se ao GBIF. Categorias de tipo que contam como evidência (vocabulário atual do GBIF, ex.: `"Holotype"`, `"Isotype"`). `NULL` (padrão) usa todas as categorias de tipo primárias e secundárias: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial e TypeSeries. |
+| fetch_details | Lógico. Aplica-se ao POWO com `powo_source = "checklistbank"`: se `TRUE` (padrão), a citação da publicação original de cada candidato é buscada (uma requisição por nome). Com `"rWCVPdata"`, ela é sempre incluída. |
+| max_number | Numérico. Aplica-se ao POWO com `powo_source = "checklistbank"`: número máximo de nomes recuperados. Padrão `5000`. |
+| version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
+| verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
+| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
+| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_species_gap"`. |
+| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_species_gap_<taxon>"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiá-la ou baixá-la como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador após gerá-lo. |
+
+### Valor
+
+Um `data.frame`, com uma linha por nome em nível de espécie do gênero que está ausente da lista atual da FFB e foi relatado por pelo menos uma fonte, ordenado com os nomes relatados pelas duas fontes primeiro. Colunas comuns:
+
+- Taxon_name, Authors: O nome e a citação dos seus autores.
+- Accepted_name: O nome aceito (o do POWO, quando disponível, senão o do GBIF).
+- Found_in: Qual(is) fonte(s) relatou o nome: `"POWO; GBIF"`, `"POWO"` ou `"GBIF"`.
+- Brazil_evidence: Lógico; `TRUE` quando o POWO registra a espécie no Brasil ou ela tem espécimes-tipo brasileiros no GBIF.
+- In_FFB: Sempre `FALSE` (mantida por clareza ao combinar com outras tabelas).
+
+Colunas do POWO (quando `"powo"` está entre as `sources`; `NA` para nomes apenas do GBIF):
+
+- POWO_ID, POWO_Taxonomic_status, POWO_Accepted_name: O identificador do nome no POWO (IPNI), o seu status (ex.: `"Accepted"`, `"Synonym"`) e o seu nome aceito.
+- POWO_Year, POWO_Published_in: Ano de publicação e citação da publicação original.
+- POWO_Range: A descrição textual da distribuição no POWO.
+- POWO_Distribution, POWO_Brazil_Areas: Todas as áreas TDWG de nível 3 da distribuição do nome aceito, e apenas as brasileiras.
+- POWO_Brazil_Evidence, POWO_Evidence_Source: Se o POWO registra a espécie no Brasil, e se a partir da `"WCVP distribution"` ou da `"POWO range text"`.
+- POWO_URL, IPNI_URL: Links para as páginas do nome no POWO e no IPNI.
+
+Colunas do GBIF (quando `"gbif"` está entre as `sources`; `NA` para nomes apenas do POWO):
+
+- GBIF_Key, GBIF_Taxonomic_status, GBIF_Accepted_name: A chave do nome no esqueleto taxonômico do GBIF, o seu status (ex.: `"ACCEPTED"`, `"DOUBTFUL"`) e a sua espécie aceita.
+- GBIF_N_type_specimens, GBIF_Type_statuses: Número de espécimes-tipo coletados no Brasil e as suas categorias de tipo.
+- GBIF_Type_specimens: Até dez espécimes, com herbário, número de catálogo e categoria de tipo (ex.: `"RB 00123 (Holotype)"`).
+- GBIF_Specimen_names: Os nomes sob os quais os tipos estão registrados - geralmente o nome tipificado, ex.: o basiônimo de uma espécie.
+- GBIF_Collectors, GBIF_Years, GBIF_States: Coletores, anos de coleta e estados brasileiros desses espécimes.
+- GBIF_Published_in, GBIF_URL: Citação da publicação original, quando o GBIF a possui, e link para a página do nome no GBIF.
+
+### Exemplos
+
+```r
+# Espécies de Myrcia registradas no Brasil pelo POWO e/ou com espécimes-tipo
+# brasileiros no GBIF, mas ausentes da FFB
+gap <- flora_species_gap(taxon = "Myrcia")
+
+# Apenas POWO, lido diretamente do ChecklistBank em vez da cópia local da WCVP
+gap_powo <- flora_species_gap(taxon = "Myrcia", sources = "powo",
+                              powo_source = "checklistbank")
+
+# Um gênero de algas: apenas espécimes-tipo do GBIF (o POWO cobre plantas vasculares)
+gap_algae <- flora_species_gap(taxon = "Gracilaria", sources = "gbif")
+
+# Evidência de tipos mais restrita: apenas holótipos e isótipos
+gap_strict <- flora_species_gap(taxon = "Myrcia",
+                                type_status = c("Holotype", "Isotype"))
+```

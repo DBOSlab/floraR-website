@@ -5,3 +5,5 @@
 /.quarto/
 *.Rproj
 _freeze
+
+**/*.quarto_ipynb

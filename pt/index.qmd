@@ -30,7 +30,10 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
   if (nrow(latest_row) == 0) latest_row <- ffb_versions[1, ]
   n_versions     <- nrow(ffb_versions)
   latest_version <- latest_row$Version[1]
-  latest_records <- format(as.numeric(latest_row$Records[1]), big.mark = ",")
+  # flora_version() returns counts as text with thousands separators
+  # (e.g. "165,841"), which as.numeric() cannot parse on its own
+  n_records      <- suppressWarnings(as.numeric(gsub("[^0-9]", "", latest_row$Records[1])))
+  latest_records <- if (is.na(n_records)) NA else format(n_records, big.mark = ".")
   latest_date    <- latest_row$Published_on[1]
 } else {
   n_versions     <- NA
@@ -71,7 +74,9 @@ if (!is.null(ffb_versions) && nrow(ffb_versions) > 0) {
 ::: {style="text-align: left;"}
 
 \
-`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). O pacote oferece uma interface completa para baixar, analisar, filtrar e explorar dados da lista de espécies a partir do portal IPT da FFB — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.\
+`floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição de plantas e algas da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). O pacote oferece uma interface completa para baixar, analisar, filtrar e explorar dados da lista de espécies a partir do portal IPT da FFB — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.\
+\
+Mas o `floraR` foi concebido para ir além da recuperação de dados da FFB: seu objetivo é ajudar taxonomistas a expandir as monografias atuais da FFB. Ao comparar a FFB com recursos globais - as distribuições de espécies do [Plants of the World Online](https://powo.science.kew.org) e os espécimes-tipo coletados no Brasil que os herbários publicam no [GBIF](https://www.gbif.org) - ele aponta espécies registradas no Brasil, mas ainda não tratadas na FFB, oferecendo aos especialistas um ponto de partida concreto para aproximar cada monografia de um tratamento completo da flora brasileira.\
 \
 
 ```{=html}

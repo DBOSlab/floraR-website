@@ -1,6 +1,6 @@
 ---
 title: "About floraR"
-subtitle: "Open source tools for accessing, analyzing, and curating data from the Flora e Funga do Brasil platform"
+subtitle: "Open source tools for accessing, analyzing, and curating plant and algae data from the Flora e Funga do Brasil platform"
 format:
   html:
     toc: true
@@ -30,9 +30,11 @@ format:
 
 ## Overview
 
-`floraR` is an R package for accessing, analyzing, and curating taxonomic and distributional data from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br). It offers a comprehensive interface to the FFB [IPT data portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): downloading, parsing, filtering, and exploring versioned Darwin Core Archive (DwC-A) checklist data — from browsing by taxonomic, geographic, or trait criteria to resolving your own species name lists against it.
+`floraR` is an R package for accessing, analyzing, and curating taxonomic and distributional data on plants and algae from the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) platform, maintained by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br). It offers a comprehensive interface to the FFB [IPT data portal](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): downloading, parsing, filtering, and exploring versioned Darwin Core Archive (DwC-A) checklist data — from browsing by taxonomic, geographic, or trait criteria to resolving your own species name lists against it.
 
-Beyond data retrieval, `floraR` also assists taxonomic experts contributing to FFB by simplifying the integration of new species names and records from global biodiversity repositories such as IPNI, REFLORA, and GBIF.
+But `floraR` is designed to do more than retrieve data from FFB: it is meant to help taxonomists expand the current FFB monographs. By cross-checking FFB against global resources - the species distributions of [Plants of the World Online](https://powo.science.kew.org) and the type specimens collected in Brazil that herbaria publish through [GBIF](https://www.gbif.org) - it points to species that are recorded in Brazil but not yet treated in FFB, giving specialists a concrete starting point for bringing each monograph closer to a complete account of the Brazilian flora.
+
+`floraR` also assists taxonomic experts contributing to FFB by simplifying the integration of new species names and records from global biodiversity repositories such as IPNI, POWO, REFLORA, and GBIF.
 
 ## Flora e Funga do Brasil
 
@@ -57,6 +59,8 @@ Maintainer: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
 - Checklist filtering by taxonomic, geographic, and trait-based criteria
 - Exact and fuzzy (Levenshtein-distance) name resolution against the checklist
 - Taxonomic hierarchy traversal at any rank, from class down to species
+- Gap analysis: species recorded in Brazil by Plants of the World Online, or with type specimens collected in Brazil (GBIF), but still missing from FFB - to help expand FFB monographs
+- Candidate new state records: Brazilian states with specimen evidence (GBIF, REFLORA, speciesLink) absent from a taxon's FFB distribution
 - Tools for data curation and integration with global biodiversity repositories
 - Tidyverse-integrated workflows throughout
 

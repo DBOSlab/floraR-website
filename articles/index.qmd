@@ -25,6 +25,10 @@ format: html
   }
 </style>
 
+These "how-to" articles walk through `floraR`'s functions in the order you would typically reach for them. The diagram below gives the overall shape of that workflow before you dive into the individual guides.
+
+<img src="/figures/floraR_workflow.svg" alt="floraR workflow diagram" width="100%" />
+
 ::: {layout-ncol="2"}
 ::: {style="display: block;"}
 ### Check dataset versions
@@ -46,6 +50,16 @@ format: html
 ### Resolve and explore taxonomy
 - [Resolve your own species names](/articles/resolve_species_names.qmd)
 - [Explore the taxonomic hierarchy](/articles/explore_taxonomic_hierarchy.qmd)
+
+::: {style="display: block;"}
+:::
+### Find species missing from FFB
+- [Find species missing from FFB](/articles/find_missing_species.qmd)
+
+::: {style="display: block;"}
+:::
+### Find new state records
+- [Find candidate new state records](/articles/find_new_state_records.qmd)
 
 ::: {style="display: block;"}
 :::

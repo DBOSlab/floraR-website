@@ -1,0 +1,98 @@
+---
+title: "Encontrar candidatos a novos registros estaduais"
+format: html
+---
+
+Aqui apresentamos um guia prático para a função `flora_distribution_gap()` do pacote `floraR`. Dado um gênero ou espécie de plantas ou algas, ela compara os estados brasileiros onde espécimes do táxon foram registrados com os estados listados oficialmente na sua distribuição na [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), e sinaliza os estados que ainda não constam da FFB como **candidatos a novos registros estaduais** - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco.
+
+Manter as distribuições completas faz parte de expandir as monografias da FFB: cada candidato é uma pista a ser verificada pelo especialista do grupo.
+
+## Como a comparação funciona
+
+1. **Lado da FFB.** Os estados listados oficialmente vêm do conjunto de dados da FFB armazenado localmente (baixado apenas quando necessário, como em [`flora_download()`](/pt/articles/download_ffb_dataset.qmd)). Para um **gênero**, os estados de todas as suas espécies e táxons infraespecíficos são combinados; para uma **espécie**, os da espécie e dos seus táxons infraespecíficos. Se o nome for um **sinônimo** na FFB, é usada a distribuição do seu nome aceito.
+2. **Evidência de ocorrência.** Os registros brasileiros do táxon são contados por estado, a partir de uma ou mais fontes (veja abaixo).
+3. **Comparação.** Todo estado com registros que a FFB não lista é sinalizado como candidato a novo registro estadual.
+
+As bases de dados de ocorrência registram os estados como texto livre, com muitas grafias - só o GBIF usa `"Goiás"`, `"Go"`, `"Est. do Bahia"`, `"Paraiba"` ou `"Brasília"` para o Distrito Federal. Todas são normalizadas para os nomes de estados da FFB antes da comparação, e valores que não são estados brasileiros são ignorados.
+
+## De onde vem a evidência
+
+| `sources` | O que lê | Observações |
+|---|---|---|
+| `"gbif"` (padrão) | O [GBIF](https://www.gbif.org), que agrega a maioria dos herbários brasileiros. | Rápido: todos os estados são contados em uma única requisição. O nome é resolvido apenas entre plantas e algas, de modo que os registros dos seus sinônimos e táxons infraespecíficos são incluídos, e homônimos de outros reinos (ex.: a mariposa *Gracilaria*) são excluídos. |
+| `"reflora"` | Espécimes dos herbários do REFLORA, por meio do pacote [refloraR](https://github.com/DBOSlab/refloraR). | O primeiro uso baixa os arquivos dos herbários do REFLORA - vários gigabytes - que o `refloraR` então armazena para as chamadas seguintes. |
+| `"speciesLink"` | Registros do [speciesLink](https://specieslink.net). | Requer uma chave de API gratuita, criada no speciesLink e passada como `specieslink_key` ou definida na variável de ambiente `SPECIESLINK_KEY`. |
+
+## Encontrar candidatos a novos registros estaduais para uma espécie
+
+```r
+library(floraR)
+
+gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+```
+
+A função retorna uma linha por estado brasileiro com qualquer evidência e também salva uma planilha `.xlsx` e um relatório HTML autocontido na pasta `flora_distribution_gap/`.
+
+| Coluna | Significado |
+|---|---|
+| `State` | Estado brasileiro. |
+| `In_FFB_distribution` | Se a FFB já lista o estado para o táxon. |
+| `GBIF_records`, `REFLORA_records`, `speciesLink_records` | Número de registros no estado, para cada fonte consultada. |
+| `New_state_record_candidate` | `TRUE` para estados com registros que a FFB não lista. |
+
+Para *Luetzelburgia auriculata*, a FFB lista 14 estados, e os registros do GBIF apontam para mais cinco - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul e São Paulo.
+
+## Verificar os registros por trás de cada candidato
+
+Registros de ocorrência são evidências a revisar, não provas: um registro de um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento. Por isso, o relatório HTML lista os registros individuais encontrados em cada estado candidato - coletor e número, data, localidade, herbário e número de catálogo, e o nome sob o qual o espécime foi identificado - cada um com link para o próprio registro, para que cada candidato possa ser verificado antes de entrar na FFB.
+
+## Um gênero inteiro, ou estados selecionados
+
+Para um gênero, a distribuição na FFB é a união das distribuições de todas as suas espécies:
+
+```r
+gap_genus <- flora_distribution_gap(taxon = "Luetzelburgia")
+```
+
+Para verificar apenas alguns estados (nomes completos ou siglas, com ou sem acentos):
+
+```r
+gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                 state = c("PE", "Paraiba", "Alagoas"))
+```
+
+## Adicionar mais fontes
+
+```r
+# Espécimes dos herbários do REFLORA (requer o refloraR)
+gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                      sources = c("gbif", "reflora"))
+
+# speciesLink, com a sua chave de API na variável de ambiente SPECIESLINK_KEY
+gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                     sources = c("gbif", "speciesLink"))
+```
+
+## Argumentos
+
+| Argumento | Descrição |
+|---|---|
+| `taxon` | Um único nome de gênero ou espécie de plantas ou algas. |
+| `state` | Estados brasileiros opcionais aos quais restringir a verificação. `NULL` (padrão) verifica todos. |
+| `sources` | Qualquer combinação de `"gbif"` (padrão), `"reflora"` e `"speciesLink"`. |
+| `specieslink_key` | Chave de API do speciesLink. Padrão: a variável de ambiente `SPECIESLINK_KEY`. |
+| `version` | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
+| `save`, `dir`, `filename` | Salva o resultado como planilha `.xlsx`, e onde. |
+| `html_report`, `open_report` | Gera o relatório HTML e o abre no navegador. |
+| `verbose` | Exibe mensagens de progresso. Padrão `TRUE`. |
+
+## Dicas Adicionais
+
+- Um único registro em um novo estado merece mais atenção do que dezenas: verifique o espécime, a sua identificação e se ele era cultivado.
+- Alguns táxons não têm nenhuma distribuição por estado na FFB (como algumas algas marinhas); a função então informa isso, e todos os estados com registros são sinalizados.
+- O relatório HTML requer os pacotes `rmarkdown`, `DT` e `htmltools`. Sem eles, o relatório é omitido com uma mensagem, e a planilha continua sendo salva.
+
+## Veja Também
+
+- [Encontrar espécies ausentes da FFB](/pt/articles/find_missing_species.qmd)
+- [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)

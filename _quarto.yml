@@ -89,6 +89,14 @@ website:
             href: articles/resolve_species_names.qmd
           - text: Explore the taxonomic hierarchy
             href: articles/explore_taxonomic_hierarchy.qmd
+        - section: Find species missing from FFB
+          contents:
+          - text: Find species missing from FFB
+            href: articles/find_missing_species.qmd
+        - section: Find new state records
+          contents:
+          - text: Find candidate new state records
+            href: articles/find_new_state_records.qmd
         - section: Curate new records
           contents:
           - text: Curate and describe new records
@@ -121,6 +129,14 @@ website:
             href: pt/articles/resolve_species_names.qmd
           - text: Explorar a hierarquia taxonômica
             href: pt/articles/explore_taxonomic_hierarchy.qmd
+        - section: Encontrar espécies ausentes da FFB
+          contents:
+          - text: Encontrar espécies ausentes da FFB
+            href: pt/articles/find_missing_species.qmd
+        - section: Encontrar novos registros estaduais
+          contents:
+          - text: Encontrar candidatos a novos registros estaduais
+            href: pt/articles/find_new_state_records.qmd
         - section: Curar novos registros
           contents:
           - text: Curar e descrever novos registros

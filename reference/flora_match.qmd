@@ -58,31 +58,22 @@ A data frame with one row per input name (from `splist1` first, then
 any unmatched names from `splist2` when `include_all = TRUE`) and
 the following columns:
 
-  Species.List.1Names from `splist1` (`NA` for rows that
-    come only from `splist2`).
-  Species.List.2The matched name from `splist2`, or `NA`
-    if no match was found.
-  FFB.taxon.IDTaxon ID in the FFB database.
-  Input.GenusGenus extracted from the input name.
-  Input.EpithetSpecific epithet extracted from the input name.
-  taxonRankTaxonomic rank (e.g., `"ESPECIE"`, `"VARIEDADE"`).
-  Input.InfraspecificEpithetInfraspecific epithet if present.
-  scientificNameAuthorshipAuthor citation of the matched taxon.
-  taxonomicStatusFFB taxonomic status: `"NOME_ACEITO"`
-    (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"`.
-  Accepted.taxon.IDID of the accepted name.
-  Accepted.taxon.NameAccepted taxon name resolved from the FFB
-    database.
-  familyPlant family.
-  orderPlant order (when available in the FFB data).
-  Correct(Only when `show_correct = TRUE`) Logical indicating
-    an exact match (`TRUE`) vs. a fuzzy match (`FALSE`) for
-    `splist1`.
-  Match.Position.2to1Row index of the matched name in
-    `splist2`.
-  Duplicated.Output.Position(Only when `identify_dups = TRUE`)
-    Row index of the first other occurrence of the same
-    `Accepted.taxon.Name`, or `NA` if unique.
+- Species.List.1: Names from `splist1` (`NA` for rows that come only from `splist2`).
+- Species.List.2: The matched name from `splist2`, or `NA` if no match was found.
+- FFB.taxon.ID: Taxon ID in the FFB database.
+- Input.Genus: Genus extracted from the input name.
+- Input.Epithet: Specific epithet extracted from the input name.
+- taxonRank: Taxonomic rank (e.g., `"ESPECIE"`, `"VARIEDADE"`).
+- Input.InfraspecificEpithet: Infraspecific epithet if present.
+- scientificNameAuthorship: Author citation of the matched taxon.
+- taxonomicStatus: FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"`.
+- Accepted.taxon.ID: ID of the accepted name.
+- Accepted.taxon.Name: Accepted taxon name resolved from the FFB database.
+- family: Plant family.
+- order: Plant order (when available in the FFB data).
+- Correct: (Only when `show_correct = TRUE`) Logical indicating an exact match (`TRUE`) vs. a fuzzy match (`FALSE`) for `splist1`.
+- Match.Position.2to1: Row index of the matched name in `splist2`.
+- Duplicated.Output.Position: (Only when `identify_dups = TRUE`) Row index of the first other occurrence of the same `Accepted.taxon.Name`, or `NA` if unique.
 
 ### Examples
 

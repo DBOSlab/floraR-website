@@ -39,7 +39,7 @@ latest$Version
 
 ## Additional Tips
 
-- `flora_download()` and `flora_parse()`, and every function built on top of them (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`), default to `version = "latest"`. You only need `flora_version()` directly when you want to pin an analysis to a specific, older release for reproducibility.
+- `flora_download()` and `flora_parse()`, and every function built on top of them (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`, `flora_species_gap()`, `flora_distribution_gap()`), default to `version = "latest"`. You only need `flora_version()` directly when you want to pin an analysis to a specific, older release for reproducibility.
 - Pass a specific version string from the `Version` column (e.g. `flora_download(version = versions_df$Version[1])`) to work with that exact release instead of the current one.
 - The `Records` column is a quick way to sanity-check that a download completed correctly: the number of parsed rows should be in the same order of magnitude.
 

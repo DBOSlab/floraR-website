@@ -1,0 +1,92 @@
+---
+title: 'flora_distribution_gap'
+description: 'Find candidate new Brazilian state records for a plant or algal taxon'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+floraR::flora_distribution_gap()
+```
+
+### Description
+
+Given a genus or species of plants or algae, checks [GBIF](https://www.gbif.org)
+and, optionally, the [Reflora
+Virtual Herbarium](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) and [speciesLink](https://specieslink.net) for specimen and
+occurrence evidence of the taxon in Brazilian states that are *not* currently
+listed in its official Flora e Funga do Brasil (FFB) distribution. This flags
+candidate new state records for a taxonomist to verify - e.g. a species listed by FFB
+only for Bahia, but with herbarium specimens from Pernambuco - so that the
+distributions in FFB monographs can be kept complete.
+
+### Details
+
+**FFB side.** The officially listed states come from the parsed FFB taxon and
+distribution tables (the same locally cached dataset as `flora_records`).
+For a genus, the states of all its species and infraspecific taxa are combined; for a
+species, those of the species and its infraspecific taxa. If the name is a synonym in
+FFB, the distribution of its accepted name is used.
+
+**Occurrence evidence.** Up to three sources can be queried (see
+`sources`):
+
+- `"gbif"` (default): GBIF's public API, which aggregates most Brazilian herbaria. The name is first resolved to its GBIF backbone key among plants and algae only (so, e.g., the red alga *Gracilaria* is not confused with the moth genus of the same name), so the records of its synonyms and infraspecific taxa are included. All states are counted in a single request.
+- `"reflora"`: REFLORA herbarium specimens, via `reflora_records` (requires the refloraR package). Note that the first use downloads the REFLORA herbarium archives - several gigabytes - which refloraR then caches for later calls.
+- `"speciesLink"`: speciesLink's API, which requires a free API key (`specieslink_key`; create one at https://specieslink.net).
+
+Free-text state values in these sources (e.g. `"Ba"`, `"Est. do Bahia"`,
+`"Paraiba"`) are normalised to FFB state names before comparison; values that are
+not Brazilian states are ignored.
+
+Occurrence records are evidence to review, not proof: a record in a new state may be
+a cultivated plant, a misidentification, or a georeferencing error, which is why the
+HTML report lists the individual records behind each candidate state.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| taxon | Character. A single genus or species name of plants or algae (e.g. `"Luetzelburgia auriculata"` or `"Luetzelburgia"`). |
+| state | Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. `NULL` (default) checks all states with any evidence. |
+| sources | Character vector. Which occurrence sources to query: any of `"gbif"`, `"reflora"`, `"speciesLink"`. Defaults to `"gbif"`, the fastest. See Details for the requirements of the other two. |
+| specieslink_key | Character. speciesLink API key, used when `"speciesLink"` is among `sources`. Defaults to the `SPECIESLINK_KEY` environment variable. |
+| version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `flora_download`. |
+| verbose | Logical. If `TRUE` (default), prints progress messages. |
+| save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
+| dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"flora_distribution_gap"`. |
+| filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"flora_distribution_gap_<taxon>"`. |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| open_report | Logical. If `TRUE` (default in interactive sessions), opens the HTML report in the browser once rendered. |
+
+### Value
+
+A `data.frame`, one row per Brazilian state with any evidence for
+  `taxon` (in FFB or in the queried sources), with columns:
+
+- Taxon: The queried taxon name.
+- State: Brazilian state name.
+- In_FFB_distribution: Logical; whether FFB already lists this state for the taxon.
+- GBIF_records: Number of GBIF occurrence records in this state (when `"gbif"` is among `sources`).
+- REFLORA_records: Number of REFLORA specimens in this state (when `"reflora"` is among `sources` and refloraR is installed).
+- speciesLink_records: Number of speciesLink records in this state (when `"speciesLink"` is among `sources` and a key is given).
+- New_state_record_candidate: `TRUE` when the state has evidence from at least one source but is *not* in FFB's distribution - a candidate for taxonomic review.
+
+### Examples
+
+```r
+# Candidate new state records for a species
+gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+
+# A whole genus, restricted to two states
+gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
+                                 state = c("Pernambuco", "Paraiba"))
+
+# Adding REFLORA herbarium specimens (requires refloraR)
+gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                      sources = c("gbif", "reflora"))
+```
+
+

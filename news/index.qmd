@@ -28,6 +28,19 @@ format:
   }
 </style>
 
+# floraR (development version)
+
+### New features
+
+- `flora_species_gap()`: Find species of a genus of plants or algae that occur in Brazil but are still missing from FFB, combining two kinds of evidence: the species distributions of [Plants of the World Online (POWO)](https://powo.science.kew.org) and type specimens collected in Brazil ([GBIF](https://www.gbif.org)). Returns one table, one row per name, stating which source(s) reported it, with names reported by both listed first. POWO's data is read locally from [rWCVPdata](https://github.com/matildabrown/rWCVPdata) by default, or live from [ChecklistBank](https://www.checklistbank.org) with `powo_source = "checklistbank"`; each GBIF name comes with a summary of its Brazilian type specimens. Names FFB holds under a different genus or spelling (e.g. *Luetzelburgia andrade-limae* vs. *L. andradelimae*) are recognised. Saves an `.xlsx` spreadsheet and an HTML report.
+- `flora_distribution_gap()`: Find candidate new Brazilian state records for a genus or species of plants or algae: states with specimen evidence in [GBIF](https://www.gbif.org) (and optionally REFLORA and speciesLink) that are not yet in its official FFB distribution. The HTML report lists the individual records behind each candidate state.
+- A workflow diagram of the package, in the README and on the website's [Articles](/articles/index.qmd) page.
+- New articles: [Find species missing from FFB](/articles/find_missing_species.qmd) and [Find candidate new state records](/articles/find_new_state_records.qmd).
+
+### Bug fixes
+
+- `library(floraR)` no longer prints "Registered S3 method overwritten by 'hoardr'" when `httr` is already loaded. The `finch` package is now loaded quietly only when `flora_parse()` needs it.
+
 # floraR 1.0.0
 
 ## Initial Release

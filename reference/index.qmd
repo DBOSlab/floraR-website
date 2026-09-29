@@ -31,6 +31,8 @@ format:
 
 - [`flora_build_matrix()`](/reference/flora_build_matrix.qmd)
 
+- [`flora_distribution_gap()`](/reference/flora_distribution_gap.qmd)
+
 - [`flora_download()`](/reference/flora_download.qmd)
 
 - [`flora_get_children_taxa()`](/reference/flora_get_children_taxa.qmd)
@@ -44,6 +46,8 @@ format:
 - [`flora_records()`](/reference/flora_records.qmd)
 
 - [`flora_search()`](/reference/flora_search.qmd)
+
+- [`flora_species_gap()`](/reference/flora_species_gap.qmd)
 
 - [`flora_version()`](/reference/flora_version.qmd)
 

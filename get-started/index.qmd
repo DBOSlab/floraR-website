@@ -52,6 +52,19 @@ BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
 library(floraR)
 ```
 
+:::{.callout-note}
+## Optional packages for the curation tools
+`flora_species_gap()` reads Plants of the World Online data fastest from a local copy of the World Checklist of Vascular Plants, provided by the [rWCVPdata](https://github.com/matildabrown/rWCVPdata) package (not on CRAN):
+
+```r
+install.packages("rWCVPdata",
+                 repos = c("https://matildabrown.github.io/drat",
+                           "https://cloud.r-project.org"))
+```
+
+`flora_distribution_gap()` can also use REFLORA herbarium specimens through the [refloraR](https://github.com/DBOSlab/refloraR) package, and speciesLink records with a free [speciesLink](https://specieslink.net) API key. None of these are needed for the rest of the package.
+:::
+
 ## Quick Start
 
 Once installed, a good first step is to check which Flora e Funga do Brasil dataset versions are currently published:
@@ -62,6 +75,6 @@ Once installed, a good first step is to check which Flora e Funga do Brasil data
 flora_version()
 ```
 
-Most functions — including `flora_records()`, `flora_search()`, and `flora_get_children_taxa()` — download and parse the FFB dataset automatically the first time you call them, and reuse the same local cache on subsequent calls, so you rarely need to call `flora_download()`/`flora_parse()` yourself unless you want to inspect the raw data directly.
+Most functions — including `flora_records()`, `flora_search()`, `flora_get_children_taxa()`, `flora_species_gap()`, and `flora_distribution_gap()` — download and parse the FFB dataset automatically the first time you call them, and reuse the same local cache on subsequent calls, so you rarely need to call `flora_download()`/`flora_parse()` yourself unless you want to inspect the raw data directly.
 
-From there, browse the [How-To Articles](/articles/index.qmd) to learn how to download and parse checklist data, filter records by taxonomic or geographic criteria, resolve your own species names against the checklist, explore the taxonomic hierarchy, and curate new records.
+From there, browse the [How-To Articles](/articles/index.qmd) to learn how to download and parse checklist data, filter records by taxonomic or geographic criteria, resolve your own species names against the checklist, explore the taxonomic hierarchy, find species and state records missing from FFB to help expand its monographs, and curate new records. The [workflow diagram](/articles/index.qmd) on the Articles page shows how the functions fit together.

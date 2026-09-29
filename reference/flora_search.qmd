@@ -49,23 +49,16 @@ When multiple entries are matched, the one classified as
 
 A data frame with one row per input name and the following columns:
 
-  SearchThe original input name supplied by the user.
-  FFB.taxon.IDTaxon ID in the FFB database (`id` column).
-  taxonRankTaxonomic rank (e.g., `"ESPECIE"`,
-    `"VARIEDADE"`, `"SUBESPECIE"`).
-  scientificNameAuthorshipAuthor citation of the matched taxon.
-  taxonomicStatusFFB taxonomic status: `"NOME_ACEITO"`
-    (accepted), `"SINONIMO"` (synonym), or
-    `"NOME_DUVIDOSO"` (doubtful).
-  Accepted.taxon.IDID of the accepted name — same as
-    `FFB.taxon.ID` when the matched record is itself accepted; the
-    parent ID when it is a synonym.
-  Accepted.taxon.NameAccepted taxon name resolved from the FFB
-    database.
-  familyPlant family.
-  orderPlant order (when available in the FFB data).
-  Correct(Only when `show_correct = TRUE`) Logical indicating
-    an exact match (`TRUE`) vs. a fuzzy match (`FALSE`).
+- Search: The original input name supplied by the user.
+- FFB.taxon.ID: Taxon ID in the FFB database (`id` column).
+- taxonRank: Taxonomic rank (e.g., `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`).
+- scientificNameAuthorship: Author citation of the matched taxon.
+- taxonomicStatus: FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful).
+- Accepted.taxon.ID: ID of the accepted name — same as `FFB.taxon.ID` when the matched record is itself accepted; the parent ID when it is a synonym.
+- Accepted.taxon.Name: Accepted taxon name resolved from the FFB database.
+- family: Plant family.
+- order: Plant order (when available in the FFB data).
+- Correct: (Only when `show_correct = TRUE`) Logical indicating an exact match (`TRUE`) vs. a fuzzy match (`FALSE`).
 
 Returns `NULL` with a warning if no match is found for any input.
 Rows for unmatched names contain `NA` in all FFB columns.

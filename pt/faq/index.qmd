@@ -33,7 +33,11 @@ A Flora e Funga do Brasil (FFB) é a lista de espécies taxonômica que document
 
 ### Para que posso usar o floraR?
 
-O pacote `floraR` permite que pesquisadores e taxonomistas baixem, analisem, filtrem e explorem a lista de espécies da [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) diretamente do R. Você pode navegar pela lista de espécies por critérios taxonômicos, geográficos ou de atributos, resolver sua própria lista de nomes de espécies em relação a ela (com correspondência aproximada para erros de digitação), explorar a hierarquia taxonômica e curar novos registros para contribuir de volta à FFB.
+O pacote `floraR` permite que pesquisadores e taxonomistas baixem, analisem, filtrem e explorem a lista de espécies da [Flora e Funga do Brasil](https://floradobrasil.jbrj.gov.br/consulta/) diretamente do R. Você pode navegar pela lista de espécies por critérios taxonômicos, geográficos ou de atributos, resolver sua própria lista de nomes de espécies em relação a ela (com correspondência aproximada para erros de digitação), explorar a hierarquia taxonômica e curar novos registros para contribuir de volta à FFB. Além de recuperar dados, ele ajuda taxonomistas a expandir as monografias da FFB: `flora_species_gap()` encontra espécies registradas no Brasil - pelas distribuições do Plants of the World Online ou por espécimes-tipo coletados no Brasil (GBIF) - que a FFB ainda não lista, e `flora_distribution_gap()` encontra estados brasileiros com evidência de espécimes ausentes da distribuição de um táxon na FFB.
+
+### O floraR cobre fungos?
+
+Não. O `floraR` trabalha com os dados de plantas e algas da Flora e Funga do Brasil. Para fungos, use o seu pacote companheiro [fungaR](https://dboslab.github.io/fungaR-website/).
 
 ### Preciso de uma lista de nomes de espécies para usar o floraR?
 
@@ -41,7 +45,7 @@ Não. A função `flora_records()` permite navegar e filtrar a lista de espécie
 
 ### O floraR requer conexão com a internet?
 
-Apenas na primeira vez que você consultar uma determinada versão do conjunto de dados. As funções `flora_download()` e `flora_parse()` baixam e armazenam localmente o Arquivo Darwin Core versionado, e todas as demais funções reutilizam esse cache automaticamente, de modo que consultas repetidas e análises offline funcionam sem um novo download.
+Apenas na primeira vez que você consultar uma determinada versão do conjunto de dados. As funções `flora_download()` e `flora_parse()` baixam e armazenam localmente o Arquivo Darwin Core versionado, e todas as demais funções reutilizam esse cache automaticamente, de modo que consultas repetidas e análises offline funcionam sem um novo download. As exceções são as ferramentas de curadoria `flora_species_gap()` e `flora_distribution_gap()`, que consultam fontes online (o GBIF e, se escolhido, o ChecklistBank) a cada execução.
 
 ### Como instalo o floraR?
 
@@ -57,7 +61,7 @@ Sim. Cada página tem um botão de alternância EN/PT na barra de navegação. D
 
 ### Quais saídas o floraR pode gerar?
 
-O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de caracteres por táxon para análises comparativas ou filogenéticas.
+O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de caracteres por táxon para análises comparativas ou filogenéticas. As ferramentas de curadoria `flora_species_gap()` e `flora_distribution_gap()` também salvam uma planilha `.xlsx` e um relatório HTML interativo e autocontido dos seus resultados.
 
 ### Quem é o desenvolvedor do floraR?
 
@@ -85,4 +89,4 @@ O pacote `floraR` é uma interface programática para o portal de dados IPT da F
 
 ### Posso contribuir com novos nomes ou registros para a Flora e Funga do Brasil?
 
-Sim. O `floraR` inclui as funções `flora_get_descriptions()` e `flora_build_matrix()` especificamente para ajudar especialistas taxonômicos a reunir e curar novos registros — extraindo descrições de campos controlados e texto livre de páginas de táxons já existentes na FFB e transformando-as em uma matriz de caracteres comparável. Para submeter novos nomes ou correções à própria plataforma, consulte as diretrizes de contribuição em [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.
+Sim. O `floraR` inclui ferramentas especificamente para ajudar especialistas taxonômicos a expandir a FFB: `flora_species_gap()` lista espécies registradas no Brasil, mas ausentes da FFB, `flora_distribution_gap()` lista candidatos a novos registros estaduais, e `flora_get_descriptions()` e `flora_build_matrix()` extraem descrições de campos controlados e texto livre de páginas de táxons já existentes na FFB e as transformam em uma matriz de caracteres comparável. Para submeter novos nomes ou correções à própria plataforma, consulte as diretrizes de contribuição em [floradobrasil.jbrj.gov.br/consulta](https://floradobrasil.jbrj.gov.br/consulta/) ou entre em contato com a equipe de coordenação da FFB pelo e-mail **floraefungadobrasil\@jbrj.gov.br**.

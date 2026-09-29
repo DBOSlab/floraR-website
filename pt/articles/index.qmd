@@ -26,6 +26,10 @@ sidebar: pt-articles
   }
 </style>
 
+Estes artigos práticos percorrem as funções do `floraR` na ordem em que normalmente são usadas. O diagrama abaixo mostra o formato geral desse fluxo de trabalho antes de você explorar os guias individuais.
+
+<img src="/figures/floraR_workflow_pt.svg" alt="Diagrama do fluxo de trabalho do floraR" width="100%" />
+
 ::: {layout-ncol="2"}
 ::: {style="display: block;"}
 ### Verificar versões do conjunto de dados
@@ -47,6 +51,16 @@ sidebar: pt-articles
 ### Resolver e explorar a taxonomia
 - [Resolver sua própria lista de nomes de espécies](/pt/articles/resolve_species_names.qmd)
 - [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)
+
+::: {style="display: block;"}
+:::
+### Encontrar espécies ausentes da FFB
+- [Encontrar espécies ausentes da FFB](/pt/articles/find_missing_species.qmd)
+
+::: {style="display: block;"}
+:::
+### Encontrar novos registros estaduais
+- [Encontrar candidatos a novos registros estaduais](/pt/articles/find_new_state_records.qmd)
 
 ::: {style="display: block;"}
 :::

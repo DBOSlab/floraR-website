@@ -2,31 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dboslab.github.io/floraR-website/get-started/index.html</loc>
-    <lastmod>2026-08-31T20:54:01.125Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.874Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_match.html</loc>
+    <lastmod>2026-09-28T23:20:36.338Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_parse.html</loc>
-    <lastmod>2026-08-31T20:40:15.865Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.340Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_get_descriptions.html</loc>
-    <lastmod>2026-08-31T20:40:15.862Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.335Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/index.html</loc>
-    <lastmod>2026-08-31T20:40:15.874Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.353Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_search.html</loc>
-    <lastmod>2026-08-31T20:40:15.869Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.344Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_get_children_taxa.html</loc>
-    <lastmod>2026-08-31T20:40:15.860Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.334Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/get-started/index.html</loc>
-    <lastmod>2026-08-31T20:53:41.540Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.874Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_match.html</loc>
+    <lastmod>2026-08-31T20:50:27.362Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_parse.html</loc>
@@ -38,7 +46,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/reference/index.html</loc>
-    <lastmod>2026-08-31T20:48:49.780Z</lastmod>
+    <lastmod>2026-09-28T23:16:56.559Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_search.html</loc>
@@ -50,19 +58,23 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/about.html</loc>
-    <lastmod>2026-08-31T20:45:48.973Z</lastmod>
+    <lastmod>2026-09-28T22:55:48.398Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/articles/filter_ffb_records.html</loc>
-    <lastmod>2026-08-31T20:47:53.766Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/find_new_state_records.html</loc>
+    <lastmod>2026-09-28T23:16:41.872Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/articles/explore_taxonomic_hierarchy.html</loc>
-    <lastmod>2026-08-31T20:48:25.957Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/resolve_species_names.html</loc>
+    <lastmod>2026-08-31T20:48:12.505Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/articles/index.html</loc>
-    <lastmod>2026-08-31T20:46:59.390Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/curate_ffb_descriptions.html</loc>
+    <lastmod>2026-08-31T20:48:41.504Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/find_missing_species.html</loc>
+    <lastmod>2026-09-28T23:20:30.221Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/articles/parse_ffb_dwca.html</loc>
@@ -70,23 +82,27 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/faq/index.html</loc>
-    <lastmod>2026-08-31T20:46:18.168Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.875Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/about.html</loc>
-    <lastmod>2026-08-31T20:42:16.168Z</lastmod>
+    <lastmod>2026-09-28T22:55:48.397Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/articles/filter_ffb_records.html</loc>
-    <lastmod>2026-08-31T20:44:20.418Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/find_new_state_records.html</loc>
+    <lastmod>2026-09-28T23:16:41.871Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/articles/explore_taxonomic_hierarchy.html</loc>
-    <lastmod>2026-08-31T20:44:45.885Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/resolve_species_names.html</loc>
+    <lastmod>2026-08-31T20:44:35.135Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/articles/index.html</loc>
-    <lastmod>2026-08-31T20:43:35.378Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/curate_ffb_descriptions.html</loc>
+    <lastmod>2026-08-31T20:44:58.279Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/articles/find_missing_species.html</loc>
+    <lastmod>2026-09-28T23:20:30.221Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/articles/parse_ffb_dwca.html</loc>
@@ -94,7 +110,7 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/faq/index.html</loc>
-    <lastmod>2026-08-31T20:43:04.330Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.874Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/LICENSE.html</loc>
@@ -106,23 +122,27 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/articles/download_ffb_dataset.html</loc>
-    <lastmod>2026-08-31T20:43:54.410Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.875Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/articles/check_ffb_versions.html</loc>
-    <lastmod>2026-08-31T20:43:44.683Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.875Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/articles/curate_ffb_descriptions.html</loc>
-    <lastmod>2026-08-31T20:44:58.279Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/index.html</loc>
+    <lastmod>2026-09-28T23:16:41.871Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/articles/resolve_species_names.html</loc>
-    <lastmod>2026-08-31T20:44:35.135Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/articles/explore_taxonomic_hierarchy.html</loc>
+    <lastmod>2026-08-31T20:44:45.885Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/articles/filter_ffb_records.html</loc>
+    <lastmod>2026-08-31T20:44:20.418Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/index.html</loc>
-    <lastmod>2026-08-31T20:41:53.660Z</lastmod>
+    <lastmod>2026-09-29T00:06:51.408Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/authors/index.html</loc>
@@ -130,27 +150,31 @@
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/articles/download_ffb_dataset.html</loc>
-    <lastmod>2026-08-31T20:47:22.870Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.875Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/articles/check_ffb_versions.html</loc>
-    <lastmod>2026-08-31T20:47:10.996Z</lastmod>
+    <lastmod>2026-09-28T23:28:21.875Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/articles/curate_ffb_descriptions.html</loc>
-    <lastmod>2026-08-31T20:48:41.504Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/index.html</loc>
+    <lastmod>2026-09-28T23:16:41.871Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/articles/resolve_species_names.html</loc>
-    <lastmod>2026-08-31T20:48:12.505Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/explore_taxonomic_hierarchy.html</loc>
+    <lastmod>2026-08-31T20:48:25.957Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/articles/filter_ffb_records.html</loc>
+    <lastmod>2026-08-31T20:47:53.766Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/index.html</loc>
-    <lastmod>2026-08-31T20:45:32.643Z</lastmod>
+    <lastmod>2026-09-29T00:06:51.408Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/news/index.html</loc>
-    <lastmod>2026-08-31T20:46:29.976Z</lastmod>
+    <lastmod>2026-09-28T23:16:41.870Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_version.html</loc>
@@ -169,31 +193,39 @@
     <lastmod>2026-08-31T20:49:07.786Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_match.html</loc>
-    <lastmod>2026-08-31T20:50:27.362Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_distribution_gap.html</loc>
+    <lastmod>2026-09-28T23:13:47.948Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/pt/reference/flora_species_gap.html</loc>
+    <lastmod>2026-09-28T23:21:15.753Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/news/index.html</loc>
-    <lastmod>2026-08-31T20:43:14.707Z</lastmod>
+    <lastmod>2026-09-28T23:16:41.870Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_version.html</loc>
-    <lastmod>2026-08-31T20:40:15.870Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.350Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_build_matrix.html</loc>
-    <lastmod>2026-08-31T20:40:15.848Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.319Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_records.html</loc>
-    <lastmod>2026-08-31T20:40:15.868Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.342Z</lastmod>
   </url>
   <url>
     <loc>https://dboslab.github.io/floraR-website/reference/flora_download.html</loc>
-    <lastmod>2026-08-31T20:40:15.859Z</lastmod>
+    <lastmod>2026-09-28T23:20:36.332Z</lastmod>
   </url>
   <url>
-    <loc>https://dboslab.github.io/floraR-website/reference/flora_match.html</loc>
-    <lastmod>2026-08-31T20:40:15.864Z</lastmod>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_distribution_gap.html</loc>
+    <lastmod>2026-09-28T23:20:36.326Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dboslab.github.io/floraR-website/reference/flora_species_gap.html</loc>
+    <lastmod>2026-09-28T23:20:36.349Z</lastmod>
   </url>
 </urlset>

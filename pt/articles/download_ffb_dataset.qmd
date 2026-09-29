@@ -50,7 +50,7 @@ flora_download(version = "all", dir = "flora_download")
 
 ## Dicas Adicionais
 
-- Você raramente precisa chamar `flora_download()` diretamente: `flora_records()`, `flora_search()`, `flora_match()` e `flora_get_children_taxa()` baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.
+- Você raramente precisa chamar `flora_download()` diretamente: `flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`, `flora_species_gap()` e `flora_distribution_gap()` baixam e armazenam em cache o conjunto de dados automaticamente na primeira chamada.
 - Se não houver conexão com a internet, a `flora_download()` recorre automaticamente a uma cópia local baixada anteriormente, se houver, em `dir`.
 - Mantenha a pasta baixada (o comportamento padrão `rm_flora_database = FALSE` nas funções que a utilizam) para que análises repetidas reutilizem o cache em vez de baixar o arquivo novamente a cada vez.
 

@@ -28,6 +28,19 @@ format:
   }
 </style>
 
+# floraR (versão em desenvolvimento)
+
+### Novas funcionalidades
+
+- `flora_species_gap()`: Encontra espécies de um gênero de plantas ou algas que ocorrem no Brasil, mas que ainda estão ausentes da FFB, combinando dois tipos de evidência: as distribuições de espécies do [Plants of the World Online (POWO)](https://powo.science.kew.org) e os espécimes-tipo coletados no Brasil ([GBIF](https://www.gbif.org)). Retorna uma única tabela, com uma linha por nome, indicando qual(is) fonte(s) o relatou, com os nomes relatados por ambas listados primeiro. Por padrão, os dados do POWO são lidos localmente a partir do [rWCVPdata](https://github.com/matildabrown/rWCVPdata), ou diretamente do [ChecklistBank](https://www.checklistbank.org) com `powo_source = "checklistbank"`; cada nome do GBIF vem com um resumo dos seus espécimes-tipo brasileiros. Nomes que a FFB registra em outro gênero ou com outra grafia (ex.: *Luetzelburgia andrade-limae* e *L. andradelimae*) são reconhecidos. Salva uma planilha `.xlsx` e um relatório HTML.
+- `flora_distribution_gap()`: Encontra candidatos a novos registros estaduais para um gênero ou espécie de plantas ou algas: estados com evidência de espécimes no [GBIF](https://www.gbif.org) (e, opcionalmente, no REFLORA e no speciesLink) que ainda não constam da sua distribuição oficial na FFB. O relatório HTML lista os registros individuais por trás de cada estado candidato.
+- Um diagrama do fluxo de trabalho do pacote, no README e na página de [Artigos](/pt/articles/index.qmd) do site.
+- Novos artigos: [Encontrar espécies ausentes da FFB](/pt/articles/find_missing_species.qmd) e [Encontrar candidatos a novos registros estaduais](/pt/articles/find_new_state_records.qmd).
+
+### Correções
+
+- `library(floraR)` não exibe mais "Registered S3 method overwritten by 'hoardr'" quando o `httr` já está carregado. O pacote `finch` agora é carregado silenciosamente apenas quando `flora_parse()` precisa dele.
+
 # floraR 1.0.0
 
 ## Lançamento Inicial

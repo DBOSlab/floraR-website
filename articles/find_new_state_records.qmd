@@ -1,0 +1,98 @@
+---
+title: "Find candidate new state records"
+format: html
+---
+
+Here we present a practical guide to the `flora_distribution_gap()` function of the `floraR` package. Given a genus or species of plants or algae, it compares the Brazilian states where specimens of the taxon have been recorded against the states officially listed in its [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) distribution, and flags the states not yet in FFB as **candidate new state records** - for example, a species listed by FFB only for Bahia, but with herbarium specimens from Pernambuco.
+
+Keeping distributions complete is part of expanding the FFB monographs: each candidate is a lead for the specialist of the group to check.
+
+## How the comparison works
+
+1. **FFB side.** The officially listed states come from the locally cached FFB dataset (downloaded only when needed, as in [`flora_download()`](/articles/download_ffb_dataset.qmd)). For a **genus**, the states of all its species and infraspecific taxa are combined; for a **species**, those of the species and its infraspecific taxa. If the name is a **synonym** in FFB, the distribution of its accepted name is used.
+2. **Occurrence evidence.** Brazilian records of the taxon are counted by state, from one or more sources (see below).
+3. **Comparison.** Every state with records that FFB does not list is flagged as a new state record candidate.
+
+Occurrence databases record states as free text, in many spellings - GBIF alone uses `"Goiás"`, `"Go"`, `"Est. do Bahia"`, `"Paraiba"`, or `"Brasília"` for the Federal District. These are all normalised to FFB state names before comparison, and values that are not Brazilian states are ignored.
+
+## Where the evidence comes from
+
+| `sources` | What it reads | Notes |
+|---|---|---|
+| `"gbif"` (default) | [GBIF](https://www.gbif.org), which aggregates most Brazilian herbaria. | Fast: all states are counted in a single request. The name is resolved among plants and algae only, so the records of its synonyms and infraspecific taxa are included, and homonyms in other kingdoms (e.g. the moth *Gracilaria*) are excluded. |
+| `"reflora"` | REFLORA herbarium specimens, via the [refloraR](https://github.com/DBOSlab/refloraR) package. | The first use downloads the REFLORA herbarium archives - several gigabytes - which `refloraR` then caches for later calls. |
+| `"speciesLink"` | [speciesLink](https://specieslink.net) records. | Requires a free API key, created at speciesLink and passed as `specieslink_key` or set as the `SPECIESLINK_KEY` environment variable. |
+
+## Find candidate new state records for a species
+
+```r
+library(floraR)
+
+gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+```
+
+This returns one row per Brazilian state with any evidence, and also saves an `.xlsx` spreadsheet and a self-contained HTML report in the `flora_distribution_gap/` folder.
+
+| Column | Meaning |
+|---|---|
+| `State` | Brazilian state. |
+| `In_FFB_distribution` | Whether FFB already lists the state for the taxon. |
+| `GBIF_records`, `REFLORA_records`, `speciesLink_records` | Number of records in the state, for each source queried. |
+| `New_state_record_candidate` | `TRUE` for states with records that FFB does not list. |
+
+For *Luetzelburgia auriculata*, FFB lists 14 states, and GBIF records point to five more - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul, and São Paulo.
+
+## Check the records behind each candidate
+
+Occurrence records are evidence to review, not proof: a record from a new state may be a cultivated plant, a misidentification, or a georeferencing error. The HTML report therefore lists the individual records found in each candidate state - collector and number, date, locality, herbarium and catalogue number, and the name under which the specimen was identified - each linked to the record itself, so that every candidate can be checked before it goes into FFB.
+
+## A whole genus, or selected states
+
+For a genus, FFB's distribution is the union of all its species':
+
+```r
+gap_genus <- flora_distribution_gap(taxon = "Luetzelburgia")
+```
+
+To check only some states (full names or acronyms, with or without accents):
+
+```r
+gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                 state = c("PE", "Paraiba", "Alagoas"))
+```
+
+## Add more sources
+
+```r
+# REFLORA herbarium specimens (requires refloraR)
+gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                      sources = c("gbif", "reflora"))
+
+# speciesLink, with your API key in the SPECIESLINK_KEY environment variable
+gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                     sources = c("gbif", "speciesLink"))
+```
+
+## Arguments
+
+| Argument | Description |
+|---|---|
+| `taxon` | A single genus or species name of plants or algae. |
+| `state` | Optional Brazilian states to restrict the check to. `NULL` (default) checks all. |
+| `sources` | Any of `"gbif"` (default), `"reflora"`, `"speciesLink"`. |
+| `specieslink_key` | speciesLink API key. Defaults to the `SPECIESLINK_KEY` environment variable. |
+| `version` | FFB dataset version to compare against. Default `"latest"`. |
+| `save`, `dir`, `filename` | Save the result as an `.xlsx` spreadsheet, and where. |
+| `html_report`, `open_report` | Write the HTML report, and open it in the browser. |
+| `verbose` | Print progress messages. Default `TRUE`. |
+
+## Additional Tips
+
+- A single record in a new state deserves more scrutiny than dozens: check the specimen, its identification, and whether it was cultivated.
+- Some taxa have no state-level distribution in FFB at all (as for some marine algae); the function then says so, and every state with records is flagged.
+- The HTML report requires the `rmarkdown`, `DT`, and `htmltools` packages. Without them, the report is skipped with a message and the spreadsheet is still saved.
+
+## See Also
+
+- [Find species missing from FFB](/articles/find_missing_species.qmd)
+- [Filter and retrieve checklist records](/articles/filter_ffb_records.qmd)

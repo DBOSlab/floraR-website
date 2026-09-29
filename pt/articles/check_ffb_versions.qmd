@@ -39,7 +39,7 @@ latest$Version
 
 ## Dicas Adicionais
 
-- As funções `flora_download()`, `flora_parse()`, e todas as demais construídas sobre elas (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`), usam `version = "latest"` por padrão. Você só precisa chamar `flora_version()` diretamente quando quiser fixar uma análise em uma versão específica e mais antiga, por motivos de reprodutibilidade.
+- As funções `flora_download()`, `flora_parse()`, e todas as demais construídas sobre elas (`flora_records()`, `flora_search()`, `flora_match()`, `flora_get_children_taxa()`, `flora_species_gap()`, `flora_distribution_gap()`), usam `version = "latest"` por padrão. Você só precisa chamar `flora_version()` diretamente quando quiser fixar uma análise em uma versão específica e mais antiga, por motivos de reprodutibilidade.
 - Informe uma string de versão específica da coluna `Version` (ex.: `flora_download(version = versions_df$Version[1])`) para trabalhar com essa versão exata em vez da atual.
 - A coluna `Records` é uma forma rápida de verificar se um download foi concluído corretamente: o número de linhas analisadas deve estar na mesma ordem de grandeza.
 

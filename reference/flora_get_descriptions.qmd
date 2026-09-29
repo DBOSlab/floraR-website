@@ -57,12 +57,8 @@ written to a file named `temp.pdf` in the working directory.
 
 A named list with two elements:
 
-  `descriptions_controlled`A named list of controlled
-  descriptions. If any failures occur, this element becomes a list of length
-  two: extracted descriptions and a character vector of failed taxon names.
-  `descriptions_free`A named list of free descriptions. If any
-  failures occur, this element becomes a list of length two: extracted
-  descriptions and a character vector of failed taxon names.
+- `descriptions_controlled`: A named list of controlled descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.
+- `descriptions_free`: A named list of free descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.
 
 ### Examples
 

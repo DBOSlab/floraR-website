@@ -52,6 +52,19 @@ BiocManager::install("DBOSlab/floraR", dependencies = TRUE)
 library(floraR)
 ```
 
+:::{.callout-note}
+## Pacotes opcionais para as ferramentas de curadoria
+A função `flora_species_gap()` lê os dados do Plants of the World Online mais rapidamente a partir de uma cópia local da World Checklist of Vascular Plants, fornecida pelo pacote [rWCVPdata](https://github.com/matildabrown/rWCVPdata) (que não está no CRAN):
+
+```r
+install.packages("rWCVPdata",
+                 repos = c("https://matildabrown.github.io/drat",
+                           "https://cloud.r-project.org"))
+```
+
+A função `flora_distribution_gap()` também pode usar espécimes dos herbários do REFLORA por meio do pacote [refloraR](https://github.com/DBOSlab/refloraR), e registros do speciesLink com uma chave de API gratuita do [speciesLink](https://specieslink.net). Nenhum deles é necessário para o restante do pacote.
+:::
+
 ## Primeiros Passos
 
 Após a instalação, um bom primeiro passo é verificar quais versões do conjunto de dados da Flora e Funga do Brasil estão atualmente publicadas:
@@ -62,6 +75,6 @@ Após a instalação, um bom primeiro passo é verificar quais versões do conju
 flora_version()
 ```
 
-A maioria das funções — incluindo `flora_records()`, `flora_search()` e `flora_get_children_taxa()` — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar `flora_download()`/`flora_parse()` diretamente, a menos que você queira inspecionar os dados brutos.
+A maioria das funções — incluindo `flora_records()`, `flora_search()`, `flora_get_children_taxa()`, `flora_species_gap()` e `flora_distribution_gap()` — baixa e analisa o conjunto de dados da FFB automaticamente na primeira chamada, e reutiliza o mesmo cache local nas chamadas seguintes, então raramente é preciso chamar `flora_download()`/`flora_parse()` diretamente, a menos que você queira inspecionar os dados brutos.
 
-A partir daí, navegue pelos [Artigos práticos](/pt/articles/index.qmd) para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica e curar novos registros.
+A partir daí, navegue pelos [Artigos práticos](/pt/articles/index.qmd) para aprender a baixar e analisar dados da lista de espécies, filtrar registros por critérios taxonômicos ou geográficos, resolver sua própria lista de nomes de espécies em relação à lista de espécies, explorar a hierarquia taxonômica, encontrar espécies e registros estaduais ausentes da FFB para ajudar a expandir as suas monografias, e curar novos registros. O [diagrama do fluxo de trabalho](/pt/articles/index.qmd) na página de Artigos mostra como as funções se encaixam.
