@@ -40,7 +40,7 @@ resources:
   }
 </style>
 
-## The `floraR` Developer
+## The `floraR` Developers
 
 ```{=html}
 <div class="authors-group">
@@ -58,6 +58,32 @@ resources:
     </div>
   </div>
 
+  <div class="author-card">
+    <img src="images/lucas.jpg" alt="Lucas Jordão" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Lucas Jordão</h3>
+      <p>
+        <a class="icon-link" href="mailto:lucasjordao@jbrj.gov.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-9501-0548" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/6445788694639027" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomist and bioinformatician authoring the floraR package, responsible for designing and coding functions</p>
+    </div>
+  </div>
+  
+    <div class="author-card">
+    <img src="images/marcelo.jpg" alt="Marcelo Reginato" class="author-photo" />
+    <div class="author-info">
+      <h3 class="author-name">Marcelo Reginato</h3>
+      <p>
+        <a class="icon-link" href="mailto:mreginato@ufrgs.br"><img src="/authors/images/email.png" alt="Email"/></a>
+        <a class="icon-link" href="https://orcid.org/0000-0002-3511-6586" target="_blank"><img src="/authors/images/orcid.png" alt="ORCID"/></a>
+        <a class="icon-link" href="http://lattes.cnpq.br/7208562891918110" target="_blank"><img src="/authors/images/lattes.png" alt="Lattes"/></a>
+      </p>
+      <p>Taxonomist and bioinformatician authoring the floraR package, responsible for designing and coding functions</p>
+    </div>
+  </div>
+  
 </div>
 ```
 
