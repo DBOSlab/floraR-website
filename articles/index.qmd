@@ -58,8 +58,8 @@ These "how-to" articles walk through `floraR`'s functions in the order you would
 
 ::: {style="display: block;"}
 :::
-### Find new state records
-- [Find candidate new state records](/articles/find_new_state_records.qmd)
+### Find new state and domain records
+- [Find candidate new state and domain records](/articles/find_new_state_records.qmd)
 
 ::: {style="display: block;"}
 :::

@@ -17,8 +17,9 @@ Here we present a practical guide to the `flora_records()` function of the `flor
 | `taxonRank` | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). |
 | `taxonomicStatus` | Character vector. FFB taxonomic status: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). |
 | `state` | Character vector. Brazilian state(s), full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`). |
-| `phytogeographicDomain` | Character vector. Phytogeographic domain(s) (e.g. `"Caatinga"`, `"Mata Atlantica"`). |
-| `endemism` | Logical. `TRUE` keeps only Brazilian endemics; `FALSE` keeps only non-endemics. |
+| `phytogeographicDomain` | Character vector. Phytogeographic domain(s) (e.g. `"Caatinga"`, `"Mata Atlantica"`); accents are optional. |
+| `endemism` | `TRUE` keeps endemics: all Brazilian endemics, or, combined with `state`, `phytogeographicDomain` or `vegetationType`, the endemics *exclusive* to those areas. `"Brazil"` keeps the Brazilian endemics occurring in the areas. `FALSE` keeps the complement of `TRUE`. See [Endemism](#endemism-brazil-or-exclusive-to-an-area) below. |
+| `establishmentMeans` | Character vector. The origin of the taxon in Brazil: `"native"` (FFB's "Nativa") or `"introduced"` (FFB's "Exótica"); English or Portuguese, case- and accent-insensitive. |
 | `lifeForm`, `habitat`, `vegetationType` | Character vectors. Life form (e.g. `"Arbusto"`), habitat (e.g. `"Terricola"`) and vegetation type (e.g. `"Cerrado (lato sensu)"`). |
 | `version` | Character. FFB dataset version to use. Defaults to `"latest"`. |
 | `rm_flora_database` | Logical. If `TRUE`, deletes the downloaded database after the search. Default `FALSE` keeps it cached for faster repeated queries. |
@@ -35,13 +36,71 @@ fabaceae <- flora_records(taxon = "Fabaceae",
                           taxonomicStatus = "NOME_ACEITO")
 ```
 
-## Filter by state and endemism
+## What each row contains
+
+Every result has one row per taxon, with the taxon fields of the FFB checklist plus its distribution and species profile, the taxon's values joined in one cell with `" | "`:
 
 ```r
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
+                      taxonomicStatus = "NOME_ACEITO")
+```
+
+| taxonName | state | phytogeographicDomain | endemism | lifeForm | vegetationType |
+|---|---|---|---|---|---|
+| *Luetzelburgia bahiensis* | BA \| PE \| PI | Caatinga | Endemica | Arbusto \| Árvore | Caatinga (stricto sensu) |
+| *Luetzelburgia praecox* | GO \| MT \| TO | Cerrado | Endemica | Arbusto | Cerrado (lato sensu) |
+
+The added columns are `state`, `phytogeographicDomain`, `endemism`, `establishmentMeans`, `lifeForm`, `habitat`, and `vegetationType`. They always describe the taxon's full FFB record: filtering by `state = "Bahia"` still shows every state a taxon occurs in. A field FFB does not record for a taxon is `NA`.
+
+## Endemism: Brazil, or exclusive to an area
+
+FFB records whether each taxon is endemic **to Brazil**. Asked for together with an area - `state`, `phytogeographicDomain`, or `vegetationType` - `endemism = TRUE` therefore means something stricter: the endemics **exclusive** to that area, whose whole FFB range lies within it.
+
+```r
+# All Brazilian endemics (22,252 accepted taxa)
+brazil_endemics <- flora_records(endemism = TRUE,
+                                 taxonomicStatus = "NOME_ACEITO")
+
+# Endemic to Bahia: found only in Bahia (2,111 accepted taxa)
 bahia_endemics <- flora_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+
+# Brazilian endemics that occur in Bahia, wherever else they also occur (6,655)
+brazil_endemics_in_bahia <- flora_records(state = "Bahia",
+                                          endemism = "Brazil",
+                                          taxonomicStatus = "NOME_ACEITO")
 ```
+
+The difference matters. *Luetzelburgia auriculata* is endemic to Brazil and occurs in Bahia - but also in 13 other states - so it is among the Brazilian endemics occurring in Bahia, not among the Bahia endemics. In *Luetzelburgia*, only *L. harleyi*, *L. neurocarpa*, and *L. purpurea* are endemic to Bahia.
+
+Several values of one filter define one area, and several area filters must all hold:
+
+```r
+# Endemic to the region formed by Bahia, Pernambuco, and Piaui
+ne_endemics <- flora_records(state = c("BA", "PE", "PI"), endemism = TRUE)
+
+# Endemic to the Caatinga of Bahia: only in Bahia, and only in the Caatinga
+bahia_caatinga_endemics <- flora_records(state = "Bahia",
+                                         phytogeographicDomain = "Caatinga",
+                                         endemism = TRUE)
+```
+
+`endemism = FALSE` returns the complement: without an area, the taxa not endemic to Brazil; with an area, the taxa occurring there that are not exclusive to it. A taxon with no FFB record for an area filter (e.g. no state-level distribution, as for some marine algae) cannot be shown to be exclusive to it, and is not counted as an endemic of it.
+
+## Filter by origin
+
+`establishmentMeans` - named after FFB's own field - is the origin of the taxon in Brazil. It keeps the taxa native to Brazil or those introduced into it, as recorded by FFB:
+
+```r
+# Introduced (exotic) species recorded in Bahia
+bahia_introduced <- flora_records(state = "Bahia",
+                                  establishmentMeans = "introduced",
+                                  taxonomicStatus = "NOME_ACEITO")
+```
+
+English and Portuguese values both work: `"native"` or `"nativa"`, `"introduced"`, `"exotic"`, or `"exótica"`.
 
 ## Filter by phytogeographic domain and life form
 
@@ -62,7 +121,8 @@ flora_records(taxon = "Luetzelburgia",
 ## Additional Tips
 
 - `taxon` is matched against the `family`, `genus` and `taxonName` columns automatically — a family name ending in `"aceae"`, a single-word genus, or a multi-word species name are all detected and matched appropriately.
-- Combine multiple filters freely: they are always ANDed together, so `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` returns Fabaceae species endemic to Bahia.
+- Combine multiple filters freely: they are always ANDed together, so `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` returns the Fabaceae species endemic to Bahia - found only there.
+- Text filters (`phytogeographicDomain`, `vegetationType`, `lifeForm`, `habitat`, `establishmentMeans`) ignore case and accents: `"Mata Atlantica"` matches "Mata Atlântica", and `"Arvore"` matches "Árvore".
 - If you already have your own species list to resolve rather than browse the checklist by criteria, use [`flora_search()` or `flora_match()`](/articles/resolve_species_names.qmd) instead.
 
 ## See Also

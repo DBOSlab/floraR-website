@@ -162,7 +162,10 @@ distribution_data <- dwca_data[["dwca_ffb_v393_418"]][["data"]][["distribution.t
 Browse and filter the FFB checklist directly by taxonomic, geographic,
 and trait-based criteria — no input name list required. Downloads and
 parses the dataset automatically (like `flora_search()`, reusing the
-local cache on repeated calls).
+local cache on repeated calls). Combined with a `state`,
+`phytogeographicDomain`, or `vegetationType`, `endemism = TRUE` returns
+the endemics *exclusive* to those areas; use `endemism = "Brazil"` for
+the Brazilian endemics that merely occur there.
 
 ``` r
 library(floraR)
@@ -171,10 +174,23 @@ library(floraR)
 fabaceae <- flora_records(taxon = "Fabaceae",
                           taxonomicStatus = "NOME_ACEITO")
 
-# Accepted species endemic to Bahia
+# All accepted Brazilian endemics
+brazil_endemics <- flora_records(endemism = TRUE,
+                                 taxonomicStatus = "NOME_ACEITO")
+
+# Accepted species endemic to Bahia: found only in Bahia
 bahia_endemics <- flora_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+
+# Accepted Brazilian endemics that occur in Bahia (and possibly elsewhere)
+brazil_endemics_in_bahia <- flora_records(state = "Bahia",
+                                          endemism = "Brazil",
+                                          taxonomicStatus = "NOME_ACEITO")
+
+# Introduced (exotic) species recorded in Bahia
+bahia_introduced <- flora_records(state = "Bahia",
+                                  establishmentMeans = "introduced")
 
 # Species in the Caatinga with a shrub life form
 caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",
@@ -261,7 +277,7 @@ gap_powo <- flora_species_gap(taxon = "Myrcia", sources = "powo",
 gap_algae <- flora_species_gap(taxon = "Gracilaria", sources = "gbif")
 ```
 
-#### *8. `flora_distribution_gap`: Find candidate new state records*
+#### *8. `flora_distribution_gap`: Find candidate new state and domain records*
 
 For a genus or species of plants or algae, compare the Brazilian states
 where specimens have been recorded against the states officially listed
@@ -272,21 +288,26 @@ normalised - and optionally from REFLORA herbarium specimens (via
 [refloraR](https://github.com/DBOSlab/refloraR)) and
 [speciesLink](https://specieslink.net) (with a free API key). For a
 genus, FFB’s distribution combines all its species; for a synonym, its
-accepted name’s distribution is used. The HTML report lists the
-individual records behind each candidate state, so each one can be
-checked.
+accepted name’s distribution is used. Georeferenced records are also
+placed in the six Brazilian phytogeographic domains (using IBGE’s biome
+map), to flag candidate new domain records. The function returns three
+tables - `states`, `domains`, and `records` - and the HTML report maps
+the records over the domains and lists the individual records behind
+each candidate, so each one can be checked.
 
 ``` r
 library(floraR)
 
-# Candidate new state records for a species
+# Candidate new state and domain records for a species
 gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+gap$states    # states with evidence, new state candidates flagged
+gap$domains   # phytogeographic domains, new domain candidates flagged
 
 # A whole genus, restricted to two states
 gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
                                  state = c("Pernambuco", "Paraiba"))
 
-# Adding REFLORA herbarium specimens (requires refloraR)
+# Adding Reflora herbarium specimens (requires refloraR)
 gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
                                       sources = c("gbif", "reflora"))
 ```
@@ -296,12 +317,13 @@ gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 `floraR` also supports taxonomic experts in curating and updating Flora
 e Funga do Brasil records. The package facilitates integration of new
 species names and records from global biodiversity repositories such as
-IPNI, Plants of the World Online (POWO), REFLORA, and GBIF.
+IPNI, Plants of the World Online (POWO), Reflora, and GBIF.
 
-`flora_get_descriptions()` scrapes the controlled-field and free-text
-descriptions from FFB taxon pages, and `flora_build_matrix()` turns the
-extracted descriptions into a character matrix (taxa x character states)
-ready for downstream comparison or trait analysis:
+`flora_get_descriptions()` reads the controlled-field and free-text
+descriptions from FFB taxon pages, and `flora_build_matrix()` turns them
+into a matrix ready for downstream comparison or trait analysis: taxa x
+character states for the controlled descriptions, and taxa x organs
+(Habit, Leaf, Flower, Seed, …) for the free descriptions:
 
 ``` r
 library(floraR)
@@ -311,7 +333,9 @@ taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
                                 child_rank = "species")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)
-trait_matrix <- flora_build_matrix(descriptions[[1]])
+
+mat_control <- flora_build_matrix(descriptions[[1]])  # character states
+mat_free <- flora_build_matrix(descriptions[[2]])     # organs
 ```
 
 ## Key Features

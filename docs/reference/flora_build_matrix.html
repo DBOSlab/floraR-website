@@ -4529,7 +4529,7 @@ height: 400px;
 <main class="content" id="quarto-document-content">
 
 <!-- Google Tag Manager (noscript) -->
- <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+ <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -4561,13 +4561,17 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Converts extracted Flora e Funga do Brasil description text into a character matrix, where rows correspond to taxa and columns correspond to character states parsed from the description strings.</p>
+<p>Converts extracted Flora e Funga do Brasil description text into a matrix with taxa as rows, from either kind of description returned by <code>flora_get_descriptions</code>:</p>
+<ul>
+<li><strong>controlled descriptions</strong> (<code>descriptions[[1]]</code>) become a taxon-by-character-state matrix, one column per state;</li>
+<li><strong>free descriptions</strong> (<code>descriptions[[2]]</code>) become a taxon-by-organ matrix, one column per organ (e.g. Habit, Leaf, Panicle, Flower, Samara, Seed), each cell holding that organ’s description.</li>
+</ul>
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>This function is a wrapper around an internal parser that removes <code>NULL</code> entries and handles the nested output structure returned by <code>flora_get_descriptions()</code> when failures are present.</p>
-<p>If <code>descriptions</code> has length 2, the function assumes the first element contains the actual description list and the second element contains failed taxon names. In both cases, <code>NULL</code> descriptions are removed before the matrix is built.</p>
-<p>Description strings are expected to follow a semi-structured format in which character categories are separated by periods, category names are separated from their values by colons, and multiple states are separated by semicolons. The first description is used to define the expected matrix structure and column names.</p>
+<p>If <code>descriptions</code> is the list returned by <code>flora_get_descriptions()</code> when some taxa failed - an unnamed list of the extracted descriptions and the failed taxon names - only the extracted descriptions are used. In both cases, <code>NULL</code> descriptions are removed before the matrix is built.</p>
+<p><strong>Controlled descriptions</strong> follow a fixed template, in which character categories are separated by periods, category names are separated from their values by colons, and multiple states are separated by semicolons (e.g. <code>&quot;Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ...&quot;</code>). The first description defines the matrix columns; a taxon whose description does not match that template is left empty.</p>
+<p><strong>Free descriptions</strong> are prose written one sentence (or more) per organ, each starting with the organ’s name (e.g. <code>&quot;Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long.&quot;</code>). The first sentence is the <code>Habit</code>; every later sentence is assigned to the organ named by its first word, singularised so that e.g. “Seeds” and “Seed” share one column. Columns are aligned by organ name across all taxa, so taxa that describe different organs or the same organs in another order still line up; an organ a taxon does not describe is <code>NA</code>. Sentences are split at a period followed by a capital letter, but not after a person’s initial (as in a cited specimen, “M. Nee 34997”) or a common abbreviation (“cf.”, “ca.”, “e.g.”, “var.”), and decimals (“1.5 m”) never split. As a safeguard, a sentence starting with a word that opens sentences in fewer than a third of the taxa is not treated as an organ, and is appended to the preceding organ’s text.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4585,19 +4589,31 @@ height: 400px;
 <tbody>
 <tr class="odd">
 <td>descriptions</td>
-<td>A named list of description strings, usually one of the outputs from <code>flora_get_descriptions()</code>, such as <code>descriptions[[1]]</code>. If failures were returned together with descriptions, the function uses only the extracted-description component.</td>
+<td>A named list of description strings, usually one of the outputs from <code>flora_get_descriptions()</code>, such as <code>descriptions[[1]]</code> or <code>descriptions[[2]]</code>. If failures were returned together with descriptions, the function uses only the extracted-description component.</td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td>Character. Which kind of descriptions these are: <code>&quot;auto&quot;</code> (default) detects it from the text, or set <code>&quot;controlled&quot;</code> or <code>&quot;free&quot;</code> explicitly.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A character matrix with taxa as rows and parsed character states as columns.</p>
+<p>A character matrix with taxa as rows: for controlled descriptions, one column per character state; for free descriptions, one column per organ.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Taxon-by-character-state matrix from the controlled descriptions</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Taxon-by-organ matrix from the free descriptions</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5084,45 +5100,68 @@ height: 400px;
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Description</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Converts extracted Flora e Funga do Brasil description text into a character</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>matrix, where rows correspond to taxa and columns correspond to character</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>states parsed from the description strings.</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Converts extracted Flora e Funga do Brasil description text into a matrix with</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>taxa as rows, from either kind of description returned by</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_get_descriptions`</span>:</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>This function is a wrapper around an internal parser that removes</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="in">`NULL`</span> entries and handles the nested output structure returned by</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_get_descriptions()`</span> when failures are present.</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>If <span class="in">`descriptions`</span> has length 2, the function assumes the first element</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>contains the actual description list and the second element contains failed</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>taxon names. In both cases, <span class="in">`NULL`</span> descriptions are removed before the</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>matrix is built.</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>Description strings are expected to follow a semi-structured format in which</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>character categories are separated by periods, category names are separated</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>from their values by colons, and multiple states are separated by semicolons.</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>The first description is used to define the expected matrix structure and</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>column names.</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**controlled descriptions** (<span class="in">`descriptions[[1]]`</span>) become a taxon-by-character-state matrix, one column per state;</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**free descriptions** (<span class="in">`descriptions[[2]]`</span>) become a taxon-by-organ matrix, one column per organ (e.g. Habit, Leaf, Panicle, Flower, Samara, Seed), each cell holding that organ&#39;s description.</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>If <span class="in">`descriptions`</span> is the list returned by <span class="in">`flora_get_descriptions()`</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>when some taxa failed - an unnamed list of the extracted descriptions and the</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>failed taxon names - only the extracted descriptions are used. In both cases,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="in">`NULL`</span> descriptions are removed before the matrix is built.</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>**Controlled descriptions** follow a fixed template, in which character</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>categories are separated by periods, category names are separated from their</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>values by colons, and multiple states are separated by semicolons (e.g.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="in">`&quot;Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ...&quot;`</span>). The</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>first description defines the matrix columns; a taxon whose description does</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>not match that template is left empty.</span>
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> descriptions <span class="pp">|</span> A named list of description strings, usually one of the outputs from <span class="in">`flora_get_descriptions()`</span>, such as <span class="in">`descriptions[[1]]`</span>. If failures were returned together with descriptions, the function uses only the extracted-description component. <span class="pp">|</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>A character matrix with taxa as rows and parsed character states as</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  columns.</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>**Free descriptions** are prose written one sentence (or more) per organ,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>each starting with the organ&#39;s name (e.g. `&quot;Tree to 10 m; branchlets</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long.&quot;`).</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>The first sentence is the <span class="in">`Habit`</span>; every later sentence is assigned to the</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>organ named by its first word, singularised so that e.g. &quot;Seeds&quot; and &quot;Seed&quot;</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>share one column. Columns are aligned by organ name across all taxa, so taxa</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>that describe different organs or the same organs in another order still line</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>up; an organ a taxon does not describe is <span class="in">`NA`</span>. Sentences are split at a</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>period followed by a capital letter, but not after a person&#39;s initial (as in a</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>cited specimen, &quot;M. Nee 34997&quot;) or a common abbreviation (&quot;cf.&quot;, &quot;ca.&quot;,</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>&quot;e.g.&quot;, &quot;var.&quot;), and decimals (&quot;1.5 m&quot;) never split. As a safeguard, a sentence</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>starting with a word that opens sentences in fewer than a third of the taxa is</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>not treated as an organ, and is appended to the preceding organ&#39;s text.</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> descriptions <span class="pp">|</span> A named list of description strings, usually one of the outputs from <span class="in">`flora_get_descriptions()`</span>, such as <span class="in">`descriptions[[1]]`</span> or <span class="in">`descriptions[[2]]`</span>. If failures were returned together with descriptions, the function uses only the extracted-description component. <span class="pp">|</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> type <span class="pp">|</span> Character. Which kind of descriptions these are: <span class="in">`&quot;auto&quot;`</span> (default) detects it from the text, or set <span class="in">`&quot;controlled&quot;`</span> or <span class="in">`&quot;free&quot;`</span> explicitly. <span class="pp">|</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>A character matrix with taxa as rows: for controlled descriptions, one</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  column per character state; for free descriptions, one column per organ.</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Taxon-by-character-state matrix from the controlled descriptions</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Taxon-by-organ matrix from the free descriptions</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

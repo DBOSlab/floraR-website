@@ -5,21 +5,23 @@ format: html
 
 Here we present a practical guide to the `flora_get_descriptions()` and `flora_build_matrix()` functions of the `floraR` package. Together, they support taxonomic experts curating and updating [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) records, by extracting existing taxon descriptions and turning them into a structured, comparable format.
 
-## `flora_get_descriptions()`: scrape taxon-page descriptions
+## `flora_get_descriptions()`: extract taxon-page descriptions
 
-For each taxon supplied, `flora_get_descriptions()` downloads a printable PDF version of its FFB taxon page, extracts the text, and searches it for two kinds of descriptions: controlled-field descriptions ("Descrição com campos controlados") and free-text descriptions ("Descrição livre").
+For each taxon supplied, `flora_get_descriptions()` loads the printable version of its FFB taxon page in a headless Chrome browser, reads the page's text, and extracts two kinds of descriptions: controlled-field descriptions ("Descrição com campos controlados") and free-text descriptions ("Descrição livre").
+
+The text is read directly from the rendered page, so every word is kept however long the description is, and a single browser session is reused for all taxa - 11 *Luetzelburgia* species take well under a minute. A Chrome or Chromium browser must be installed.
 
 ### Arguments
 
 | Argument | Description |
 |---|---|
 | `taxa` | A data frame with at least the columns `genus`, `specificEpithet`, and `references` (a link to each taxon's FFB page) — for example, the output of `flora_records()`. |
-| `delay` | Numeric. Seconds to wait for the page to load before capturing the PDF. Default `10`. |
+| `delay` | Numeric. Seconds to wait after each page has loaded before its text is read. Default `10`. |
 | `verbose` | Logical. If `TRUE` (default), prints progress messages. |
 
 ### Value
 
-A named list with `descriptions_controlled` and `descriptions_free`, each a named list of extracted description text keyed by scientific name. If any taxon page fails to parse, that element instead becomes a two-part list: the successfully extracted descriptions, plus a character vector of the taxa that failed.
+A named list with `descriptions_controlled` and `descriptions_free`, each a named list of extracted description text keyed by scientific name. If any taxon page fails to load or parse, that element instead becomes a two-part list: the successfully extracted descriptions, plus a character vector of the taxa that failed.
 
 ### Example
 
@@ -27,47 +29,70 @@ A named list with `descriptions_controlled` and `descriptions_free`, each a name
 library(floraR)
 
 taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
                       taxonomicStatus = "NOME_ACEITO")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)
 ```
 
-## `flora_build_matrix()`: turn descriptions into a trait matrix
+## `flora_build_matrix()`: turn descriptions into a matrix
 
-`flora_build_matrix()` converts the description text extracted by `flora_get_descriptions()` into a character matrix — taxa as rows, character states as columns — ready for downstream comparison or trait analysis. It expects the semi-structured description format used on FFB taxon pages, where character categories are separated by periods, category names are separated from their values by colons, and multiple states are separated by semicolons.
+`flora_build_matrix()` converts the description text extracted by `flora_get_descriptions()` into a matrix with taxa as rows, from either kind of description. It detects which kind it was given (or set `type = "controlled"` or `type = "free"`).
 
-### Arguments
+### Controlled descriptions: a character-state matrix
 
-| Argument | Description |
-|---|---|
-| `descriptions` | A named list of description strings, typically one element of the output of `flora_get_descriptions()` (e.g. `descriptions[[1]]`). |
-
-### Example
+Controlled descriptions follow a fixed template, in which character categories are separated by periods, category names are separated from their values by colons, and multiple states are separated by semicolons (e.g. `"Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ..."`). Each state becomes a column:
 
 ```r
-trait_matrix <- flora_build_matrix(descriptions[[1]])
+mat_control <- flora_build_matrix(descriptions[[1]])
 ```
+
+The first description defines the columns; a taxon whose description does not follow that template is left empty.
+
+### Free descriptions: an organ matrix
+
+Free descriptions are prose, written one sentence (or more) per organ, each starting with the organ's name - `"Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long."`. They become a taxon-by-organ matrix, one column per organ, each cell holding that organ's description:
+
+```r
+mat_free <- flora_build_matrix(descriptions[[2]])
+```
+
+For the 11 species of *Luetzelburgia*, this gives one row per species and the columns `Habit`, `Leaf`, `Panicle`, `Flower`, `Samara`, and `Seed`, with every cell filled:
+
+| | Habit | Leaf | ... | Seed |
+|---|---|---|---|---|
+| *L. auriculata* | Trees to 10 m high, sometimes shrubs 1.5–2.5 m; ... | Leaves (10–)12–30 cm long, (3)5–9(11)-foliolate, ... | ... | Seeds 12–25 mm long, ... |
+| *L. praecox* | Shrub to small tree of 1–8 m; ... | Leaves 17–18 cm long, 5–7-foliolate, ... | ... | Seeds not seen |
+
+How the free text is parsed:
+
+- The first sentence is the **Habit**; every later sentence belongs to the organ named by its first word, singularised so that e.g. "Seeds" and "Seed" share one column.
+- Columns are aligned by organ name across all taxa, in the order organs are usually described, so taxa that describe different organs, or the same organs in another order, still line up. An organ a taxon does not describe is `NA`.
+- Sentences are split at a period followed by a capital letter - but not at decimals ("1.5 m"), "c. 3 mm", a person's initial in a cited specimen ("M. Nee 34997"), or common abbreviations ("cf.", "ca.", "e.g.", "var.").
 
 ## Full workflow
 
 ```r
 library(floraR)
 
-taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
-                                rank = "genus",
-                                child_rank = "species")
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
+                      taxonomicStatus = "NOME_ACEITO")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)
-trait_matrix <- flora_build_matrix(descriptions[[1]])
+
+mat_control <- flora_build_matrix(descriptions[[1]])  # character states
+mat_free <- flora_build_matrix(descriptions[[2]])     # organs
 ```
 
 ## Additional Tips
 
-- `flora_get_descriptions()` scrapes live web pages, so it is slower than the other `floraR` functions and should be run on a curated, not overly long, taxon list rather than the whole checklist.
-- Increase `delay` if you notice missing or truncated descriptions — some taxon pages take longer to render before the printable PDF is captured.
-- `flora_build_matrix()` uses the *first* description in the list to define the expected matrix structure and column names, so make sure that first entry follows the standard semi-structured format before running it on the full set.
+- `flora_get_descriptions()` reads live web pages, so run it on a curated taxon list rather than the whole checklist.
+- If some pages come back empty or are reported as failures, increase `delay`: some taxon pages take longer to finish rendering.
+- The free-description matrix holds text, one cell per organ - a ready starting point for comparing taxa organ by organ, or for coding characters by hand.
 
 ## See Also
 
+- [Find species missing from FFB](/articles/find_missing_species.qmd)
 - [Filter and retrieve checklist records](/articles/filter_ffb_records.qmd)
 - [Explore the taxonomic hierarchy](/articles/explore_taxonomic_hierarchy.qmd)

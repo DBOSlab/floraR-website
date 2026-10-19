@@ -20,7 +20,9 @@ occurrence evidence of the taxon in Brazilian states that are *not* currently
 listed in its official Flora e Funga do Brasil (FFB) distribution. This flags
 candidate new state records for a taxonomist to verify - e.g. a species listed by FFB
 only for Bahia, but with herbarium specimens from Pernambuco - so that the
-distributions in FFB monographs can be kept complete.
+distributions in FFB monographs can be kept complete. Georeferenced records are also
+placed in the six Brazilian phytogeographic domains, to flag candidate new domain
+records in the same way.
 
 ### Details
 
@@ -34,12 +36,26 @@ FFB, the distribution of its accepted name is used.
 `sources`):
 
 - `"gbif"` (default): GBIF's public API, which aggregates most Brazilian herbaria. The name is first resolved to its GBIF backbone key among plants and algae only (so, e.g., the red alga *Gracilaria* is not confused with the moth genus of the same name), so the records of its synonyms and infraspecific taxa are included. All states are counted in a single request.
-- `"reflora"`: REFLORA herbarium specimens, via `reflora_records` (requires the refloraR package). Note that the first use downloads the REFLORA herbarium archives - several gigabytes - which refloraR then caches for later calls.
+- `"reflora"`: REFLORA herbarium specimens, via `reflora_records` (requires the refloraR package). Note that the first use downloads the Reflora herbarium archives - several gigabytes - which refloraR then caches for later calls.
 - `"speciesLink"`: speciesLink's API, which requires a free API key (`specieslink_key`; create one at https://specieslink.net).
 
 Free-text state values in these sources (e.g. `"Ba"`, `"Est. do Bahia"`,
 `"Paraiba"`) are normalised to FFB state names before comparison; values that are
 not Brazilian states are ignored.
+
+**Phytogeographic domains.** With `domains = TRUE` (default), the GBIF
+records that have coordinates - excluding those GBIF flags with geospatial issues,
+such as zero coordinates or coordinates outside the stated country - are placed in
+the six Brazilian phytogeographic domains (Amazonia, Caatinga, Cerrado, Mata
+Atlantica, Pampa, Pantanal) using IBGE's biome map (2019) bundled with floraR,
+simplified to a 1 km tolerance. A domain with records but not listed for the taxon
+in FFB is a candidate new domain record. Up to `max_coordinates` records are
+read (300 per request); REFLORA specimens with coordinates are added when
+`"reflora"` is among `sources`. Records that fall outside the six domains
+(e.g. just offshore) are kept in `records`, with `Domain = NA`, but
+are never flagged nor drawn on the report's map. This
+analysis requires the sf package, and the map in the HTML report the
+leaflet package; without them, they are skipped with a message.
 
 Occurrence records are evidence to review, not proof: a record in a new state may be
 a cultivated plant, a misidentification, or a georeferencing error, which is why the
@@ -53,26 +69,26 @@ HTML report lists the individual records behind each candidate state.
 | state | Character vector. Optional subset of Brazilian states (full name or acronym) to restrict the check to. `NULL` (default) checks all states with any evidence. |
 | sources | Character vector. Which occurrence sources to query: any of `"gbif"`, `"reflora"`, `"speciesLink"`. Defaults to `"gbif"`, the fastest. See Details for the requirements of the other two. |
 | specieslink_key | Character. speciesLink API key, used when `"speciesLink"` is among `sources`. Defaults to the `SPECIESLINK_KEY` environment variable. |
+| domains | Logical. If `TRUE` (default), also place the georeferenced records in the Brazilian phytogeographic domains and flag candidate new domain records (see Details). Requires the sf package. |
+| max_coordinates | Numeric. Maximum number of georeferenced GBIF records read for the domain analysis. Defaults to `5000`. |
 | version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `flora_download`. |
 | verbose | Logical. If `TRUE` (default), prints progress messages. |
 | save | Logical. If `TRUE` (default), the result is saved to disk as an `.xlsx` spreadsheet. |
 | dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"flora_distribution_gap"`. |
 | filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"flora_distribution_gap_<taxon>"`. |
-| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, the domain table, an interactive map of the georeferenced records over the phytogeographic domains (coloured by candidate status), the records in candidate domains, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
 | open_report | Logical. If `TRUE` (default in interactive sessions), opens the HTML report in the browser once rendered. |
 
 ### Value
 
-A `data.frame`, one row per Brazilian state with any evidence for
-  `taxon` (in FFB or in the queried sources), with columns:
+A list of three `data.frame`s:
 
-- Taxon: The queried taxon name.
-- State: Brazilian state name.
-- In_FFB_distribution: Logical; whether FFB already lists this state for the taxon.
-- GBIF_records: Number of GBIF occurrence records in this state (when `"gbif"` is among `sources`).
-- REFLORA_records: Number of REFLORA specimens in this state (when `"reflora"` is among `sources` and refloraR is installed).
-- speciesLink_records: Number of speciesLink records in this state (when `"speciesLink"` is among `sources` and a key is given).
-- New_state_record_candidate: `TRUE` when the state has evidence from at least one source but is *not* in FFB's distribution - a candidate for taxonomic review.
+- `states`: One row per Brazilian state with any evidence for `taxon` (in FFB or in the queried sources): `Taxon`, `State`, `In_FFB_distribution` (whether FFB already lists the state), `GBIF_records`, `Reflora_records`, and `speciesLink_records` (records in the state, for each source queried), and `New_state_record_candidate` (`TRUE` when the state has evidence from at least one source but is not in FFB's distribution).
+- `domains`: One row per phytogeographic domain with evidence (in FFB or among the georeferenced records): `Taxon`, `Domain`, `In_FFB_distribution`, `Georeferenced_records`, and `New_domain_record_candidate`. Empty when `domains = FALSE`.
+- `records`: One row per georeferenced record, with its coordinates, `State`, `Domain`, collector, date, institution, catalogue number, identification, a link to the record, and the logical columns `New_state_record_candidate` and `New_domain_record_candidate`. Empty when `domains = FALSE`.
+
+With `save = TRUE`, each table is saved as a sheet of the `.xlsx`
+spreadsheet.
 
 ### Examples
 
@@ -83,6 +99,10 @@ gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
 # A whole genus, restricted to two states
 gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
                                  state = c("Pernambuco", "Paraiba"))
+
+# The candidate new phytogeographic domains, and the records behind them
+gap$domains
+gap$records[gap$records$New_domain_record_candidate, ]
 
 # Adding REFLORA herbarium specimens (requires refloraR)
 gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",

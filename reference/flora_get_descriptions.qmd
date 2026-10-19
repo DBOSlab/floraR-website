@@ -13,8 +13,8 @@ floraR::flora_get_descriptions()
 
 ### Description
 
-Downloads printable PDF versions of Flora e Funga do Brasil (FFB) taxon pages
-for a set of species and extracts text from the description sections. The
+Reads the printable versions of Flora e Funga do Brasil (FFB) taxon pages for
+a set of species and extracts the text of their description sections. The
 function attempts to recover two kinds of descriptions from each page:
 controlled descriptions ("Descricao com campos controlados") and free
 descriptions ("Descricao livre").
@@ -24,11 +24,10 @@ descriptions ("Descricao livre").
 For each taxon, the function:
 
 1. builds a printable page URL from the `references` column;
-2. saves the page temporarily as `temp.pdf`;
-3. extracts text with pdftools;
-4. searches for the controlled-description section;
-5. searches for the free-description section;
-6. stores extracted text in named lists using the scientific name.
+2. loads the page in a headless Chrome browser (via chromote) and reads its text;
+3. searches for the controlled-description section;
+4. searches for the free-description section;
+5. stores extracted text in named lists using the scientific name.
 
 Failed extractions are returned together with the extracted descriptions.
 
@@ -42,15 +41,23 @@ section headers in Portuguese and/or English, such as:
 - `"Origem|Origin"`
 - `"Bibliografia Referencia|Reference"`
 
-Text is extracted from the first PDF page only. Temporary output is always
-written to a file named `temp.pdf` in the working directory.
+The text is read directly from the rendered page rather than from a PDF of it,
+so no line can be cut off at a page margin (a PDF of the page clipped the
+right end of every line, silently losing words), and a description is read in
+full however long it is. Each section ends at the next section header found
+at the start of a line; if no closing header is found, the taxon is recorded
+as a failure rather than stopping the whole run. The language tag lines
+("EN"/"PT") are dropped.
+
+A Chrome or Chromium browser must be installed, as for chromote; one
+browser session is opened for the whole run and closed at the end.
 
 ### Arguments
 
 | Argument | Description |
 |---|---|
 | taxa | A data frame containing the taxa to process. It must include at least the columns `genus`, `specificEpithet`, and `references`. Each row is treated as one taxon page to download and parse. |
-| delay | Numeric. Delay in seconds passed to `webshot::webshot()` to allow the page to load before the PDF is captured. Default is `10`. |
+| delay | Numeric. Seconds to wait after each page has loaded before its text is read, to let the page finish rendering. Default is `10`. |
 | verbose | Logical. If `TRUE` (default), prints informative progress messages during parsing. If `FALSE`, runs quietly. |
 
 ### Value
@@ -64,6 +71,7 @@ A named list with two elements:
 
 ```r
 taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
                       taxonomicStatus = "NOME_ACEITO")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)

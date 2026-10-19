@@ -18,7 +18,8 @@ A `flora_records()` baixa e analisa o conjunto de dados da FFB automaticamente (
 | `taxonomicStatus` | Vetor de caracteres. Status taxonômico da FFB: `"NOME_ACEITO"` (aceito), `"SINONIMO"` (sinônimo), ou `"NOME_DUVIDOSO"` (duvidoso). |
 | `state` | Vetor de caracteres. Estado(s) brasileiro(s), nome completo ou sigla, sem distinção de acentos (ex.: `"Bahia"` ou `"BA"`). |
 | `phytogeographicDomain` | Vetor de caracteres. Domínio(s) fitogeográfico(s) (ex.: `"Caatinga"`, `"Mata Atlantica"`). |
-| `endemism` | Lógico. `TRUE` mantém apenas endemismos brasileiros; `FALSE` mantém apenas não endêmicos. |
+| `endemism` | `TRUE` mantém endemismos: todos os endemismos brasileiros ou, combinado com `state`, `phytogeographicDomain` ou `vegetationType`, os endemismos *exclusivos* dessas áreas. `"Brazil"` mantém os endemismos brasileiros que ocorrem nas áreas. `FALSE` mantém o complemento de `TRUE`. Veja [Endemismo](#endemismo-do-brasil-ou-exclusivo-de-uma-área) abaixo. |
+| `establishmentMeans` | Vetor de caracteres. A origem do táxon no Brasil: `"native"` ("Nativa" na FFB) ou `"introduced"` ("Exótica" na FFB); em inglês ou português, sem diferenciar maiúsculas nem acentos. |
 | `lifeForm`, `habitat`, `vegetationType` | Vetores de caracteres. Forma de vida (ex.: `"Arbusto"`), hábitat (ex.: `"Terricola"`) e tipo de vegetação (ex.: `"Cerrado (lato sensu)"`). |
 | `version` | Caractere. Versão do conjunto de dados da FFB a usar. Padrão `"latest"`. |
 | `rm_flora_database` | Lógico. Se `TRUE`, exclui o banco de dados baixado após a busca. O padrão `FALSE` mantém em cache para buscas repetidas mais rápidas. |
@@ -35,13 +36,71 @@ fabaceae <- flora_records(taxon = "Fabaceae",
                           taxonomicStatus = "NOME_ACEITO")
 ```
 
-## Filtrar por estado e endemismo
+## O que cada linha contém
+
+Todo resultado tem uma linha por táxon, com os campos do táxon na lista da FFB e mais a sua distribuição e o seu perfil de espécie, com os valores do táxon unidos em uma célula por `" | "`:
 
 ```r
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
+                      taxonomicStatus = "NOME_ACEITO")
+```
+
+| taxonName | state | phytogeographicDomain | endemism | lifeForm | vegetationType |
+|---|---|---|---|---|---|
+| *Luetzelburgia bahiensis* | BA \| PE \| PI | Caatinga | Endemica | Arbusto \| Árvore | Caatinga (stricto sensu) |
+| *Luetzelburgia praecox* | GO \| MT \| TO | Cerrado | Endemica | Arbusto | Cerrado (lato sensu) |
+
+As colunas adicionadas são `state`, `phytogeographicDomain`, `endemism`, `establishmentMeans`, `lifeForm`, `habitat` e `vegetationType`. Elas sempre descrevem o registro completo do táxon na FFB: filtrar por `state = "Bahia"` ainda mostra todos os estados em que o táxon ocorre. Um campo que a FFB não registra para o táxon fica `NA`.
+
+## Endemismo: do Brasil, ou exclusivo de uma área
+
+A FFB registra se cada táxon é endêmico **do Brasil**. Quando usado junto com uma área - `state`, `phytogeographicDomain` ou `vegetationType` - `endemism = TRUE` tem, portanto, um significado mais restrito: os endemismos **exclusivos** daquela área, cuja distribuição inteira na FFB está contida nela.
+
+```r
+# Todos os endemismos brasileiros (22.252 táxons aceitos)
+brazil_endemics <- flora_records(endemism = TRUE,
+                                 taxonomicStatus = "NOME_ACEITO")
+
+# Endêmicos da Bahia: encontrados apenas na Bahia (2.111 táxons aceitos)
 bahia_endemics <- flora_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+
+# Endemismos brasileiros que ocorrem na Bahia, onde quer que também ocorram (6.655)
+brazil_endemics_in_bahia <- flora_records(state = "Bahia",
+                                          endemism = "Brazil",
+                                          taxonomicStatus = "NOME_ACEITO")
 ```
+
+A diferença importa. *Luetzelburgia auriculata* é endêmica do Brasil e ocorre na Bahia - mas também em outros 13 estados - então está entre os endemismos brasileiros que ocorrem na Bahia, e não entre os endêmicos da Bahia. Em *Luetzelburgia*, apenas *L. harleyi*, *L. neurocarpa* e *L. purpurea* são endêmicas da Bahia.
+
+Vários valores de um mesmo filtro definem uma única área, e vários filtros de área precisam ser todos atendidos:
+
+```r
+# Endêmicos da região formada por Bahia, Pernambuco e Piauí
+ne_endemics <- flora_records(state = c("BA", "PE", "PI"), endemism = TRUE)
+
+# Endêmicos da Caatinga da Bahia: apenas na Bahia e apenas na Caatinga
+bahia_caatinga_endemics <- flora_records(state = "Bahia",
+                                         phytogeographicDomain = "Caatinga",
+                                         endemism = TRUE)
+```
+
+`endemism = FALSE` retorna o complemento: sem área, os táxons não endêmicos do Brasil; com área, os táxons que ocorrem nela, mas não são exclusivos dela. Um táxon sem registro na FFB para um filtro de área (ex.: sem distribuição por estado, como algumas algas marinhas) não pode ser considerado exclusivo dessa área, e não é contado como endêmico dela.
+
+## Filtrar por origem
+
+`establishmentMeans` - com o mesmo nome do campo da própria FFB - é a origem do táxon no Brasil. Mantém os táxons nativos do Brasil ou os introduzidos no país, conforme registrado pela FFB:
+
+```r
+# Espécies introduzidas (exóticas) registradas na Bahia
+bahia_introduced <- flora_records(state = "Bahia",
+                                  establishmentMeans = "introduced",
+                                  taxonomicStatus = "NOME_ACEITO")
+```
+
+Valores em inglês e em português funcionam: `"native"` ou `"nativa"`, `"introduced"`, `"exotic"` ou `"exótica"`.
 
 ## Filtrar por domínio fitogeográfico e forma de vida
 
@@ -62,7 +121,8 @@ flora_records(taxon = "Luetzelburgia",
 ## Dicas Adicionais
 
 - `taxon` é comparado automaticamente com as colunas `family`, `genus` e `taxonName` — um nome de família terminado em `"aceae"`, um gênero de uma palavra, ou um nome de espécie com múltiplas palavras são detectados e correspondidos apropriadamente.
-- Combine múltiplos filtros livremente: eles sempre são combinados com E lógico, então `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` retorna espécies de Fabaceae endêmicas da Bahia.
+- Combine múltiplos filtros livremente: eles sempre são combinados com E lógico, então `flora_records(taxon = "Fabaceae", state = "Bahia", endemism = TRUE)` retorna as espécies de Fabaceae endêmicas da Bahia - encontradas apenas lá.
+- Os filtros de texto (`phytogeographicDomain`, `vegetationType`, `lifeForm`, `habitat`, `establishmentMeans`) não diferenciam maiúsculas nem acentos: `"Mata Atlantica"` corresponde a "Mata Atlântica", e `"Arvore"` a "Árvore".
 - Se você já possui sua própria lista de espécies para resolver em vez de navegar a lista de espécies por critérios, use [`flora_search()` ou `flora_match()`](/pt/articles/resolve_species_names.qmd).
 
 ## Veja Também

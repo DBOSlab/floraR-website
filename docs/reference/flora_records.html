@@ -4529,7 +4529,7 @@ height: 400px;
 <main class="content" id="quarto-document-content">
 
 <!-- Google Tag Manager (noscript) -->
- <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+ <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -4569,10 +4569,10 @@ height: 400px;
 <ul>
 <li><code>taxon</code> is matched against the <code>family</code>, <code>genus</code>, and <code>taxonName</code> columns of the FFB taxon table (family names ending in <code>&quot;aceae&quot;</code>, single-word genus names, and multi-word species names are detected automatically).</li>
 <li><code>taxonRank</code> and <code>taxonomicStatus</code> are matched directly against the taxon table.</li>
-<li><code>state</code>, <code>phytogeographicDomain</code>, and <code>endemism</code> are matched against the FFB distribution table (<code>distribution.txt</code>).</li>
+<li><code>state</code>, <code>phytogeographicDomain</code>, <code>endemism</code>, and <code>establishmentMeans</code> are matched against the FFB distribution table (<code>distribution.txt</code>).</li>
 <li><code>lifeForm</code>, <code>habitat</code>, and <code>vegetationType</code> are matched against the FFB species profile table (<code>speciesprofile.txt</code>).</li>
 </ul>
-<p>All filters are combined with a logical AND. The result always has one row per matching taxon (geographic/trait filters restrict <em>which</em> taxa are returned, they do not multiply rows).</p>
+<p>Text filters are case- and accent-insensitive (<code>&quot;Mata Atlantica&quot;</code> matches <code>&quot;Mata Atl\u00e2ntica&quot;</code>, <code>&quot;Arvore&quot;</code> matches <code>&quot;\u00c1rvore&quot;</code>). All filters are combined with a logical AND. The result always has one row per matching taxon (geographic/trait filters restrict <em>which</em> taxa are returned, they do not multiply rows).</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4602,7 +4602,7 @@ height: 400px;
 </tr>
 <tr class="even">
 <td>state</td>
-<td>Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. <code>&quot;Bahia&quot;</code> or <code>&quot;BA&quot;</code>) - to filter by occurrence, based on the FFB distribution table. <code>NULL</code> (default) does not filter by state.</td>
+<td>Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. <code>&quot;Bahia&quot;</code> or <code>&quot;BA&quot;</code>) - to filter by occurrence, based on the FFB distribution table (or, with <code>endemism = TRUE</code>, by exclusive occurrence; see the Endemism section). <code>NULL</code> (default) does not filter by state.</td>
 </tr>
 <tr class="odd">
 <td>phytogeographicDomain</td>
@@ -4610,33 +4610,37 @@ height: 400px;
 </tr>
 <tr class="even">
 <td>endemism</td>
-<td>Logical. If <code>TRUE</code>, keeps only taxa flagged as Brazilian endemics; if <code>FALSE</code>, keeps only non-endemics. <code>NULL</code> (default) does not filter by endemism.</td>
+<td><code>TRUE</code>, <code>FALSE</code>, <code>&quot;Brazil&quot;</code>, or <code>NULL</code>. <code>TRUE</code> keeps endemics: Brazilian endemics without an area filter, or the endemics exclusive to the requested <code>state</code>, <code>phytogeographicDomain</code>, or <code>vegetationType</code>. <code>&quot;Brazil&quot;</code> keeps Brazilian endemics occurring in those areas. <code>FALSE</code> keeps the complement of <code>TRUE</code>. <code>NULL</code> (default) does not filter by endemism. See the Endemism section.</td>
 </tr>
 <tr class="odd">
+<td>establishmentMeans</td>
+<td>Character vector. The origin of the taxon in Brazil - whether it is native to the country or was introduced into it - as recorded in FFB’s <code>establishmentMeans</code> field: <code>&quot;native&quot;</code> (FFB’s <code>&quot;Nativa&quot;</code>) or <code>&quot;introduced&quot;</code> (FFB’s <code>&quot;Ex\u00f3tica&quot;</code>, i.e. exotic). English or Portuguese, case- and accent-insensitive: <code>&quot;native&quot;</code>/<code>&quot;nativa&quot;</code>, <code>&quot;introduced&quot;</code>/<code>&quot;exotic&quot;</code>/ <code>&quot;exotica&quot;</code>. <code>NULL</code> (default) does not filter by origin; taxa whose origin FFB does not record are only returned then.</td>
+</tr>
+<tr class="even">
 <td>lifeForm, habitat, vegetationType</td>
 <td>Character vectors. Life form (e.g. <code>&quot;Arbusto&quot;</code>, <code>&quot;Arvore&quot;</code>), habitat (e.g. <code>&quot;Terricola&quot;</code>), and vegetation type (e.g. <code>&quot;Cerrado (lato sensu)&quot;</code>) to filter by, based on the FFB species profile table. <code>NULL</code> (default) does not filter.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>version</td>
 <td>Character. FFB dataset version to use. Defaults to <code>&quot;latest&quot;</code>. Passed to <code>flora_download</code> and <code>flora_parse</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rm_flora_database</td>
 <td>Logical. If <code>TRUE</code>, the downloaded FFB database folder (<code>&quot;flora_download&quot;</code>) is deleted after the search is complete. If <code>FALSE</code> (default), the database is kept on disk and reused by subsequent calls, which significantly speeds up repeated queries.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>verbose</td>
 <td>Logical. If <code>TRUE</code> (default), prints informative progress messages during download and parsing. If <code>FALSE</code>, runs quietly.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save</td>
 <td>Logical. If <code>TRUE</code>, the filtered records are saved to disk as a CSV file. Default is <code>FALSE</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dir</td>
 <td>Character. Directory where the CSV file will be saved when <code>save = TRUE</code>. Defaults to <code>&quot;flora_records&quot;</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>filename</td>
 <td>Character. Name of the CSV file (without extension) to save when <code>save = TRUE</code>. Defaults to <code>&quot;flora_records_search&quot;</code>.</td>
 </tr>
@@ -4645,7 +4649,7 @@ height: 400px;
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A <code>data.frame</code> of FFB taxon records matching the requested filters, with one row per taxon. If <code>save = TRUE</code>, the result is also written to <code>&lt;dir&gt;/&lt;filename&gt;.csv</code>.</p>
+<p>A <code>data.frame</code> of FFB taxon records matching the requested filters, with one row per taxon. Besides the taxon fields, each row carries the taxon’s FFB distribution and species profile, the unique values of each field joined in one cell with <code>&quot; | &quot;</code> (e.g. <code>&quot;BA | MG | PE&quot;</code>): <code>state</code> (abbreviations), <code>phytogeographicDomain</code>, <code>endemism</code>, <code>establishmentMeans</code>, <code>lifeForm</code>, <code>habitat</code>, and <code>vegetationType</code> - always describing the taxon’s full record, whatever filters were applied. A field FFB does not record for a taxon is <code>NA</code>. If <code>save = TRUE</code>, the result is also written to <code>&lt;dir&gt;/&lt;filename&gt;.csv</code>.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -4653,21 +4657,39 @@ height: 400px;
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fabaceae <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Fabaceae&quot;</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted species endemic to Bahia</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Species in the Caatinga with a shrub life form</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>caatinga_shrubs <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lifeForm =</span> <span class="st">&quot;Arbusto&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># All accepted species endemic to Brazil</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>brazil_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted species endemic to Bahia: found only in Bahia</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a specific FFB version stored in a custom folder, and save the result</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;flora_records&quot;</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;luetzelburgia_records&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted Brazilian endemics that occur in Bahia (and possibly elsewhere)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>brazil_endemics_in_bahia <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">endemism =</span> <span class="st">&quot;Brazil&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Species endemic to the Caatinga of Bahia: found only in Bahia, only in the Caatinga</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>bahia_caatinga_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">endemism =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Introduced (exotic) species recorded in Bahia</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>bahia_introduced <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">establishmentMeans =</span> <span class="st">&quot;introduced&quot;</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Species in the Caatinga with a shrub life form</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>caatinga_shrubs <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lifeForm =</span> <span class="st">&quot;Arbusto&quot;</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a specific FFB version stored in a custom folder, and save the result</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;flora_records&quot;</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;luetzelburgia_records&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5169,61 +5191,89 @@ height: 400px;
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxon`</span> is matched against the <span class="in">`family`</span>, <span class="in">`genus`</span>, and <span class="in">`taxonName`</span> columns of the FFB taxon table (family names ending in <span class="in">`&quot;aceae&quot;`</span>, single-word genus names, and multi-word species names are detected automatically).</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`taxonRank`</span> and <span class="in">`taxonomicStatus`</span> are matched directly against the taxon table.</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`state`</span>, <span class="in">`phytogeographicDomain`</span>, and <span class="in">`endemism`</span> are matched against the FFB distribution table (<span class="in">`distribution.txt`</span>).</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`state`</span>, <span class="in">`phytogeographicDomain`</span>, <span class="in">`endemism`</span>, and <span class="in">`establishmentMeans`</span> are matched against the FFB distribution table (<span class="in">`distribution.txt`</span>).</span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`lifeForm`</span>, <span class="in">`habitat`</span>, and <span class="in">`vegetationType`</span> are matched against the FFB species profile table (<span class="in">`speciesprofile.txt`</span>).</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>All filters are combined with a logical AND. The result always has one row</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>per matching taxon (geographic/trait filters restrict *which* taxa are</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>returned, they do not multiply rows).</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Text filters are case- and accent-insensitive (<span class="in">`&quot;Mata Atlantica&quot;`</span> matches</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="in">`&quot;Mata Atl\u00e2ntica&quot;`</span>, <span class="in">`&quot;Arvore&quot;`</span> matches <span class="in">`&quot;\u00c1rvore&quot;`</span>).</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>All filters are combined with a logical AND. The result always has one row</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>per matching taxon (geographic/trait filters restrict *which* taxa are</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>returned, they do not multiply rows).</span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character vector. One or more family, genus, or species names to filter by (e.g. <span class="in">`c(&quot;Fabaceae&quot;, &quot;Luetzelburgia&quot;, &quot;Inga edulis&quot;)`</span>). <span class="in">`NULL`</span> (default) does not filter by taxon. <span class="pp">|</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonRank <span class="pp">|</span> Character vector. Taxonomic rank(s) to keep (e.g. <span class="in">`&quot;ESPECIE&quot;`</span>, <span class="in">`&quot;VARIEDADE&quot;`</span>, <span class="in">`&quot;SUBESPECIE&quot;`</span>). <span class="in">`NULL`</span> (default) keeps all ranks. <span class="pp">|</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonomicStatus <span class="pp">|</span> Character vector. FFB taxonomic status to keep: <span class="in">`&quot;NOME_ACEITO&quot;`</span> (accepted), <span class="in">`&quot;SINONIMO&quot;`</span> (synonym), or <span class="in">`&quot;NOME_DUVIDOSO&quot;`</span> (doubtful). <span class="in">`NULL`</span> (default) keeps all statuses. <span class="pp">|</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> state <span class="pp">|</span> Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. <span class="in">`&quot;Bahia&quot;`</span> or <span class="in">`&quot;BA&quot;`</span>) - to filter by occurrence, based on the FFB distribution table. <span class="in">`NULL`</span> (default) does not filter by state. <span class="pp">|</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phytogeographicDomain <span class="pp">|</span> Character vector. Phytogeographic domain(s) to filter by (e.g. <span class="in">`&quot;Caatinga&quot;`</span>, <span class="in">`&quot;Mata Atlantica&quot;`</span>). <span class="in">`NULL`</span> (default) does not filter by domain. <span class="pp">|</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> endemism <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, keeps only taxa flagged as Brazilian endemics; if <span class="in">`FALSE`</span>, keeps only non-endemics. <span class="in">`NULL`</span> (default) does not filter by endemism. <span class="pp">|</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> lifeForm, habitat, vegetationType <span class="pp">|</span> Character vectors. Life form (e.g. <span class="in">`&quot;Arbusto&quot;`</span>, <span class="in">`&quot;Arvore&quot;`</span>), habitat (e.g. <span class="in">`&quot;Terricola&quot;`</span>), and vegetation type (e.g. <span class="in">`&quot;Cerrado (lato sensu)&quot;`</span>) to filter by, based on the FFB species profile table. <span class="in">`NULL`</span> (default) does not filter. <span class="pp">|</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to use. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`flora_download`</span> and <span class="in">`flora_parse`</span>. <span class="pp">|</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm_flora_database <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, the downloaded FFB database folder (<span class="in">`&quot;flora_download&quot;`</span>) is deleted after the search is complete. If <span class="in">`FALSE`</span> (default), the database is kept on disk and reused by subsequent calls, which significantly speeds up repeated queries. <span class="pp">|</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints informative progress messages during download and parsing. If <span class="in">`FALSE`</span>, runs quietly. <span class="pp">|</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, the filtered records are saved to disk as a CSV file. Default is <span class="in">`FALSE`</span>. <span class="pp">|</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the CSV file will be saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;flora_records&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the CSV file (without extension) to save when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;flora_records_search&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span> of FFB taxon records matching the requested</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  filters, with one row per taxon. If <span class="in">`save = TRUE`</span>, the result is also</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  written to <span class="in">`&lt;dir&gt;/&lt;filename&gt;.csv`</span>.</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co"># All accepted species in Fabaceae (downloads + parses automatically, caches result)</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>fabaceae <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Fabaceae&quot;</span>,</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>                          <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted species endemic to Bahia</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character vector. One or more family, genus, or species names to filter by (e.g. <span class="in">`c(&quot;Fabaceae&quot;, &quot;Luetzelburgia&quot;, &quot;Inga edulis&quot;)`</span>). <span class="in">`NULL`</span> (default) does not filter by taxon. <span class="pp">|</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonRank <span class="pp">|</span> Character vector. Taxonomic rank(s) to keep (e.g. <span class="in">`&quot;ESPECIE&quot;`</span>, <span class="in">`&quot;VARIEDADE&quot;`</span>, <span class="in">`&quot;SUBESPECIE&quot;`</span>). <span class="in">`NULL`</span> (default) keeps all ranks. <span class="pp">|</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxonomicStatus <span class="pp">|</span> Character vector. FFB taxonomic status to keep: <span class="in">`&quot;NOME_ACEITO&quot;`</span> (accepted), <span class="in">`&quot;SINONIMO&quot;`</span> (synonym), or <span class="in">`&quot;NOME_DUVIDOSO&quot;`</span> (doubtful). <span class="in">`NULL`</span> (default) keeps all statuses. <span class="pp">|</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> state <span class="pp">|</span> Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. <span class="in">`&quot;Bahia&quot;`</span> or <span class="in">`&quot;BA&quot;`</span>) - to filter by occurrence, based on the FFB distribution table (or, with <span class="in">`endemism = TRUE`</span>, by exclusive occurrence; see the Endemism section). <span class="in">`NULL`</span> (default) does not filter by state. <span class="pp">|</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> phytogeographicDomain <span class="pp">|</span> Character vector. Phytogeographic domain(s) to filter by (e.g. <span class="in">`&quot;Caatinga&quot;`</span>, <span class="in">`&quot;Mata Atlantica&quot;`</span>). <span class="in">`NULL`</span> (default) does not filter by domain. <span class="pp">|</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> endemism <span class="pp">|</span> <span class="in">`TRUE`</span>, <span class="in">`FALSE`</span>, <span class="in">`&quot;Brazil&quot;`</span>, or <span class="in">`NULL`</span>. <span class="in">`TRUE`</span> keeps endemics: Brazilian endemics without an area filter, or the endemics exclusive to the requested <span class="in">`state`</span>, <span class="in">`phytogeographicDomain`</span>, or <span class="in">`vegetationType`</span>. <span class="in">`&quot;Brazil&quot;`</span> keeps Brazilian endemics occurring in those areas. <span class="in">`FALSE`</span> keeps the complement of <span class="in">`TRUE`</span>. <span class="in">`NULL`</span> (default) does not filter by endemism. See the Endemism section. <span class="pp">|</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> establishmentMeans <span class="pp">|</span> Character vector. The origin of the taxon in Brazil - whether it is native to the country or was introduced into it - as recorded in FFB&#39;s <span class="in">`establishmentMeans`</span> field: <span class="in">`&quot;native&quot;`</span> (FFB&#39;s <span class="in">`&quot;Nativa&quot;`</span>) or <span class="in">`&quot;introduced&quot;`</span> (FFB&#39;s <span class="in">`&quot;Ex\u00f3tica&quot;`</span>, i.e. exotic). English or Portuguese, case- and accent-insensitive: <span class="in">`&quot;native&quot;`</span>/<span class="in">`&quot;nativa&quot;`</span>, <span class="in">`&quot;introduced&quot;`</span>/<span class="in">`&quot;exotic&quot;`</span>/ <span class="in">`&quot;exotica&quot;`</span>. <span class="in">`NULL`</span> (default) does not filter by origin; taxa whose origin FFB does not record are only returned then. <span class="pp">|</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> lifeForm, habitat, vegetationType <span class="pp">|</span> Character vectors. Life form (e.g. <span class="in">`&quot;Arbusto&quot;`</span>, <span class="in">`&quot;Arvore&quot;`</span>), habitat (e.g. <span class="in">`&quot;Terricola&quot;`</span>), and vegetation type (e.g. <span class="in">`&quot;Cerrado (lato sensu)&quot;`</span>) to filter by, based on the FFB species profile table. <span class="in">`NULL`</span> (default) does not filter. <span class="pp">|</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to use. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`flora_download`</span> and <span class="in">`flora_parse`</span>. <span class="pp">|</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> rm_flora_database <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, the downloaded FFB database folder (<span class="in">`&quot;flora_download&quot;`</span>) is deleted after the search is complete. If <span class="in">`FALSE`</span> (default), the database is kept on disk and reused by subsequent calls, which significantly speeds up repeated queries. <span class="pp">|</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints informative progress messages during download and parsing. If <span class="in">`FALSE`</span>, runs quietly. <span class="pp">|</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, the filtered records are saved to disk as a CSV file. Default is <span class="in">`FALSE`</span>. <span class="pp">|</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the CSV file will be saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;flora_records&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the CSV file (without extension) to save when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;flora_records_search&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span> of FFB taxon records matching the requested</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  filters, with one row per taxon. Besides the taxon fields, each row carries</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  the taxon&#39;s FFB distribution and species profile, the unique values of each</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  field joined in one cell with <span class="in">`&quot; | &quot;`</span> (e.g. <span class="in">`&quot;BA | MG | PE&quot;`</span>):</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  <span class="in">`state`</span> (abbreviations), <span class="in">`phytogeographicDomain`</span>,</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="in">`endemism`</span>, <span class="in">`establishmentMeans`</span>, <span class="in">`lifeForm`</span>,</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="in">`habitat`</span>, and <span class="in">`vegetationType`</span> - always describing the taxon&#39;s</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  full record, whatever filters were applied. A field FFB does not record for</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  a taxon is <span class="in">`NA`</span>. If <span class="in">`save = TRUE`</span>, the result is also</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  written to <span class="in">`&lt;dir&gt;/&lt;filename&gt;.csv`</span>.</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
 <span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Species in the Caatinga with a shrub life form</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>caatinga_shrubs <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lifeForm =</span> <span class="st">&quot;Arbusto&quot;</span>)</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a specific FFB version stored in a custom folder, and save the result</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;flora_records&quot;</span>,</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;luetzelburgia_records&quot;</span>)</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co"># All accepted species in Fabaceae (downloads + parses automatically, caches result)</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>fabaceae <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Fabaceae&quot;</span>,</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>                          <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co"># All accepted species endemic to Brazil</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>brazil_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted species endemic to Bahia: found only in Bahia</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>bahia_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>                                <span class="at">endemism =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>                                <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Accepted Brazilian endemics that occur in Bahia (and possibly elsewhere)</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>brazil_endemics_in_bahia <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">endemism =</span> <span class="st">&quot;Brazil&quot;</span>,</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># Species endemic to the Caatinga of Bahia: found only in Bahia, only in the Caatinga</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>bahia_caatinga_endemics <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">endemism =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co"># Introduced (exotic) species recorded in Bahia</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>bahia_introduced <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">state =</span> <span class="st">&quot;Bahia&quot;</span>,</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">establishmentMeans =</span> <span class="st">&quot;introduced&quot;</span>)</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Species in the Caatinga with a shrub life form</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>caatinga_shrubs <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">phytogeographicDomain =</span> <span class="st">&quot;Caatinga&quot;</span>,</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lifeForm =</span> <span class="st">&quot;Arbusto&quot;</span>)</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a specific FFB version stored in a custom folder, and save the result</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>             <span class="at">version =</span> <span class="st">&quot;393.418&quot;</span>,</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>             <span class="at">save =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>             <span class="at">dir =</span> <span class="st">&quot;flora_records&quot;</span>,</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>             <span class="at">filename =</span> <span class="st">&quot;luetzelburgia_records&quot;</span>)</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

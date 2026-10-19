@@ -61,7 +61,7 @@ Sim. Cada página tem um botão de alternância EN/PT na barra de navegação. D
 
 ### Quais saídas o floraR pode gerar?
 
-O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de caracteres por táxon para análises comparativas ou filogenéticas. As ferramentas de curadoria `flora_species_gap()` e `flora_distribution_gap()` também salvam uma planilha `.xlsx` e um relatório HTML interativo e autocontido dos seus resultados.
+O `floraR` retorna data frames organizados (e, no caso de `flora_parse()`, uma lista estruturada de tabelas DwC-A) prontos para análise. As funções `flora_records()` e `flora_get_children_taxa()` também podem salvar resultados diretamente em CSV, e `flora_build_matrix()` produz uma matriz de táxons por caracteres a partir das descrições de campos controlados, ou uma matriz de táxons por órgãos a partir das descrições livres, para análises comparativas ou filogenéticas. As ferramentas de curadoria `flora_species_gap()` e `flora_distribution_gap()` também salvam uma planilha `.xlsx` e um relatório HTML interativo e autocontido dos seus resultados.
 
 ### Quem é o desenvolvedor do floraR?
 

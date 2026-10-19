@@ -4529,7 +4529,7 @@ height: 400px;
 <main class="content" id="quarto-document-content">
 
 <!-- Google Tag Manager (noscript) -->
- <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+ <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -4561,15 +4561,14 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Downloads printable PDF versions of Flora e Funga do Brasil (FFB) taxon pages for a set of species and extracts text from the description sections. The function attempts to recover two kinds of descriptions from each page: controlled descriptions (“Descricao com campos controlados”) and free descriptions (“Descricao livre”).</p>
+<p>Reads the printable versions of Flora e Funga do Brasil (FFB) taxon pages for a set of species and extracts the text of their description sections. The function attempts to recover two kinds of descriptions from each page: controlled descriptions (“Descricao com campos controlados”) and free descriptions (“Descricao livre”).</p>
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
 <p>For each taxon, the function:</p>
 <ol type="1">
 <li>builds a printable page URL from the <code>references</code> column;</li>
-<li>saves the page temporarily as <code>temp.pdf</code>;</li>
-<li>extracts text with pdftools;</li>
+<li>loads the page in a headless Chrome browser (via chromote) and reads its text;</li>
 <li>searches for the controlled-description section;</li>
 <li>searches for the free-description section;</li>
 <li>stores extracted text in named lists using the scientific name.</li>
@@ -4584,7 +4583,8 @@ height: 400px;
 <li><code>&quot;Origem|Origin&quot;</code></li>
 <li><code>&quot;Bibliografia Referencia|Reference&quot;</code></li>
 </ul>
-<p>Text is extracted from the first PDF page only. Temporary output is always written to a file named <code>temp.pdf</code> in the working directory.</p>
+<p>The text is read directly from the rendered page rather than from a PDF of it, so no line can be cut off at a page margin (a PDF of the page clipped the right end of every line, silently losing words), and a description is read in full however long it is. Each section ends at the next section header found at the start of a line; if no closing header is found, the taxon is recorded as a failure rather than stopping the whole run. The language tag lines (“EN”/“PT”) are dropped.</p>
+<p>A Chrome or Chromium browser must be installed, as for chromote; one browser session is opened for the whole run and closed at the end.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4606,7 +4606,7 @@ height: 400px;
 </tr>
 <tr class="even">
 <td>delay</td>
-<td>Numeric. Delay in seconds passed to <code>webshot::webshot()</code> to allow the page to load before the PDF is captured. Default is <code>10</code>.</td>
+<td>Numeric. Seconds to wait after each page has loaded before its text is read, to let the page finish rendering. Default is <code>10</code>.</td>
 </tr>
 <tr class="odd">
 <td>verbose</td>
@@ -4626,9 +4626,10 @@ height: 400px;
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5115,8 +5116,8 @@ height: 400px;
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Description</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Downloads printable PDF versions of Flora e Funga do Brasil (FFB) taxon pages</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>for a set of species and extracts text from the description sections. The</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Reads the printable versions of Flora e Funga do Brasil (FFB) taxon pages for</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>a set of species and extracts the text of their description sections. The</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>function attempts to recover two kinds of descriptions from each page:</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>controlled descriptions (&quot;Descricao com campos controlados&quot;) and free</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>descriptions (&quot;Descricao livre&quot;).</span>
@@ -5126,51 +5127,59 @@ height: 400px;
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>For each taxon, the function:</span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>builds a printable page URL from the <span class="in">`references`</span> column;</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>saves the page temporarily as <span class="in">`temp.pdf`</span>;</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>extracts text with pdftools;</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>searches for the controlled-description section;</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>searches for the free-description section;</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>stores extracted text in named lists using the scientific name.</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>Failed extractions are returned together with the extracted descriptions.</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>The function assumes that the printable FFB page contains recognizable</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>section headers in Portuguese and/or English, such as:</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Descricao com campos controlados|Description with controlled&quot;`</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Descricao livre|Free description&quot;`</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Comentarios|Commentaries&quot;`</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Vouchers&quot;`</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Origem|Origin&quot;`</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Bibliografia Referencia|Reference&quot;`</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>Text is extracted from the first PDF page only. Temporary output is always</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>written to a file named <span class="in">`temp.pdf`</span> in the working directory.</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxa <span class="pp">|</span> A data frame containing the taxa to process. It must include at least the columns <span class="in">`genus`</span>, <span class="in">`specificEpithet`</span>, and <span class="in">`references`</span>. Each row is treated as one taxon page to download and parse. <span class="pp">|</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> delay <span class="pp">|</span> Numeric. Delay in seconds passed to <span class="in">`webshot::webshot()`</span> to allow the page to load before the PDF is captured. Default is <span class="in">`10`</span>. <span class="pp">|</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints informative progress messages during parsing. If <span class="in">`FALSE`</span>, runs quietly. <span class="pp">|</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>A named list with two elements:</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`descriptions_controlled`</span>: A named list of controlled descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`descriptions_free`</span>: A named list of free descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>loads the page in a headless Chrome browser (via chromote) and reads its text;</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>searches for the controlled-description section;</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>searches for the free-description section;</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>stores extracted text in named lists using the scientific name.</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>Failed extractions are returned together with the extracted descriptions.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>The function assumes that the printable FFB page contains recognizable</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>section headers in Portuguese and/or English, such as:</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Descricao com campos controlados|Description with controlled&quot;`</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Descricao livre|Free description&quot;`</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Comentarios|Commentaries&quot;`</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Vouchers&quot;`</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Origem|Origin&quot;`</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;Bibliografia Referencia|Reference&quot;`</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>The text is read directly from the rendered page rather than from a PDF of it,</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>so no line can be cut off at a page margin (a PDF of the page clipped the</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>right end of every line, silently losing words), and a description is read in</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>full however long it is. Each section ends at the next section header found</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>at the start of a line; if no closing header is found, the taxon is recorded</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>as a failure rather than stopping the whole run. The language tag lines</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>(&quot;EN&quot;/&quot;PT&quot;) are dropped.</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>A Chrome or Chromium browser must be installed, as for chromote; one</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>browser session is opened for the whole run and closed at the end.</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxa <span class="pp">|</span> A data frame containing the taxa to process. It must include at least the columns <span class="in">`genus`</span>, <span class="in">`specificEpithet`</span>, and <span class="in">`references`</span>. Each row is treated as one taxon page to download and parse. <span class="pp">|</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> delay <span class="pp">|</span> Numeric. Seconds to wait after each page has loaded before its text is read, to let the page finish rendering. Default is <span class="in">`10`</span>. <span class="pp">|</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints informative progress messages during parsing. If <span class="in">`FALSE`</span>, runs quietly. <span class="pp">|</span></span>
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>A named list with two elements:</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`descriptions_controlled`</span>: A named list of controlled descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`descriptions_free`</span>: A named list of free descriptions. If any failures occur, this element becomes a list of length two: extracted descriptions and a character vector of failed taxon names.</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
 <span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

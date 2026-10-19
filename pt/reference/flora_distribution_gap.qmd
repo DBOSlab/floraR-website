@@ -13,7 +13,7 @@ floraR::flora_distribution_gap()
 
 ### Descrição
 
-Dado um gênero ou espécie de plantas ou algas, consulta o [GBIF](https://www.gbif.org) e, opcionalmente, o [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e o [speciesLink](https://specieslink.net) em busca de evidências de espécimes e ocorrências do táxon em estados brasileiros que *não* constam atualmente da sua distribuição oficial na Flora e Funga do Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para verificação por um taxonomista - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco - para que as distribuições nas monografias da FFB se mantenham completas.
+Dado um gênero ou espécie de plantas ou algas, consulta o [GBIF](https://www.gbif.org) e, opcionalmente, o [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e o [speciesLink](https://specieslink.net) em busca de evidências de espécimes e ocorrências do táxon em estados brasileiros que *não* constam atualmente da sua distribuição oficial na Flora e Funga do Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para verificação por um taxonomista - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco - para que as distribuições nas monografias da FFB se mantenham completas. Os registros georreferenciados também são situados nos seis domínios fitogeográficos brasileiros, para sinalizar da mesma forma candidatos a novos registros de domínio.
 
 ### Detalhes
 
@@ -27,6 +27,8 @@ Dado um gênero ou espécie de plantas ou algas, consulta o [GBIF](https://www.g
 
 Os valores de estado em texto livre dessas fontes (ex.: `"Ba"`, `"Est. do Bahia"`, `"Paraiba"`) são normalizados para os nomes de estados da FFB antes da comparação; valores que não são estados brasileiros são ignorados.
 
+**Domínios fitogeográficos.** Com `domains = TRUE` (padrão), os registros do GBIF que têm coordenadas - exceto os que o GBIF marca com problemas geoespaciais, como coordenadas zeradas ou fora do país indicado - são situados nos seis domínios fitogeográficos brasileiros (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal) usando o mapa de biomas do IBGE (2019) incluído no floraR, simplificado com tolerância de 1 km. Um domínio com registros, mas não listado para o táxon na FFB, é um candidato a novo registro de domínio. São lidos até `max_coordinates` registros (300 por requisição); espécimes do REFLORA com coordenadas são incluídos quando `"reflora"` está entre as `sources`. Registros fora dos seis domínios (ex.: logo além da costa) são mantidos em `records`, com `Domain = NA`, mas nunca são sinalizados nem desenhados no mapa do relatório. Esta análise requer o pacote sf, e o mapa no relatório HTML, o pacote leaflet; sem eles, são omitidos com uma mensagem.
+
 Registros de ocorrência são evidências a revisar, não provas: um registro em um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento; por isso, o relatório HTML lista os registros individuais por trás de cada estado candidato.
 
 ### Argumentos
@@ -37,31 +39,35 @@ Registros de ocorrência são evidências a revisar, não provas: um registro em
 | state | Vetor de caracteres. Subconjunto opcional de estados brasileiros (nome completo ou sigla) ao qual restringir a verificação. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
 | sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer combinação de `"gbif"`, `"reflora"` e `"speciesLink"`. Padrão `"gbif"`, a mais rápida. Veja em Detalhes os requisitos das outras duas. |
 | specieslink_key | Caractere. Chave de API do speciesLink, usada quando `"speciesLink"` está entre as `sources`. Padrão: a variável de ambiente `SPECIESLINK_KEY`. |
+| domains | Lógico. Se `TRUE` (padrão), também situa os registros georreferenciados nos domínios fitogeográficos brasileiros e sinaliza candidatos a novos registros de domínio (veja Detalhes). Requer o pacote sf. |
+| max_coordinates | Numérico. Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
 | save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
 | dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_distribution_gap"`. |
 | filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_distribution_gap_<taxon>"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado e os registros de ocorrência individuais encontrados nos estados candidatos a novos registros - cada um com link para o registro na sua base de dados de origem - todos como widgets DT ordenáveis e filtráveis, com botões para copiá-los ou baixá-los como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
 | open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador após gerá-lo. |
 
 ### Valor
 
-Um `data.frame`, com uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas), com as colunas:
+Uma lista de três `data.frame`s:
 
-- Taxon: O nome do táxon consultado.
-- State: Nome do estado brasileiro.
-- In_FFB_distribution: Lógico; se a FFB já lista este estado para o táxon.
-- GBIF_records: Número de registros de ocorrência do GBIF neste estado (quando `"gbif"` está entre as `sources`).
-- REFLORA_records: Número de espécimes do REFLORA neste estado (quando `"reflora"` está entre as `sources` e o refloraR está instalado).
-- speciesLink_records: Número de registros do speciesLink neste estado (quando `"speciesLink"` está entre as `sources` e uma chave é fornecida).
-- New_state_record_candidate: `TRUE` quando o estado tem evidência de pelo menos uma fonte, mas *não* consta da distribuição da FFB - um candidato para revisão taxonômica.
+- `states`: Uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas): `Taxon`, `State`, `In_FFB_distribution` (se a FFB já lista o estado), `GBIF_records`, `Reflora_records` e `speciesLink_records` (registros no estado, para cada fonte consultada), e `New_state_record_candidate` (`TRUE` quando o estado tem evidência de pelo menos uma fonte, mas não consta da distribuição da FFB).
+- `domains`: Uma linha por domínio fitogeográfico com evidência (na FFB ou entre os registros georreferenciados): `Taxon`, `Domain`, `In_FFB_distribution`, `Georeferenced_records` e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
+- `records`: Uma linha por registro georreferenciado, com as suas coordenadas, `State`, `Domain`, coletor, data, instituição, número de catálogo, identificação, um link para o registro e as colunas lógicas `New_state_record_candidate` e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
+
+Com `save = TRUE`, cada tabela é salva como uma aba da planilha `.xlsx`.
 
 ### Exemplos
 
 ```r
-# Candidatos a novos registros estaduais para uma espécie
+# Candidatos a novos registros estaduais e de domínios para uma espécie
 gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
+
+# Os candidatos a novos domínios fitogeográficos, e os registros por trás deles
+gap$domains
+gap$records[gap$records$New_domain_record_candidate, ]
 
 # Um gênero inteiro, restrito a dois estados
 gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",

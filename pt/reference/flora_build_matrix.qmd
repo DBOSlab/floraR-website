@@ -13,42 +13,41 @@ floraR::flora_build_matrix()
 
 ### Descrição
 
-Converte o texto de descrição extraído da Flora e Funga do Brasil em uma
-matriz de caracteres, onde as linhas correspondem a táxons e as colunas
-correspondem a estados de caráter analisados a partir das strings de
-descrição.
+Converte o texto das descrições extraídas da Flora e Funga do Brasil em uma matriz com os táxons nas linhas, a partir de qualquer um dos dois tipos de descrição retornados por `flora_get_descriptions`:
+
+- **descrições de campos controlados** (`descriptions[[1]]`) viram uma matriz de táxons por estados de caracteres, com uma coluna por estado;
+- **descrições livres** (`descriptions[[2]]`) viram uma matriz de táxons por órgãos, com uma coluna por órgão (ex.: Habit, Leaf, Panicle, Flower, Samara, Seed), e cada célula contém a descrição daquele órgão.
 
 ### Detalhes
 
-Esta função é um wrapper em torno de um analisador interno que remove
-entradas `NULL` e trata a estrutura de saída aninhada retornada por
-`flora_get_descriptions()` quando há falhas presentes.
+Se `descriptions` for a lista retornada por `flora_get_descriptions()` quando alguns táxons falharam - uma lista sem nomes com as descrições extraídas e os nomes dos táxons que falharam - apenas as descrições extraídas são usadas. Em ambos os casos, descrições `NULL` são removidas antes que a matriz seja construída.
 
-Se `descriptions` tiver comprimento 2, a função assume que o primeiro
-elemento contém a lista de descrições real e o segundo elemento contém os
-nomes dos táxons que falharam. Em ambos os casos, descrições `NULL` são
-removidas antes que a matriz seja construída.
+**Descrições de campos controlados** seguem um modelo fixo, em que as categorias de caracteres são separadas por pontos, os nomes das categorias são separados dos seus valores por dois-pontos e múltiplos estados são separados por ponto e vírgula (ex.: `"Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ..."`). A primeira descrição define as colunas da matriz; um táxon cuja descrição não siga esse modelo fica vazio.
 
-Espera-se que as strings de descrição sigam um formato semiestruturado no
-qual categorias de caracteres são separadas por pontos, nomes de categoria
-são separados de seus valores por dois-pontos, e múltiplos estados são
-separados por ponto e vírgula. A primeira descrição é usada para definir a
-estrutura esperada da matriz e os nomes das colunas.
+**Descrições livres** são texto corrido, escrito com uma frase (ou mais) por órgão, cada uma começando pelo nome do órgão (ex.: `"Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long."`). A primeira frase é o hábito (`Habit`); cada frase seguinte é atribuída ao órgão indicado pela sua primeira palavra, no singular, de modo que, por exemplo, "Seeds" e "Seed" compartilham uma coluna. As colunas são alinhadas pelo nome do órgão em todos os táxons, de modo que táxons que descrevem órgãos diferentes, ou os mesmos órgãos em outra ordem, continuam alinhados; um órgão que um táxon não descreve fica `NA`. As frases são separadas em um ponto seguido de letra maiúscula, mas não após a inicial de uma pessoa (como em um espécime citado, "M. Nee 34997") nem após abreviações comuns ("cf.", "ca.", "e.g.", "var."), e decimais ("1.5 m") nunca separam frases. Como salvaguarda, uma frase que começa com uma palavra que abre frases em menos de um terço dos táxons não é tratada como órgão e é anexada ao texto do órgão anterior.
 
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
-| descriptions | Uma lista nomeada de strings de descrição, geralmente uma das saídas de `flora_get_descriptions()`, como `descriptions[[1]]`. Se falhas foram retornadas junto com as descrições, a função usa apenas o componente de descrição extraída. |
+| descriptions | Uma lista nomeada de strings de descrição, geralmente uma das saídas de `flora_get_descriptions()`, como `descriptions[[1]]` ou `descriptions[[2]]`. Se falhas foram retornadas junto com as descrições, a função usa apenas o componente de descrições extraídas. |
+| type | Caractere. Que tipo de descrição é: `"auto"` (padrão) detecta a partir do texto; ou defina `"controlled"` ou `"free"` explicitamente. |
 
 ### Valor
 
-Uma matriz de caracteres com táxons como linhas e estados de caráter
-analisados como colunas.
+Uma matriz de caracteres com os táxons nas linhas: para descrições de campos controlados, uma coluna por estado de caractere; para descrições livres, uma coluna por órgão.
 
 ### Exemplos
 
 ```r
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
+                      taxonomicStatus = "NOME_ACEITO")
 descriptions <- flora_get_descriptions(taxa, delay = 10)
+
+# Matriz de táxons por estados de caracteres, a partir das descrições de campos controlados
 mat_control <- flora_build_matrix(descriptions[[1]])
+
+# Matriz de táxons por órgãos, a partir das descrições livres
+mat_free <- flora_build_matrix(descriptions[[2]])
 ```

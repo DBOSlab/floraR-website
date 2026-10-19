@@ -61,7 +61,7 @@ Yes. Every page has an EN/PT toggle in the navigation bar. Once you switch langu
 
 ### What output can floraR generate?
 
-`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix for comparative or phylogenetic analyses. The curation tools `flora_species_gap()` and `flora_distribution_gap()` also save an `.xlsx` spreadsheet and a self-contained, interactive HTML report of their results.
+`floraR` returns tidy data frames (and, for `flora_parse()`, a structured list of DwC-A tables) ready for downstream analysis. `flora_records()` and `flora_get_children_taxa()` can also save results directly to CSV, and `flora_build_matrix()` produces a taxon-by-character trait matrix from the controlled descriptions, or a taxon-by-organ matrix from the free descriptions, for comparative or phylogenetic analyses. The curation tools `flora_species_gap()` and `flora_distribution_gap()` also save an `.xlsx` spreadsheet and a self-contained, interactive HTML report of their results.
 
 ### Who is the developer of floraR?
 

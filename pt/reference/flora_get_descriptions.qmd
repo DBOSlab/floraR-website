@@ -13,8 +13,8 @@ floraR::flora_get_descriptions()
 
 ### Descrição
 
-Baixa versões em PDF imprimíveis das páginas de táxons da Flora e Funga do
-Brasil (FFB) para um conjunto de espécies e extrai o texto das seções de
+Lê as versões para impressão das páginas de táxons da Flora e Funga do Brasil
+(FFB) para um conjunto de espécies e extrai o texto das suas seções de
 descrição. A função tenta recuperar dois tipos de descrição de cada página:
 descrições controladas ("Descrição com campos controlados") e descrições
 livres ("Descrição livre").
@@ -24,11 +24,10 @@ livres ("Descrição livre").
 Para cada táxon, a função:
 
 1. constrói uma URL de página imprimível a partir da coluna `references`;
-2. salva a página temporariamente como `temp.pdf`;
-3. extrai o texto com pdftools;
-4. busca a seção de descrição controlada;
-5. busca a seção de descrição livre;
-6. armazena o texto extraído em listas nomeadas usando o nome científico.
+2. carrega a página em um navegador Chrome sem interface (via chromote) e lê o seu texto;
+3. busca a seção de descrição controlada;
+4. busca a seção de descrição livre;
+5. armazena o texto extraído em listas nomeadas usando o nome científico.
 
 Extrações que falham são retornadas junto com as descrições extraídas.
 
@@ -42,15 +41,24 @@ reconhecíveis em português e/ou inglês, tais como:
 - `"Origem|Origin"`
 - `"Bibliografia Referencia|Reference"`
 
-O texto é extraído apenas da primeira página do PDF. A saída temporária é
-sempre gravada em um arquivo chamado `temp.pdf` no diretório de trabalho.
+O texto é lido diretamente da página renderizada, e não de um PDF dela, de modo
+que nenhuma linha pode ser cortada na margem da página (um PDF da página cortava
+o final de cada linha, perdendo palavras sem aviso), e uma descrição é lida por
+completo, por mais longa que seja. Cada seção termina no próximo cabeçalho de
+seção encontrado no início de uma linha; se nenhum cabeçalho de fechamento for
+encontrado, o táxon é registrado como falha, em vez de interromper toda a
+execução. As linhas de idioma ("EN"/"PT") são descartadas.
+
+É necessário ter um navegador Chrome ou Chromium instalado, como para o
+chromote; uma única sessão do navegador é aberta para toda a execução e fechada
+ao final.
 
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
 | taxa | Um data frame contendo os táxons a processar. Deve incluir pelo menos as colunas `genus`, `specificEpithet` e `references`. Cada linha é tratada como uma página de táxon a baixar e analisar. |
-| delay | Numérico. Atraso em segundos passado para `webshot::webshot()` para permitir que a página carregue antes que o PDF seja capturado. Padrão `10`. |
+| delay | Numérico. Segundos de espera após o carregamento de cada página, antes que o seu texto seja lido, para que a página termine de ser renderizada. Padrão `10`. |
 | verbose | Lógico. Se `TRUE` (padrão), imprime mensagens informativas de progresso durante a análise. Se `FALSE`, executa silenciosamente. |
 
 ### Valor

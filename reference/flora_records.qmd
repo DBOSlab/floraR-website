@@ -28,9 +28,11 @@ The function downloads (if needed) and parses the FFB dataset exactly like
 
 - `taxon` is matched against the `family`, `genus`, and `taxonName` columns of the FFB taxon table (family names ending in `"aceae"`, single-word genus names, and multi-word species names are detected automatically).
 - `taxonRank` and `taxonomicStatus` are matched directly against the taxon table.
-- `state`, `phytogeographicDomain`, and `endemism` are matched against the FFB distribution table (`distribution.txt`).
+- `state`, `phytogeographicDomain`, `endemism`, and `establishmentMeans` are matched against the FFB distribution table (`distribution.txt`).
 - `lifeForm`, `habitat`, and `vegetationType` are matched against the FFB species profile table (`speciesprofile.txt`).
 
+Text filters are case- and accent-insensitive (`"Mata Atlantica"` matches
+`"Mata Atl\u00e2ntica"`, `"Arvore"` matches `"\u00c1rvore"`).
 All filters are combined with a logical AND. The result always has one row
 per matching taxon (geographic/trait filters restrict *which* taxa are
 returned, they do not multiply rows).
@@ -42,9 +44,10 @@ returned, they do not multiply rows).
 | taxon | Character vector. One or more family, genus, or species names to filter by (e.g. `c("Fabaceae", "Luetzelburgia", "Inga edulis")`). `NULL` (default) does not filter by taxon. |
 | taxonRank | Character vector. Taxonomic rank(s) to keep (e.g. `"ESPECIE"`, `"VARIEDADE"`, `"SUBESPECIE"`). `NULL` (default) keeps all ranks. |
 | taxonomicStatus | Character vector. FFB taxonomic status to keep: `"NOME_ACEITO"` (accepted), `"SINONIMO"` (synonym), or `"NOME_DUVIDOSO"` (doubtful). `NULL` (default) keeps all statuses. |
-| state | Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`) - to filter by occurrence, based on the FFB distribution table. `NULL` (default) does not filter by state. |
+| state | Character vector. Brazilian state(s) - full name or acronym, diacritics-insensitive (e.g. `"Bahia"` or `"BA"`) - to filter by occurrence, based on the FFB distribution table (or, with `endemism = TRUE`, by exclusive occurrence; see the Endemism section). `NULL` (default) does not filter by state. |
 | phytogeographicDomain | Character vector. Phytogeographic domain(s) to filter by (e.g. `"Caatinga"`, `"Mata Atlantica"`). `NULL` (default) does not filter by domain. |
-| endemism | Logical. If `TRUE`, keeps only taxa flagged as Brazilian endemics; if `FALSE`, keeps only non-endemics. `NULL` (default) does not filter by endemism. |
+| endemism | `TRUE`, `FALSE`, `"Brazil"`, or `NULL`. `TRUE` keeps endemics: Brazilian endemics without an area filter, or the endemics exclusive to the requested `state`, `phytogeographicDomain`, or `vegetationType`. `"Brazil"` keeps Brazilian endemics occurring in those areas. `FALSE` keeps the complement of `TRUE`. `NULL` (default) does not filter by endemism. See the Endemism section. |
+| establishmentMeans | Character vector. The origin of the taxon in Brazil - whether it is native to the country or was introduced into it - as recorded in FFB's `establishmentMeans` field: `"native"` (FFB's `"Nativa"`) or `"introduced"` (FFB's `"Ex\u00f3tica"`, i.e. exotic). English or Portuguese, case- and accent-insensitive: `"native"`/`"nativa"`, `"introduced"`/`"exotic"`/ `"exotica"`. `NULL` (default) does not filter by origin; taxa whose origin FFB does not record are only returned then. |
 | lifeForm, habitat, vegetationType | Character vectors. Life form (e.g. `"Arbusto"`, `"Arvore"`), habitat (e.g. `"Terricola"`), and vegetation type (e.g. `"Cerrado (lato sensu)"`) to filter by, based on the FFB species profile table. `NULL` (default) does not filter. |
 | version | Character. FFB dataset version to use. Defaults to `"latest"`. Passed to `flora_download` and `flora_parse`. |
 | rm_flora_database | Logical. If `TRUE`, the downloaded FFB database folder (`"flora_download"`) is deleted after the search is complete. If `FALSE` (default), the database is kept on disk and reused by subsequent calls, which significantly speeds up repeated queries. |
@@ -56,7 +59,14 @@ returned, they do not multiply rows).
 ### Value
 
 A `data.frame` of FFB taxon records matching the requested
-  filters, with one row per taxon. If `save = TRUE`, the result is also
+  filters, with one row per taxon. Besides the taxon fields, each row carries
+  the taxon's FFB distribution and species profile, the unique values of each
+  field joined in one cell with `" | "` (e.g. `"BA | MG | PE"`):
+  `state` (abbreviations), `phytogeographicDomain`,
+  `endemism`, `establishmentMeans`, `lifeForm`,
+  `habitat`, and `vegetationType` - always describing the taxon's
+  full record, whatever filters were applied. A field FFB does not record for
+  a taxon is `NA`. If `save = TRUE`, the result is also
   written to `<dir>/<filename>.csv`.
 
 ### Examples
@@ -66,10 +76,28 @@ A `data.frame` of FFB taxon records matching the requested
 fabaceae <- flora_records(taxon = "Fabaceae",
                           taxonomicStatus = "NOME_ACEITO")
 
-# Accepted species endemic to Bahia
+# All accepted species endemic to Brazil
+brazil_endemics <- flora_records(endemism = TRUE,
+                                 taxonomicStatus = "NOME_ACEITO")
+
+# Accepted species endemic to Bahia: found only in Bahia
 bahia_endemics <- flora_records(state = "Bahia",
                                 endemism = TRUE,
                                 taxonomicStatus = "NOME_ACEITO")
+
+# Accepted Brazilian endemics that occur in Bahia (and possibly elsewhere)
+brazil_endemics_in_bahia <- flora_records(state = "Bahia",
+                                          endemism = "Brazil",
+                                          taxonomicStatus = "NOME_ACEITO")
+
+# Species endemic to the Caatinga of Bahia: found only in Bahia, only in the Caatinga
+bahia_caatinga_endemics <- flora_records(state = "Bahia",
+                                         phytogeographicDomain = "Caatinga",
+                                         endemism = TRUE)
+
+# Introduced (exotic) species recorded in Bahia
+bahia_introduced <- flora_records(state = "Bahia",
+                                  establishmentMeans = "introduced")
 
 # Species in the Caatinga with a shrub life form
 caatinga_shrubs <- flora_records(phytogeographicDomain = "Caatinga",

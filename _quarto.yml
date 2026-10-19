@@ -93,9 +93,9 @@ website:
           contents:
           - text: Find species missing from FFB
             href: articles/find_missing_species.qmd
-        - section: Find new state records
+        - section: Find new state and domain records
           contents:
-          - text: Find candidate new state records
+          - text: Find candidate new state and domain records
             href: articles/find_new_state_records.qmd
         - section: Curate new records
           contents:
@@ -133,9 +133,9 @@ website:
           contents:
           - text: Encontrar espécies ausentes da FFB
             href: pt/articles/find_missing_species.qmd
-        - section: Encontrar novos registros estaduais
+        - section: Encontrar novos registros estaduais e de domínios
           contents:
-          - text: Encontrar candidatos a novos registros estaduais
+          - text: Encontrar candidatos a novos registros estaduais e de domínios
             href: pt/articles/find_new_state_records.qmd
         - section: Curar novos registros
           contents:

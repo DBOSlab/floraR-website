@@ -59,8 +59,8 @@ Estes artigos práticos percorrem as funções do `floraR` na ordem em que norma
 
 ::: {style="display: block;"}
 :::
-### Encontrar novos registros estaduais
-- [Encontrar candidatos a novos registros estaduais](/pt/articles/find_new_state_records.qmd)
+### Encontrar novos registros estaduais e de domínios
+- [Encontrar candidatos a novos registros estaduais e de domínios](/pt/articles/find_new_state_records.qmd)
 
 ::: {style="display: block;"}
 :::

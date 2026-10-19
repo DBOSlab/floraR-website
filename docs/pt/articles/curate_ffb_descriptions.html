@@ -4630,7 +4630,7 @@ height: 400px;
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Encontrar novos registros estaduais</span></a>
+ <span class="menu-text">Encontrar novos registros estaduais e de domínios</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -4639,7 +4639,7 @@ height: 400px;
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../pt/articles/find_new_state_records.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Encontrar candidatos a novos registros estaduais</span></a>
+ <span class="menu-text">Encontrar candidatos a novos registros estaduais e de domínios</span></a>
   </div>
 </li>
       </ul>
@@ -4677,10 +4677,10 @@ height: 400px;
   <li><a href="#valor" id="toc-valor" class="nav-link" data-scroll-target="#valor">Valor</a></li>
   <li><a href="#exemplo" id="toc-exemplo" class="nav-link" data-scroll-target="#exemplo">Exemplo</a></li>
   </ul></li>
-  <li><a href="#flora_build_matrix-transformar-descrições-em-uma-matriz-de-caracteres" id="toc-flora_build_matrix-transformar-descrições-em-uma-matriz-de-caracteres" class="nav-link" data-scroll-target="#flora_build_matrix-transformar-descrições-em-uma-matriz-de-caracteres"><code>flora_build_matrix()</code>: transformar descrições em uma matriz de caracteres</a>
+  <li><a href="#flora_build_matrix-transformar-descrições-em-uma-matriz" id="toc-flora_build_matrix-transformar-descrições-em-uma-matriz" class="nav-link" data-scroll-target="#flora_build_matrix-transformar-descrições-em-uma-matriz"><code>flora_build_matrix()</code>: transformar descrições em uma matriz</a>
   <ul class="collapse">
-  <li><a href="#argumentos-1" id="toc-argumentos-1" class="nav-link" data-scroll-target="#argumentos-1">Argumentos</a></li>
-  <li><a href="#exemplo-1" id="toc-exemplo-1" class="nav-link" data-scroll-target="#exemplo-1">Exemplo</a></li>
+  <li><a href="#descrições-de-campos-controlados-uma-matriz-de-estados-de-caracteres" id="toc-descrições-de-campos-controlados-uma-matriz-de-estados-de-caracteres" class="nav-link" data-scroll-target="#descrições-de-campos-controlados-uma-matriz-de-estados-de-caracteres">Descrições de campos controlados: uma matriz de estados de caracteres</a></li>
+  <li><a href="#descrições-livres-uma-matriz-de-órgãos" id="toc-descrições-livres-uma-matriz-de-órgãos" class="nav-link" data-scroll-target="#descrições-livres-uma-matriz-de-órgãos">Descrições livres: uma matriz de órgãos</a></li>
   </ul></li>
   <li><a href="#fluxo-de-trabalho-completo" id="toc-fluxo-de-trabalho-completo" class="nav-link" data-scroll-target="#fluxo-de-trabalho-completo">Fluxo de trabalho completo</a></li>
   <li><a href="#dicas-adicionais" id="toc-dicas-adicionais" class="nav-link" data-scroll-target="#dicas-adicionais">Dicas Adicionais</a></li>
@@ -4692,7 +4692,7 @@ height: 400px;
 <main class="content" id="quarto-document-content">
 
 <!-- Google Tag Manager (noscript) -->
- <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+ <noscript><iframe role="img" src="data:text/html; charset=UTF-8;charset=utf-8,%3C%21DOCTYPE%20html%3E%0A%0A%0A%3Chtml%20lang%3Den%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3Dutf%2D8%3E%0A%20%20%3Ctitle%3Ens%3C%2Ftitle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%20%20%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%3C%2Fbody%3E%3C%2Fhtml%3E%0A" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../pt/articles/curate_ffb_descriptions.html">Curar novos registros</a></li><li class="breadcrumb-item"><a href="../../pt/articles/curate_ffb_descriptions.html">Curar e descrever novos registros</a></li></ol></nav>
@@ -4717,7 +4717,8 @@ height: 400px;
 <p>Aqui apresentamos um guia prático para as funções <code>flora_get_descriptions()</code> e <code>flora_build_matrix()</code> do pacote <code>floraR</code>. Juntas, elas apoiam especialistas taxonômicos na curadoria e atualização de registros da <a href="https://floradobrasil.jbrj.gov.br/consulta/">Flora e Funga do Brasil (FFB)</a>, extraindo descrições de táxons já existentes e transformando-as em um formato estruturado e comparável.</p>
 <section id="flora_get_descriptions-extrair-descrições-de-páginas-de-táxons" class="level2">
 <h2 class="anchored" data-anchor-id="flora_get_descriptions-extrair-descrições-de-páginas-de-táxons"><code>flora_get_descriptions()</code>: extrair descrições de páginas de táxons</h2>
-<p>Para cada táxon fornecido, a <code>flora_get_descriptions()</code> baixa uma versão em PDF imprimível de sua página de táxon na FFB, extrai o texto e busca dois tipos de descrição: descrições de campos controlados (“Descrição com campos controlados”) e descrições de texto livre (“Descrição livre”).</p>
+<p>Para cada táxon fornecido, a <code>flora_get_descriptions()</code> carrega a versão para impressão de sua página de táxon na FFB em um navegador Chrome sem interface, lê o texto da página e extrai dois tipos de descrição: descrições de campos controlados (“Descrição com campos controlados”) e descrições de texto livre (“Descrição livre”).</p>
+<p>O texto é lido diretamente da página renderizada, de modo que todas as palavras são mantidas, por mais longa que seja a descrição, e uma única sessão do navegador é reutilizada para todos os táxons - 11 espécies de <em>Luetzelburgia</em> levam bem menos de um minuto. É necessário ter um navegador Chrome ou Chromium instalado.</p>
 <section id="argumentos" class="level3">
 <h3 class="anchored" data-anchor-id="argumentos">Argumentos</h3>
 <table class="caption-top table">
@@ -4738,80 +4739,111 @@ height: 400px;
 </tr>
 <tr class="even">
 <td><code>delay</code></td>
-<td>Numérico. Segundos de espera para o carregamento da página antes de capturar o PDF. Padrão <code>10</code>.</td>
+<td>Numérico. Segundos de espera após o carregamento de cada página, antes que o seu texto seja lido. Padrão <code>10</code>.</td>
 </tr>
 <tr class="odd">
 <td><code>verbose</code></td>
-<td>Lógico. Se <code>TRUE</code> (padrão), imprime mensagens de progresso.</td>
+<td>Lógico. Se <code>TRUE</code> (padrão), exibe mensagens de progresso.</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="valor" class="level3">
 <h3 class="anchored" data-anchor-id="valor">Valor</h3>
-<p>Uma lista nomeada com <code>descriptions_controlled</code> e <code>descriptions_free</code>, cada uma uma lista nomeada com o texto de descrição extraído, indexada pelo nome científico. Se alguma página de táxon falhar ao ser analisada, esse elemento se torna, em vez disso, uma lista de duas partes: as descrições extraídas com sucesso, mais um vetor de caracteres com os táxons que falharam.</p>
+<p>Uma lista nomeada com <code>descriptions_controlled</code> e <code>descriptions_free</code>, cada uma sendo uma lista nomeada com o texto das descrições extraídas, indexada pelo nome científico. Se a página de algum táxon não puder ser carregada ou analisada, esse elemento passa a ser uma lista de duas partes: as descrições extraídas com sucesso e um vetor de caracteres com os táxons que falharam.</p>
 </section>
 <section id="exemplo" class="level3">
 <h3 class="anchored" data-anchor-id="exemplo">Exemplo</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="flora_build_matrix-transformar-descrições-em-uma-matriz-de-caracteres" class="level2">
-<h2 class="anchored" data-anchor-id="flora_build_matrix-transformar-descrições-em-uma-matriz-de-caracteres"><code>flora_build_matrix()</code>: transformar descrições em uma matriz de caracteres</h2>
-<p>A <code>flora_build_matrix()</code> converte o texto de descrição extraído por <code>flora_get_descriptions()</code> em uma matriz de caracteres — táxons como linhas, estados de caráter como colunas — pronta para comparação posterior ou análise de caracteres. Ela espera o formato semiestruturado usado nas páginas de táxons da FFB, no qual categorias de caracteres são separadas por pontos, nomes de categoria são separados de seus valores por dois-pontos, e múltiplos estados são separados por ponto e vírgula.</p>
-<section id="argumentos-1" class="level3">
-<h3 class="anchored" data-anchor-id="argumentos-1">Argumentos</h3>
+<section id="flora_build_matrix-transformar-descrições-em-uma-matriz" class="level2">
+<h2 class="anchored" data-anchor-id="flora_build_matrix-transformar-descrições-em-uma-matriz"><code>flora_build_matrix()</code>: transformar descrições em uma matriz</h2>
+<p>A <code>flora_build_matrix()</code> converte o texto das descrições extraídas pela <code>flora_get_descriptions()</code> em uma matriz com os táxons nas linhas, a partir de qualquer um dos dois tipos de descrição. Ela detecta qual tipo recebeu (ou defina <code>type = &quot;controlled&quot;</code> ou <code>type = &quot;free&quot;</code>).</p>
+<section id="descrições-de-campos-controlados-uma-matriz-de-estados-de-caracteres" class="level3">
+<h3 class="anchored" data-anchor-id="descrições-de-campos-controlados-uma-matriz-de-estados-de-caracteres">Descrições de campos controlados: uma matriz de estados de caracteres</h3>
+<p>As descrições de campos controlados seguem um modelo fixo, em que as categorias de caracteres são separadas por pontos, os nomes das categorias são separados dos seus valores por dois-pontos e múltiplos estados são separados por ponto e vírgula (ex.: <code>&quot;Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ...&quot;</code>). Cada estado vira uma coluna:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A primeira descrição define as colunas; um táxon cuja descrição não siga esse modelo fica vazio.</p>
+</section>
+<section id="descrições-livres-uma-matriz-de-órgãos" class="level3">
+<h3 class="anchored" data-anchor-id="descrições-livres-uma-matriz-de-órgãos">Descrições livres: uma matriz de órgãos</h3>
+<p>As descrições livres são texto corrido, escrito com uma frase (ou mais) por órgão, cada uma começando pelo nome do órgão - <code>&quot;Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long.&quot;</code>. Elas viram uma matriz de táxons por órgãos, com uma coluna por órgão e cada célula contendo a descrição daquele órgão:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para as 11 espécies de <em>Luetzelburgia</em>, isso gera uma linha por espécie e as colunas <code>Habit</code>, <code>Leaf</code>, <code>Panicle</code>, <code>Flower</code>, <code>Samara</code> e <code>Seed</code>, com todas as células preenchidas:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Argumento</th>
-<th>Descrição</th>
+<th></th>
+<th>Habit</th>
+<th>Leaf</th>
+<th>…</th>
+<th>Seed</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>descriptions</code></td>
-<td>Uma lista nomeada de strings de descrição, tipicamente um elemento da saída de <code>flora_get_descriptions()</code> (ex.: <code>descriptions[[1]]</code>).</td>
+<td><em>L. auriculata</em></td>
+<td>Trees to 10 m high, sometimes shrubs 1.5–2.5 m; …</td>
+<td>Leaves (10–)12–30 cm long, (3)5–9(11)-foliolate, …</td>
+<td>…</td>
+<td>Seeds 12–25 mm long, …</td>
+</tr>
+<tr class="even">
+<td><em>L. praecox</em></td>
+<td>Shrub to small tree of 1–8 m; …</td>
+<td>Leaves 17–18 cm long, 5–7-foliolate, …</td>
+<td>…</td>
+<td>Seeds not seen</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="exemplo-1" class="level3">
-<h3 class="anchored" data-anchor-id="exemplo-1">Exemplo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>trait_matrix <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Como o texto livre é analisado:</p>
+<ul>
+<li>A primeira frase é o <strong>hábito</strong> (<code>Habit</code>); cada frase seguinte pertence ao órgão indicado pela sua primeira palavra, no singular, de modo que, por exemplo, “Seeds” e “Seed” compartilham uma coluna.</li>
+<li>As colunas são alinhadas pelo nome do órgão em todos os táxons, na ordem em que os órgãos costumam ser descritos, de modo que táxons que descrevem órgãos diferentes, ou os mesmos órgãos em outra ordem, continuam alinhados. Um órgão que um táxon não descreve fica <code>NA</code>.</li>
+<li>As frases são separadas em um ponto seguido de letra maiúscula - mas não em decimais (“1.5 m”), em “c. 3 mm”, na inicial de uma pessoa em um espécime citado (“M. Nee 34997”) nem em abreviações comuns (“cf.”, “ca.”, “e.g.”, “var.”).</li>
+</ul>
 </section>
 </section>
 <section id="fluxo-de-trabalho-completo" class="level2">
 <h2 class="anchored" data-anchor-id="fluxo-de-trabalho-completo">Fluxo de trabalho completo</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_get_children_taxa</span>(<span class="at">taxon_name =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">child_rank =</span> <span class="st">&quot;species&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>trait_matrix <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])  <span class="co"># estados de caracteres</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])     <span class="co"># órgãos</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="dicas-adicionais" class="level2">
 <h2 class="anchored" data-anchor-id="dicas-adicionais">Dicas Adicionais</h2>
 <ul>
-<li>A <code>flora_get_descriptions()</code> extrai dados de páginas web ao vivo, portanto é mais lenta que as demais funções do <code>floraR</code> e deve ser executada em uma lista de táxons curada e não muito longa, em vez de toda a lista de espécies.</li>
-<li>Aumente <code>delay</code> se notar descrições faltando ou truncadas — algumas páginas de táxon demoram mais para renderizar antes que o PDF imprimível seja capturado.</li>
-<li>A <code>flora_build_matrix()</code> usa a <em>primeira</em> descrição da lista para definir a estrutura esperada da matriz e os nomes das colunas, portanto certifique-se de que essa primeira entrada siga o formato semiestruturado padrão antes de executá-la no conjunto completo.</li>
+<li>A <code>flora_get_descriptions()</code> lê páginas da web ao vivo, então execute-a em uma lista de táxons selecionada, e não na lista de espécies inteira.</li>
+<li>Se algumas páginas voltarem vazias ou forem relatadas como falhas, aumente o <code>delay</code>: algumas páginas de táxons demoram mais para terminar de carregar.</li>
+<li>A matriz de descrições livres contém texto, uma célula por órgão - um ponto de partida pronto para comparar táxons órgão por órgão, ou para codificar caracteres manualmente.</li>
 </ul>
 </section>
 <section id="veja-também" class="level2">
 <h2 class="anchored" data-anchor-id="veja-também">Veja Também</h2>
 <ul>
+<li><a href="../../pt/articles/find_missing_species.html">Encontrar espécies ausentes da FFB</a></li>
 <li><a href="../../pt/articles/filter_ffb_records.html">Filtrar e recuperar registros da lista de espécies</a></li>
 <li><a href="../../pt/articles/explore_taxonomic_hierarchy.html">Explorar a hierarquia taxonômica</a></li>
 </ul>
@@ -5288,86 +5320,111 @@ height: 400px;
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../pt/articles/find_new_state_records.html" class="pagination-link" aria-label="Encontrar candidatos a novos registros estaduais">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Encontrar candidatos a novos registros estaduais</span>
+      <a href="../../pt/articles/find_new_state_records.html" class="pagination-link" aria-label="Encontrar candidatos a novos registros estaduais e de domínios">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Encontrar candidatos a novos registros estaduais e de domínios</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Curar e descrever novos registros&quot;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Aqui apresentamos um guia prático para as funções <span class="in">`flora_get_descriptions()`</span> e <span class="in">`flora_build_matrix()`</span> do pacote <span class="in">`floraR`</span>. Juntas, elas apoiam especialistas taxonômicos na curadoria e atualização de registros da <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>, extraindo descrições de táxons já existentes e transformando-as em um formato estruturado e comparável.</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## `flora_get_descriptions()`: extrair descrições de páginas de táxons</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>Para cada táxon fornecido, a <span class="in">`flora_get_descriptions()`</span> baixa uma versão em PDF imprimível de sua página de táxon na FFB, extrai o texto e busca dois tipos de descrição: descrições de campos controlados (&quot;Descrição com campos controlados&quot;) e descrições de texto livre (&quot;Descrição livre&quot;).</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`taxa`</span> <span class="pp">|</span> Um data frame com pelo menos as colunas <span class="in">`genus`</span>, <span class="in">`specificEpithet`</span> e <span class="in">`references`</span> (um link para a página de cada táxon na FFB) — por exemplo, a saída de <span class="in">`flora_records()`</span>. <span class="pp">|</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`delay`</span> <span class="pp">|</span> Numérico. Segundos de espera para o carregamento da página antes de capturar o PDF. Padrão <span class="in">`10`</span>. <span class="pp">|</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`verbose`</span> <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), imprime mensagens de progresso. <span class="pp">|</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>Uma lista nomeada com <span class="in">`descriptions_controlled`</span> e <span class="in">`descriptions_free`</span>, cada uma uma lista nomeada com o texto de descrição extraído, indexada pelo nome científico. Se alguma página de táxon falhar ao ser analisada, esse elemento se torna, em vez disso, uma lista de duas partes: as descrições extraídas com sucesso, mais um vetor de caracteres com os táxons que falharam.</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplo</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## `flora_build_matrix()`: transformar descrições em uma matriz de caracteres</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>A <span class="in">`flora_build_matrix()`</span> converte o texto de descrição extraído por <span class="in">`flora_get_descriptions()`</span> em uma matriz de caracteres — táxons como linhas, estados de caráter como colunas — pronta para comparação posterior ou análise de caracteres. Ela espera o formato semiestruturado usado nas páginas de táxons da FFB, no qual categorias de caracteres são separadas por pontos, nomes de categoria são separados de seus valores por dois-pontos, e múltiplos estados são separados por ponto e vírgula.</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`descriptions`</span> <span class="pp">|</span> Uma lista nomeada de strings de descrição, tipicamente um elemento da saída de <span class="in">`flora_get_descriptions()`</span> (ex.: <span class="in">`descriptions[[1]]`</span>). <span class="pp">|</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplo</span></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>trait_matrix <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fluxo de trabalho completo</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_get_children_taxa</span>(<span class="at">taxon_name =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>                                <span class="at">rank =</span> <span class="st">&quot;genus&quot;</span>,</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>                                <span class="at">child_rank =</span> <span class="st">&quot;species&quot;</span>)</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>trait_matrix <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dicas Adicionais</span></span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A <span class="in">`flora_get_descriptions()`</span> extrai dados de páginas web ao vivo, portanto é mais lenta que as demais funções do <span class="in">`floraR`</span> e deve ser executada em uma lista de táxons curada e não muito longa, em vez de toda a lista de espécies.</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Aumente <span class="in">`delay`</span> se notar descrições faltando ou truncadas — algumas páginas de táxon demoram mais para renderizar antes que o PDF imprimível seja capturado.</span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A <span class="in">`flora_build_matrix()`</span> usa a *primeira* descrição da lista para definir a estrutura esperada da matriz e os nomes das colunas, portanto certifique-se de que essa primeira entrada siga o formato semiestruturado padrão antes de executá-la no conjunto completo.</span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Veja Também</span></span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Filtrar e recuperar registros da lista de espécies</span><span class="co">](/pt/articles/filter_ffb_records.qmd)</span></span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Explorar a hierarquia taxonômica</span><span class="co">](/pt/articles/explore_taxonomic_hierarchy.qmd)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Curar e descrever novos registros&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Aqui apresentamos um guia prático para as funções <span class="in">`flora_get_descriptions()`</span> e <span class="in">`flora_build_matrix()`</span> do pacote <span class="in">`floraR`</span>. Juntas, elas apoiam especialistas taxonômicos na curadoria e atualização de registros da <span class="co">[</span><span class="ot">Flora e Funga do Brasil (FFB)</span><span class="co">](https://floradobrasil.jbrj.gov.br/consulta/)</span>, extraindo descrições de táxons já existentes e transformando-as em um formato estruturado e comparável.</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## `flora_get_descriptions()`: extrair descrições de páginas de táxons</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>Para cada táxon fornecido, a <span class="in">`flora_get_descriptions()`</span> carrega a versão para impressão de sua página de táxon na FFB em um navegador Chrome sem interface, lê o texto da página e extrai dois tipos de descrição: descrições de campos controlados (&quot;Descrição com campos controlados&quot;) e descrições de texto livre (&quot;Descrição livre&quot;).</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>O texto é lido diretamente da página renderizada, de modo que todas as palavras são mantidas, por mais longa que seja a descrição, e uma única sessão do navegador é reutilizada para todos os táxons - 11 espécies de *Luetzelburgia* levam bem menos de um minuto. É necessário ter um navegador Chrome ou Chromium instalado.</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">### Argumentos</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Descrição <span class="pp">|</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`taxa`</span> <span class="pp">|</span> Um data frame com pelo menos as colunas <span class="in">`genus`</span>, <span class="in">`specificEpithet`</span> e <span class="in">`references`</span> (um link para a página de cada táxon na FFB) — por exemplo, a saída de <span class="in">`flora_records()`</span>. <span class="pp">|</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`delay`</span> <span class="pp">|</span> Numérico. Segundos de espera após o carregamento de cada página, antes que o seu texto seja lido. Padrão <span class="in">`10`</span>. <span class="pp">|</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`verbose`</span> <span class="pp">|</span> Lógico. Se <span class="in">`TRUE`</span> (padrão), exibe mensagens de progresso. <span class="pp">|</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valor</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>Uma lista nomeada com <span class="in">`descriptions_controlled`</span> e <span class="in">`descriptions_free`</span>, cada uma sendo uma lista nomeada com o texto das descrições extraídas, indexada pelo nome científico. Se a página de algum táxon não puder ser carregada ou analisada, esse elemento passa a ser uma lista de duas partes: as descrições extraídas com sucesso e um vetor de caracteres com os táxons que falharam.</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exemplo</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## `flora_build_matrix()`: transformar descrições em uma matriz</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>A <span class="in">`flora_build_matrix()`</span> converte o texto das descrições extraídas pela <span class="in">`flora_get_descriptions()`</span> em uma matriz com os táxons nas linhas, a partir de qualquer um dos dois tipos de descrição. Ela detecta qual tipo recebeu (ou defina <span class="in">`type = &quot;controlled&quot;`</span> ou <span class="in">`type = &quot;free&quot;`</span>).</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrições de campos controlados: uma matriz de estados de caracteres</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>As descrições de campos controlados seguem um modelo fixo, em que as categorias de caracteres são separadas por pontos, os nomes das categorias são separados dos seus valores por dois-pontos e múltiplos estados são separados por ponto e vírgula (ex.: <span class="in">`&quot;Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ...&quot;`</span>). Cada estado vira uma coluna:</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>A primeira descrição define as colunas; um táxon cuja descrição não siga esse modelo fica vazio.</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Descrições livres: uma matriz de órgãos</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>As descrições livres são texto corrido, escrito com uma frase (ou mais) por órgão, cada uma começando pelo nome do órgão - <span class="in">`&quot;Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long.&quot;`</span>. Elas viram uma matriz de táxons por órgãos, com uma coluna por órgão e cada célula contendo a descrição daquele órgão:</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>Para as 11 espécies de *Luetzelburgia*, isso gera uma linha por espécie e as colunas <span class="in">`Habit`</span>, <span class="in">`Leaf`</span>, <span class="in">`Panicle`</span>, <span class="in">`Flower`</span>, <span class="in">`Samara`</span> e <span class="in">`Seed`</span>, com todas as células preenchidas:</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> Habit <span class="pp">|</span> Leaf <span class="pp">|</span> ... <span class="pp">|</span> Seed <span class="pp">|</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|---|</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> *L. auriculata* <span class="pp">|</span> Trees to 10 m high, sometimes shrubs 1.5–2.5 m; ... <span class="pp">|</span> Leaves (10–)12–30 cm long, (3)5–9(11)-foliolate, ... <span class="pp">|</span> ... <span class="pp">|</span> Seeds 12–25 mm long, ... <span class="pp">|</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> *L. praecox* <span class="pp">|</span> Shrub to small tree of 1–8 m; ... <span class="pp">|</span> Leaves 17–18 cm long, 5–7-foliolate, ... <span class="pp">|</span> ... <span class="pp">|</span> Seeds not seen <span class="pp">|</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>Como o texto livre é analisado:</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A primeira frase é o **hábito** (<span class="in">`Habit`</span>); cada frase seguinte pertence ao órgão indicado pela sua primeira palavra, no singular, de modo que, por exemplo, &quot;Seeds&quot; e &quot;Seed&quot; compartilham uma coluna.</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>As colunas são alinhadas pelo nome do órgão em todos os táxons, na ordem em que os órgãos costumam ser descritos, de modo que táxons que descrevem órgãos diferentes, ou os mesmos órgãos em outra ordem, continuam alinhados. Um órgão que um táxon não descreve fica <span class="in">`NA`</span>.</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>As frases são separadas em um ponto seguido de letra maiúscula - mas não em decimais (&quot;1.5 m&quot;), em &quot;c. 3 mm&quot;, na inicial de uma pessoa em um espécime citado (&quot;M. Nee 34997&quot;) nem em abreviações comuns (&quot;cf.&quot;, &quot;ca.&quot;, &quot;e.g.&quot;, &quot;var.&quot;).</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fluxo de trabalho completo</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(floraR)</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> <span class="fu">flora_records</span>(<span class="at">taxon =</span> <span class="st">&quot;Luetzelburgia&quot;</span>,</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonRank =</span> <span class="st">&quot;ESPECIE&quot;</span>,</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>                      <span class="at">taxonomicStatus =</span> <span class="st">&quot;NOME_ACEITO&quot;</span>)</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>descriptions <span class="ot">&lt;-</span> <span class="fu">flora_get_descriptions</span>(taxa, <span class="at">delay =</span> <span class="dv">10</span>)</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>mat_control <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">1</span>]])  <span class="co"># estados de caracteres</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>mat_free <span class="ot">&lt;-</span> <span class="fu">flora_build_matrix</span>(descriptions[[<span class="dv">2</span>]])     <span class="co"># órgãos</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dicas Adicionais</span></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A <span class="in">`flora_get_descriptions()`</span> lê páginas da web ao vivo, então execute-a em uma lista de táxons selecionada, e não na lista de espécies inteira.</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Se algumas páginas voltarem vazias ou forem relatadas como falhas, aumente o <span class="in">`delay`</span>: algumas páginas de táxons demoram mais para terminar de carregar.</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A matriz de descrições livres contém texto, uma célula por órgão - um ponto de partida pronto para comparar táxons órgão por órgão, ou para codificar caracteres manualmente.</span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## Veja Também</span></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Encontrar espécies ausentes da FFB</span><span class="co">](/pt/articles/find_missing_species.qmd)</span></span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Filtrar e recuperar registros da lista de espécies</span><span class="co">](/pt/articles/filter_ffb_records.qmd)</span></span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Explorar a hierarquia taxonômica</span><span class="co">](/pt/articles/explore_taxonomic_hierarchy.qmd)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

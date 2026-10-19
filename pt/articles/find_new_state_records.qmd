@@ -1,9 +1,11 @@
 ---
-title: "Encontrar candidatos a novos registros estaduais"
+title: "Encontrar candidatos a novos registros estaduais e de domínios"
 format: html
 ---
 
 Aqui apresentamos um guia prático para a função `flora_distribution_gap()` do pacote `floraR`. Dado um gênero ou espécie de plantas ou algas, ela compara os estados brasileiros onde espécimes do táxon foram registrados com os estados listados oficialmente na sua distribuição na [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), e sinaliza os estados que ainda não constam da FFB como **candidatos a novos registros estaduais** - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco.
+
+Os registros georreferenciados também são situados nos seis **domínios fitogeográficos** brasileiros, para sinalizar da mesma forma candidatos a novos registros de domínio.
 
 Manter as distribuições completas faz parte de expandir as monografias da FFB: cada candidato é uma pista a ser verificada pelo especialista do grupo.
 
@@ -31,13 +33,13 @@ library(floraR)
 gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata")
 ```
 
-A função retorna uma linha por estado brasileiro com qualquer evidência e também salva uma planilha `.xlsx` e um relatório HTML autocontido na pasta `flora_distribution_gap/`.
+A função retorna uma lista de três tabelas - `gap$states`, `gap$domains` e `gap$records` - e também as salva como abas de uma planilha `.xlsx`, junto com um relatório HTML autocontido, na pasta `flora_distribution_gap/`. `gap$states` tem uma linha por estado brasileiro com qualquer evidência:
 
 | Coluna | Significado |
 |---|---|
 | `State` | Estado brasileiro. |
 | `In_FFB_distribution` | Se a FFB já lista o estado para o táxon. |
-| `GBIF_records`, `REFLORA_records`, `speciesLink_records` | Número de registros no estado, para cada fonte consultada. |
+| `GBIF_records`, `Reflora_records`, `speciesLink_records` | Número de registros no estado, para cada fonte consultada. |
 | `New_state_record_candidate` | `TRUE` para estados com registros que a FFB não lista. |
 
 Para *Luetzelburgia auriculata*, a FFB lista 14 estados, e os registros do GBIF apontam para mais cinco - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul e São Paulo.
@@ -45,6 +47,30 @@ Para *Luetzelburgia auriculata*, a FFB lista 14 estados, e os registros do GBIF 
 ## Verificar os registros por trás de cada candidato
 
 Registros de ocorrência são evidências a revisar, não provas: um registro de um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento. Por isso, o relatório HTML lista os registros individuais encontrados em cada estado candidato - coletor e número, data, localidade, herbário e número de catálogo, e o nome sob o qual o espécime foi identificado - cada um com link para o próprio registro, para que cada candidato possa ser verificado antes de entrar na FFB.
+
+## Domínios fitogeográficos
+
+Além dos estados, os registros do GBIF que têm coordenadas são situados nos seis domínios fitogeográficos brasileiros - Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa e Pantanal - usando o mapa de biomas do IBGE (2019) incluído no `floraR`. Um domínio com registros, mas não listado para o táxon na FFB, é um **candidato a novo registro de domínio**. Registros que o GBIF marca com problemas geoespaciais (como coordenadas zeradas, ou fora do país indicado) são deixados de fora.
+
+```r
+gap$domains                                          # uma linha por domínio
+gap$records[gap$records$New_domain_record_candidate, ]  # os registros por trás dos novos domínios
+```
+
+Para *Luetzelburgia auriculata*, a FFB lista a Amazônia, a Caatinga e o Cerrado. Dos seus 742 registros georreferenciados no GBIF, 7 - do Rio de Janeiro, de São Paulo e do Paraná - estão na **Mata Atlântica**, um candidato a novo domínio:
+
+| Domínio | Na FFB | Registros georreferenciados | Candidato a novo domínio |
+|---|---|---|---|
+| Amazônia | sim | 10 | |
+| Caatinga | sim | 539 | |
+| Cerrado | sim | 183 | |
+| Mata Atlântica | não | 7 | **sim** |
+
+O relatório HTML mapeia todos os registros georreferenciados sobre os domínios, coloridos por situação - clique em um ponto para ver o coletor, a data, o herbário e um link para o registro:
+
+![Os registros georreferenciados de *Luetzelburgia auriculata* no GBIF sobre os domínios fitogeográficos brasileiros, nas cores dos domínios da FFB: em amarelo, os candidatos a novo registro de domínio na Mata Atlântica; em ciano, um candidato a novo registro estadual.](/figures/flora_distribution_gap_map.png){width=100%}
+
+Um registro próximo ao limite entre domínios, ou um único registro em um novo domínio, merece uma verificação mais cuidadosa - pode ser uma planta cultivada ou um erro de georreferenciamento. A análise de domínios requer o pacote `sf`, e o mapa, o pacote `leaflet`; use `domains = FALSE` para omiti-la.
 
 ## Um gênero inteiro, ou estados selecionados
 
@@ -81,6 +107,8 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `state` | Estados brasileiros opcionais aos quais restringir a verificação. `NULL` (padrão) verifica todos. |
 | `sources` | Qualquer combinação de `"gbif"` (padrão), `"reflora"` e `"speciesLink"`. |
 | `specieslink_key` | Chave de API do speciesLink. Padrão: a variável de ambiente `SPECIESLINK_KEY`. |
+| `domains` | Se `TRUE` (padrão), também situa os registros georreferenciados nos domínios fitogeográficos. Requer o pacote `sf`. |
+| `max_coordinates` | Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | `version` | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
 | `save`, `dir`, `filename` | Salva o resultado como planilha `.xlsx`, e onde. |
 | `html_report`, `open_report` | Gera o relatório HTML e o abre no navegador. |

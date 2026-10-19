@@ -7,19 +7,21 @@ Aqui apresentamos um guia prático para as funções `flora_get_descriptions()` 
 
 ## `flora_get_descriptions()`: extrair descrições de páginas de táxons
 
-Para cada táxon fornecido, a `flora_get_descriptions()` baixa uma versão em PDF imprimível de sua página de táxon na FFB, extrai o texto e busca dois tipos de descrição: descrições de campos controlados ("Descrição com campos controlados") e descrições de texto livre ("Descrição livre").
+Para cada táxon fornecido, a `flora_get_descriptions()` carrega a versão para impressão de sua página de táxon na FFB em um navegador Chrome sem interface, lê o texto da página e extrai dois tipos de descrição: descrições de campos controlados ("Descrição com campos controlados") e descrições de texto livre ("Descrição livre").
+
+O texto é lido diretamente da página renderizada, de modo que todas as palavras são mantidas, por mais longa que seja a descrição, e uma única sessão do navegador é reutilizada para todos os táxons - 11 espécies de *Luetzelburgia* levam bem menos de um minuto. É necessário ter um navegador Chrome ou Chromium instalado.
 
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
 | `taxa` | Um data frame com pelo menos as colunas `genus`, `specificEpithet` e `references` (um link para a página de cada táxon na FFB) — por exemplo, a saída de `flora_records()`. |
-| `delay` | Numérico. Segundos de espera para o carregamento da página antes de capturar o PDF. Padrão `10`. |
-| `verbose` | Lógico. Se `TRUE` (padrão), imprime mensagens de progresso. |
+| `delay` | Numérico. Segundos de espera após o carregamento de cada página, antes que o seu texto seja lido. Padrão `10`. |
+| `verbose` | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
 
 ### Valor
 
-Uma lista nomeada com `descriptions_controlled` e `descriptions_free`, cada uma uma lista nomeada com o texto de descrição extraído, indexada pelo nome científico. Se alguma página de táxon falhar ao ser analisada, esse elemento se torna, em vez disso, uma lista de duas partes: as descrições extraídas com sucesso, mais um vetor de caracteres com os táxons que falharam.
+Uma lista nomeada com `descriptions_controlled` e `descriptions_free`, cada uma sendo uma lista nomeada com o texto das descrições extraídas, indexada pelo nome científico. Se a página de algum táxon não puder ser carregada ou analisada, esse elemento passa a ser uma lista de duas partes: as descrições extraídas com sucesso e um vetor de caracteres com os táxons que falharam.
 
 ### Exemplo
 
@@ -27,47 +29,70 @@ Uma lista nomeada com `descriptions_controlled` e `descriptions_free`, cada uma 
 library(floraR)
 
 taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
                       taxonomicStatus = "NOME_ACEITO")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)
 ```
 
-## `flora_build_matrix()`: transformar descrições em uma matriz de caracteres
+## `flora_build_matrix()`: transformar descrições em uma matriz
 
-A `flora_build_matrix()` converte o texto de descrição extraído por `flora_get_descriptions()` em uma matriz de caracteres — táxons como linhas, estados de caráter como colunas — pronta para comparação posterior ou análise de caracteres. Ela espera o formato semiestruturado usado nas páginas de táxons da FFB, no qual categorias de caracteres são separadas por pontos, nomes de categoria são separados de seus valores por dois-pontos, e múltiplos estados são separados por ponto e vírgula.
+A `flora_build_matrix()` converte o texto das descrições extraídas pela `flora_get_descriptions()` em uma matriz com os táxons nas linhas, a partir de qualquer um dos dois tipos de descrição. Ela detecta qual tipo recebeu (ou defina `type = "controlled"` ou `type = "free"`).
 
-### Argumentos
+### Descrições de campos controlados: uma matriz de estados de caracteres
 
-| Argumento | Descrição |
-|---|---|
-| `descriptions` | Uma lista nomeada de strings de descrição, tipicamente um elemento da saída de `flora_get_descriptions()` (ex.: `descriptions[[1]]`). |
-
-### Exemplo
+As descrições de campos controlados seguem um modelo fixo, em que as categorias de caracteres são separadas por pontos, os nomes das categorias são separados dos seus valores por dois-pontos e múltiplos estados são separados por ponto e vírgula (ex.: `"Leaf: leaflet number 3 to 7; leaflet margin entire. Flower: ..."`). Cada estado vira uma coluna:
 
 ```r
-trait_matrix <- flora_build_matrix(descriptions[[1]])
+mat_control <- flora_build_matrix(descriptions[[1]])
 ```
+
+A primeira descrição define as colunas; um táxon cuja descrição não siga esse modelo fica vazio.
+
+### Descrições livres: uma matriz de órgãos
+
+As descrições livres são texto corrido, escrito com uma frase (ou mais) por órgão, cada uma começando pelo nome do órgão - `"Tree to 10 m; branchlets sericeous. Leaves 12-30 cm long, ... Panicles erect, ... Seeds 12-25 mm long."`. Elas viram uma matriz de táxons por órgãos, com uma coluna por órgão e cada célula contendo a descrição daquele órgão:
+
+```r
+mat_free <- flora_build_matrix(descriptions[[2]])
+```
+
+Para as 11 espécies de *Luetzelburgia*, isso gera uma linha por espécie e as colunas `Habit`, `Leaf`, `Panicle`, `Flower`, `Samara` e `Seed`, com todas as células preenchidas:
+
+| | Habit | Leaf | ... | Seed |
+|---|---|---|---|---|
+| *L. auriculata* | Trees to 10 m high, sometimes shrubs 1.5–2.5 m; ... | Leaves (10–)12–30 cm long, (3)5–9(11)-foliolate, ... | ... | Seeds 12–25 mm long, ... |
+| *L. praecox* | Shrub to small tree of 1–8 m; ... | Leaves 17–18 cm long, 5–7-foliolate, ... | ... | Seeds not seen |
+
+Como o texto livre é analisado:
+
+- A primeira frase é o **hábito** (`Habit`); cada frase seguinte pertence ao órgão indicado pela sua primeira palavra, no singular, de modo que, por exemplo, "Seeds" e "Seed" compartilham uma coluna.
+- As colunas são alinhadas pelo nome do órgão em todos os táxons, na ordem em que os órgãos costumam ser descritos, de modo que táxons que descrevem órgãos diferentes, ou os mesmos órgãos em outra ordem, continuam alinhados. Um órgão que um táxon não descreve fica `NA`.
+- As frases são separadas em um ponto seguido de letra maiúscula - mas não em decimais ("1.5 m"), em "c. 3 mm", na inicial de uma pessoa em um espécime citado ("M. Nee 34997") nem em abreviações comuns ("cf.", "ca.", "e.g.", "var.").
 
 ## Fluxo de trabalho completo
 
 ```r
 library(floraR)
 
-taxa <- flora_get_children_taxa(taxon_name = "Luetzelburgia",
-                                rank = "genus",
-                                child_rank = "species")
+taxa <- flora_records(taxon = "Luetzelburgia",
+                      taxonRank = "ESPECIE",
+                      taxonomicStatus = "NOME_ACEITO")
 
 descriptions <- flora_get_descriptions(taxa, delay = 10)
-trait_matrix <- flora_build_matrix(descriptions[[1]])
+
+mat_control <- flora_build_matrix(descriptions[[1]])  # estados de caracteres
+mat_free <- flora_build_matrix(descriptions[[2]])     # órgãos
 ```
 
 ## Dicas Adicionais
 
-- A `flora_get_descriptions()` extrai dados de páginas web ao vivo, portanto é mais lenta que as demais funções do `floraR` e deve ser executada em uma lista de táxons curada e não muito longa, em vez de toda a lista de espécies.
-- Aumente `delay` se notar descrições faltando ou truncadas — algumas páginas de táxon demoram mais para renderizar antes que o PDF imprimível seja capturado.
-- A `flora_build_matrix()` usa a *primeira* descrição da lista para definir a estrutura esperada da matriz e os nomes das colunas, portanto certifique-se de que essa primeira entrada siga o formato semiestruturado padrão antes de executá-la no conjunto completo.
+- A `flora_get_descriptions()` lê páginas da web ao vivo, então execute-a em uma lista de táxons selecionada, e não na lista de espécies inteira.
+- Se algumas páginas voltarem vazias ou forem relatadas como falhas, aumente o `delay`: algumas páginas de táxons demoram mais para terminar de carregar.
+- A matriz de descrições livres contém texto, uma célula por órgão - um ponto de partida pronto para comparar táxons órgão por órgão, ou para codificar caracteres manualmente.
 
 ## Veja Também
 
+- [Encontrar espécies ausentes da FFB](/pt/articles/find_missing_species.qmd)
 - [Filtrar e recuperar registros da lista de espécies](/pt/articles/filter_ffb_records.qmd)
 - [Explorar a hierarquia taxonômica](/pt/articles/explore_taxonomic_hierarchy.qmd)
