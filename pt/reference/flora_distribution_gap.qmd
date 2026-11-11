@@ -13,47 +13,52 @@ floraR::flora_distribution_gap()
 
 ### Descrição
 
-Dado um gênero ou espécie de plantas ou algas, consulta o [GBIF](https://www.gbif.org) e, opcionalmente, o [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e o [speciesLink](https://specieslink.net) em busca de evidências de espécimes e ocorrências do táxon em estados brasileiros que *não* constam atualmente da sua distribuição oficial na Flora e Funga do Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para verificação por um taxonomista - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco - para que as distribuições nas monografias da FFB se mantenham completas. Os registros georreferenciados também são situados nos seis domínios fitogeográficos brasileiros, para sinalizar da mesma forma candidatos a novos registros de domínio.
+Dados um ou mais gêneros ou espécies de plantas ou algas, consulta o [GBIF](https://www.gbif.org), o [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/), o [JABOT](https://jabot.jbrj.gov.br) e, opcionalmente, o [speciesLink](https://specieslink.net) em busca de evidências de espécimes e ocorrências do táxon em estados brasileiros que *não* constam atualmente da sua distribuição oficial na Flora e Funga do Brasil (FFB). Isso sinaliza candidatos a novos registros estaduais para verificação por um taxonomista - por exemplo, uma espécie listada pela FFB apenas para a Bahia, mas com espécimes de herbário de Pernambuco - para que as distribuições nas monografias da FFB se mantenham completas. Os registros georreferenciados também são situados nos seis domínios fitogeográficos brasileiros, para sinalizar da mesma forma candidatos a novos registros de domínio.
 
 ### Detalhes
 
 **Lado da FFB.** Os estados listados oficialmente vêm das tabelas de táxons e de distribuição da FFB (o mesmo conjunto de dados armazenado localmente por `flora_records`). Para um gênero, os estados de todas as suas espécies e táxons infraespecíficos são combinados; para uma espécie, os da espécie e dos seus táxons infraespecíficos. Se o nome for um sinônimo na FFB, é usada a distribuição do seu nome aceito.
 
-**Evidência de ocorrência.** Até três fontes podem ser consultadas (veja `sources`):
+**Evidência de ocorrência.** Até quatro fontes podem ser consultadas (veja `sources`); por padrão, o GBIF, o REFLORA e o JABOT são todos consultados, e as suas evidências são combinadas, de modo que um estado relatado por qualquer um deles é sinalizado:
 
-- `"gbif"` (padrão): A API pública do GBIF, que agrega a maioria dos herbários brasileiros. O nome é primeiro resolvido para a sua chave no esqueleto taxonômico do GBIF apenas entre plantas e algas (de modo que, por exemplo, a alga vermelha *Gracilaria* não é confundida com o gênero de mariposas homônimo), e assim os registros dos seus sinônimos e táxons infraespecíficos são incluídos. Todos os estados são contados em uma única requisição.
-- `"reflora"`: Espécimes dos herbários do REFLORA, por meio de `reflora_records` (requer o pacote refloraR). Observe que o primeiro uso baixa os arquivos dos herbários do REFLORA - vários gigabytes - que o refloraR então armazena para as chamadas seguintes.
+- `"gbif"`: A API pública do GBIF, que agrega a maioria dos herbários brasileiros. O nome é primeiro resolvido para a sua chave no esqueleto taxonômico do GBIF apenas entre plantas e algas (de modo que, por exemplo, a alga vermelha *Gracilaria* não é confundida com o gênero de mariposas homônimo), e assim os registros dos seus sinônimos e táxons infraespecíficos são incluídos. Todos os estados são contados em uma única requisição.
+- `"reflora"`: Espécimes dos herbários do REFLORA, por meio de `reflora_records` (requer o pacote refloraR).
+- `"jabot"`: Espécimes dos herbários hospedados pelo JABOT, o sistema de herbários do Jardim Botânico do Rio de Janeiro, por meio de `jabot_records` (requer o pacote jabotR).
 - `"speciesLink"`: A API do speciesLink, que requer uma chave de API gratuita (`specieslink_key`; crie uma em https://specieslink.net).
 
-Os valores de estado em texto livre dessas fontes (ex.: `"Ba"`, `"Est. do Bahia"`, `"Paraiba"`) são normalizados para os nomes de estados da FFB antes da comparação; valores que não são estados brasileiros são ignorados.
+O REFLORA e o JABOT são lidos dos arquivos Darwin Core dos seus herbários: o primeiro uso os baixa - vários gigabytes - para `"reflora_download"` e `"jabot_download"` no diretório de trabalho, onde são reutilizados pelas chamadas seguintes (veja `keep_downloads`). Lê-los leva alguns minutos, por isso são lidos uma única vez por chamada, para todos os táxons de `taxon` juntos: verificar muitos táxons em uma chamada é muito mais rápido que uma chamada por táxon. Apenas os seus espécimes coletados no Brasil são contados. Use `sources = "gbif"` para uma verificação rápida.
 
-**Domínios fitogeográficos.** Com `domains = TRUE` (padrão), os registros do GBIF que têm coordenadas - exceto os que o GBIF marca com problemas geoespaciais, como coordenadas zeradas ou fora do país indicado - são situados nos seis domínios fitogeográficos brasileiros (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal) usando o mapa de biomas do IBGE (2019) incluído no floraR, simplificado com tolerância de 1 km. Um domínio com registros, mas não listado para o táxon na FFB, é um candidato a novo registro de domínio. São lidos até `max_coordinates` registros (300 por requisição); espécimes do REFLORA com coordenadas são incluídos quando `"reflora"` está entre as `sources`. Registros fora dos seis domínios (ex.: logo além da costa) são mantidos em `records`, com `Domain = NA`, mas nunca são sinalizados nem desenhados no mapa do relatório. Esta análise requer o pacote sf, e o mapa no relatório HTML, o pacote leaflet; sem eles, são omitidos com uma mensagem.
+As localidades de todas as fontes são padronizadas com `barRoso::std_place()`, de modo que os valores de estado em texto livre (ex.: `"Ba"`, `"Est. do Bahia"`, `"Paraiba"`) correspondem aos nomes de estados da FFB antes da comparação; valores que não são estados brasileiros são ignorados.
+
+**Domínios fitogeográficos.** Com `domains = TRUE` (padrão), os registros do GBIF que têm coordenadas - exceto os que o GBIF marca com problemas geoespaciais, como coordenadas zeradas ou fora do país indicado - são situados nos seis domínios fitogeográficos brasileiros (Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, Pantanal) usando o mapa de biomas do IBGE (2019) incluído no floraR, simplificado com tolerância de 1 km. Um domínio com registros, mas não listado para o táxon na FFB, é um candidato a novo registro de domínio. São lidos até `max_coordinates` registros do GBIF (300 por requisição); os espécimes do REFLORA e do JABOT com coordenadas são incluídos quando essas fontes são consultadas. Registros fora dos seis domínios (ex.: logo além da costa) são mantidos em `records`, com `Domain = NA`, mas nunca são sinalizados nem desenhados no mapa do relatório. Esta análise requer o pacote sf, e o mapa no relatório HTML, o pacote leaflet; sem eles, são omitidos com uma mensagem.
 
 Registros de ocorrência são evidências a revisar, não provas: um registro em um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento; por isso, o relatório HTML lista os registros individuais por trás de cada estado candidato.
+
+**Vários táxons.** Cada táxon de `taxon` é analisado separadamente, e a sua planilha e o seu relatório HTML são salvos com o seu próprio nome, `flora_distribution_gap_<taxon>` (ex.: `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`). Um táxon que falhe (ex.: um nome mal grafado) é informado e ignorado, sem interromper os demais.
 
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
-| taxon | Caractere. Um único nome de gênero ou espécie de plantas ou algas (ex.: `"Luetzelburgia auriculata"` ou `"Luetzelburgia"`). |
+| taxon | Vetor de caracteres. Um ou mais nomes de gênero ou espécie de plantas ou algas (ex.: `"Luetzelburgia auriculata"`, `"Luetzelburgia"` ou `c("Luetzelburgia auriculata", "Luetzelburgia bahiensis")`). Cada um é analisado separadamente; veja Detalhes. |
 | state | Vetor de caracteres. Subconjunto opcional de estados brasileiros (nome completo ou sigla) ao qual restringir a verificação. `NULL` (padrão) verifica todos os estados com qualquer evidência. |
-| sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer combinação de `"gbif"`, `"reflora"` e `"speciesLink"`. Padrão `"gbif"`, a mais rápida. Veja em Detalhes os requisitos das outras duas. |
+| sources | Vetor de caracteres. Quais fontes de ocorrência consultar: qualquer combinação de `"gbif"`, `"reflora"`, `"jabot"` e `"speciesLink"`. Padrão `c("gbif", "reflora", "jabot")`, combinando as evidências das três bases de dados de coleções; apenas `"gbif"` é a mais rápida. Veja em Detalhes os requisitos de cada uma. |
+| keep_downloads | Lógico. Aplica-se ao REFLORA e ao JABOT. Se `TRUE` (padrão), os arquivos dos herbários baixados para `"reflora_download"` e `"jabot_download"` no diretório de trabalho são mantidos, de modo que execuções futuras - para este ou outros táxons - os reutilizem em vez de baixá-los novamente. Se `FALSE`, essas pastas são apagadas ao final da análise, deixando o diretório de trabalho limpo (elas ocupam vários gigabytes). |
 | specieslink_key | Caractere. Chave de API do speciesLink, usada quando `"speciesLink"` está entre as `sources`. Padrão: a variável de ambiente `SPECIESLINK_KEY`. |
 | domains | Lógico. Se `TRUE` (padrão), também situa os registros georreferenciados nos domínios fitogeográficos brasileiros e sinaliza candidatos a novos registros de domínio (veja Detalhes). Requer o pacote sf. |
 | max_coordinates | Numérico. Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
-| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
-| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_distribution_gap"`. |
-| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_distribution_gap_<taxon>"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| save | Lógico. Se `TRUE` (padrão), o resultado de cada táxon é salvo em disco como uma planilha `.xlsx` nomeada a partir do táxon, `flora_distribution_gap_<taxon>.xlsx`. |
+| dir | Caractere. Diretório onde as planilhas e os relatórios são salvos. Padrão `"flora_distribution_gap"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada táxon (`<dir>/flora_distribution_gap_<taxon>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
 | open_report | Lógico. Se `TRUE`, abre o relatório HTML no navegador após gerá-lo (apenas em sessões interativas). Padrão `FALSE`: o relatório é apenas salvo em `dir`. |
 
 ### Valor
 
-Uma lista de três `data.frame`s:
+Uma lista de três `data.frame`s, cada um com uma coluna `Taxon`; com vários táxons, as linhas de todos eles são empilhadas:
 
-- `states`: Uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas): `Taxon`, `State`, `In_FFB_distribution` (se a FFB já lista o estado), `GBIF_records`, `Reflora_records` e `speciesLink_records` (registros no estado, para cada fonte consultada), e `New_state_record_candidate` (`TRUE` quando o estado tem evidência de pelo menos uma fonte, mas não consta da distribuição da FFB).
+- `states`: Uma linha por estado brasileiro com qualquer evidência para `taxon` (na FFB ou nas fontes consultadas): `Taxon`, `State`, `In_FFB_distribution` (se a FFB já lista o estado), `GBIF_records`, `Reflora_records`, `Jabot_records` e `speciesLink_records` (registros no estado, para cada fonte consultada), e `New_state_record_candidate` (`TRUE` quando o estado tem evidência de pelo menos uma fonte, mas não consta da distribuição da FFB).
 - `domains`: Uma linha por domínio fitogeográfico com evidência (na FFB ou entre os registros georreferenciados): `Taxon`, `Domain`, `In_FFB_distribution`, `Georeferenced_records` e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
 - `records`: Uma linha por registro georreferenciado, com as suas coordenadas, `State`, `Domain`, coletor, data, instituição, número de catálogo, identificação, um link para o registro e as colunas lógicas `New_state_record_candidate` e `New_domain_record_candidate`. Vazia quando `domains = FALSE`.
 
@@ -73,7 +78,14 @@ gap$records[gap$records$New_domain_record_candidate, ]
 gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
                                  state = c("Pernambuco", "Paraiba"))
 
-# Incluindo espécimes dos herbários do REFLORA (requer o refloraR)
-gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
-                                      sources = c("gbif", "reflora"))
+# Várias espécies em uma chamada: o REFLORA e o JABOT são lidos uma única vez, e
+# cada espécie recebe a sua própria planilha e relatório
+gap_many <- flora_distribution_gap(taxon = c("Luetzelburgia auriculata",
+                                             "Luetzelburgia bahiensis",
+                                             "Luetzelburgia praecox"))
+gap_many$states[gap_many$states$New_state_record_candidate, ]
+
+# Uma verificação rápida apenas com o GBIF
+gap_gbif <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                   sources = "gbif")
 ```

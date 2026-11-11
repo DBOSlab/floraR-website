@@ -12,18 +12,36 @@ Keeping distributions complete is part of expanding the FFB monographs: each can
 ## How the comparison works
 
 1. **FFB side.** The officially listed states come from the locally cached FFB dataset (downloaded only when needed, as in [`flora_download()`](/articles/download_ffb_dataset.qmd)). For a **genus**, the states of all its species and infraspecific taxa are combined; for a **species**, those of the species and its infraspecific taxa. If the name is a **synonym** in FFB, the distribution of its accepted name is used.
-2. **Occurrence evidence.** Brazilian records of the taxon are counted by state, from one or more sources (see below).
+2. **Occurrence evidence.** Brazilian records of the taxon are counted by state, from GBIF, REFLORA, and JABOT by default (see below), and their evidence is merged, so that a state reported by any of them is flagged.
 3. **Comparison.** Every state with records that FFB does not list is flagged as a new state record candidate.
 
-Occurrence databases record states as free text, in many spellings - GBIF alone uses `"Goiás"`, `"Go"`, `"Est. do Bahia"`, `"Paraiba"`, or `"Brasília"` for the Federal District. These are all normalised to FFB state names before comparison, and values that are not Brazilian states are ignored.
+Occurrence databases record states as free text, in many spellings - GBIF alone uses `"Goiás"`, `"Go"`, `"Est. do Bahia"`, `"Paraiba"`, or `"Brasília"` for the Federal District. The place fields of every source are standardised with `std_place()` from the [barRoso](https://github.com/DBOSlab/barRoso) package, and matched to FFB state names before comparison; values that are not Brazilian states are ignored, as are REFLORA and JABOT specimens collected outside Brazil.
 
 ## Where the evidence comes from
 
 | `sources` | What it reads | Notes |
 |---|---|---|
 | `"gbif"` (default) | [GBIF](https://www.gbif.org), which aggregates most Brazilian herbaria. | Fast: all states are counted in a single request. The name is resolved among plants and algae only, so the records of its synonyms and infraspecific taxa are included, and homonyms in other kingdoms (e.g. the moth *Gracilaria*) are excluded. |
-| `"reflora"` | REFLORA herbarium specimens, via the [refloraR](https://github.com/DBOSlab/refloraR) package. | The first use downloads the REFLORA herbarium archives - several gigabytes - which `refloraR` then caches for later calls. |
+| `"reflora"` (default) | Specimens of the [Reflora Virtual Herbarium](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/), via the [refloraR](https://github.com/DBOSlab/refloraR) package. | Read from the herbaria's archives (see *Keeping the downloaded archives* below). |
+| `"jabot"` (default) | Specimens of the herbaria hosted by [JABOT](https://jabot.jbrj.gov.br), the Rio de Janeiro Botanical Garden's herbarium system, via the [jabotR](https://github.com/DBOSlab/jabotR) package. | Read from the herbaria's archives (see below). |
 | `"speciesLink"` | [speciesLink](https://specieslink.net) records. | Requires a free API key, created at speciesLink and passed as `specieslink_key` or set as the `SPECIESLINK_KEY` environment variable. |
+
+### Keeping the downloaded archives (`keep_downloads`)
+
+The REFLORA and JABOT archives are big: the first analysis downloads several gigabytes to two folders in your working directory, `reflora_download/` and `jabot_download/`, which takes a while. By default (`keep_downloads = TRUE`) these folders are **kept**, so any new analysis - for the same taxon or another one - reuses them instead of downloading everything again. Reading them still takes a few minutes per call, so to check several taxa, give them all in one call (see [Several taxa in one call](#several-taxa-in-one-call)): the archives are then read only once.
+
+If you only need one analysis, or want to keep the working directory clean and light, set `keep_downloads = FALSE`: the folders are deleted once the analysis is finished.
+
+```r
+# Delete the REFLORA and JABOT archives after this analysis
+gap <- flora_distribution_gap(taxon = "Luetzelburgia auriculata", keep_downloads = FALSE)
+```
+
+`refloraR` and `jabotR` are installed from GitHub; without them, REFLORA or JABOT is skipped with a message:
+
+```r
+remotes::install_github(c("DBOSlab/refloraR", "DBOSlab/jabotR"))
+```
 
 ## Find candidate new state records for a species
 
@@ -39,10 +57,10 @@ This returns a list of three tables - `gap$states`, `gap$domains`, and `gap$reco
 |---|---|
 | `State` | Brazilian state. |
 | `In_FFB_distribution` | Whether FFB already lists the state for the taxon. |
-| `GBIF_records`, `Reflora_records`, `speciesLink_records` | Number of records in the state, for each source queried. |
+| `GBIF_records`, `Reflora_records`, `Jabot_records`, `speciesLink_records` | Number of records in the state, for each source queried. |
 | `New_state_record_candidate` | `TRUE` for states with records that FFB does not list. |
 
-For *Luetzelburgia auriculata*, FFB lists 14 states, and GBIF records point to five more - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul, and São Paulo.
+For *Luetzelburgia auriculata*, FFB lists 14 states, and the specimens in GBIF, REFLORA, and JABOT point to five more - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul, and São Paulo. Paraná and Rio de Janeiro are backed by all three sources (e.g. Paraná: 22 GBIF records, 10 REFLORA and 7 JABOT specimens), while Rio Grande do Sul rests on a single GBIF record.
 
 ## Check the records behind each candidate
 
@@ -50,25 +68,25 @@ Occurrence records are evidence to review, not proof: a record from a new state 
 
 ## Phytogeographic domains
 
-Alongside states, the GBIF records that have coordinates are placed in the six Brazilian phytogeographic domains - Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, and Pantanal - using IBGE's biome map (2019) bundled with `floraR`. A domain with records but not listed for the taxon in FFB is a **candidate new domain record**. Records GBIF flags with geospatial issues (such as zero coordinates, or coordinates outside the stated country) are left out.
+Alongside states, the GBIF, REFLORA, and JABOT records that have coordinates are placed in the six Brazilian phytogeographic domains - Amazônia, Caatinga, Cerrado, Mata Atlântica, Pampa, and Pantanal - using IBGE's biome map (2019) bundled with `floraR`. A domain with records but not listed for the taxon in FFB is a **candidate new domain record**. Records GBIF flags with geospatial issues (such as zero coordinates, or coordinates outside the stated country) are left out.
 
 ```r
 gap$domains                                          # one row per domain
 gap$records[gap$records$New_domain_record_candidate, ]  # the records behind new domains
 ```
 
-For *Luetzelburgia auriculata*, FFB lists the Amazônia, Caatinga, and Cerrado. Of its 742 georeferenced GBIF records, 7 - from Rio de Janeiro, São Paulo, and Paraná - fall in the **Mata Atlântica**, a candidate new domain:
+For *Luetzelburgia auriculata*, FFB lists the Amazônia, Caatinga, and Cerrado. Of its 1,134 georeferenced records - 745 from GBIF, 258 from REFLORA, and 131 from JABOT - 10, from Rio de Janeiro, São Paulo, and Paraná, fall in the **Mata Atlântica**, a candidate new domain:
 
 | Domain | In FFB | Georeferenced records | New domain candidate |
 |---|---|---|---|
-| Amazônia | yes | 10 | |
-| Caatinga | yes | 539 | |
-| Cerrado | yes | 183 | |
-| Mata Atlântica | no | 7 | **yes** |
+| Amazônia | yes | 12 | |
+| Caatinga | yes | 766 | |
+| Cerrado | yes | 299 | |
+| Mata Atlântica | no | 10 | **yes** |
 
 The HTML report maps every georeferenced record over the domains, coloured by status - click a point to see its collector, date, herbarium, and a link to the record:
 
-![The georeferenced GBIF records of *Luetzelburgia auriculata* over the Brazilian phytogeographic domains, over the FFB domain colours: in yellow, the candidate new domain records in the Mata Atlântica; in cyan, a candidate new state record.](/figures/flora_distribution_gap_map.png){width=100%}
+![The georeferenced GBIF, REFLORA, and JABOT records of *Luetzelburgia auriculata* over the Brazilian phytogeographic domains, over the FFB domain colours: in yellow, the candidate new domain records in the Mata Atlântica; in red, a candidate new state record.](/figures/flora_distribution_gap_map.png){width=100%}
 
 A record close to a domain boundary, or a single record in a new domain, deserves a closer look - it may be a cultivated plant or a georeferencing error. The domain analysis needs the `sf` package, and the map the `leaflet` package; set `domains = FALSE` to skip it.
 
@@ -87,30 +105,49 @@ gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
                                  state = c("PE", "Paraiba", "Alagoas"))
 ```
 
-## Add more sources
+## Several taxa in one call
+
+`taxon` also takes a vector of names - species, genera, or both. Reading the REFLORA and JABOT archives is the slow step, and it is done only **once** for all of them, so one call with ten species is much faster than ten separate calls:
 
 ```r
-# REFLORA herbarium specimens (requires refloraR)
-gap_reflora <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
-                                      sources = c("gbif", "reflora"))
+gap_many <- flora_distribution_gap(taxon = c("Luetzelburgia auriculata",
+                                             "Luetzelburgia bahiensis",
+                                             "Luetzelburgia praecox"))
 
-# speciesLink, with your API key in the SPECIESLINK_KEY environment variable
+# The candidates of all three species, in one table
+gap_many$states[gap_many$states$New_state_record_candidate, ]
+```
+
+Each taxon is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html`, and so on. The returned `states`, `domains`, and `records` tables stack the rows of all taxa, told apart by their `Taxon` column. A name that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
+
+## Choose the sources
+
+```r
+# A quick check with GBIF only, without the REFLORA and JABOT archives
+gap_gbif <- flora_distribution_gap(taxon = "Luetzelburgia auriculata", sources = "gbif")
+
+# Brazilian herbaria only
+gap_herbaria <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
+                                       sources = c("reflora", "jabot"))
+
+# Adding speciesLink, with your API key in the SPECIESLINK_KEY environment variable
 gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
-                                     sources = c("gbif", "speciesLink"))
+                                     sources = c("gbif", "reflora", "jabot", "speciesLink"))
 ```
 
 ## Arguments
 
 | Argument | Description |
 |---|---|
-| `taxon` | A single genus or species name of plants or algae. |
+| `taxon` | One or more genus or species names of plants or algae; see [Several taxa in one call](#several-taxa-in-one-call). |
 | `state` | Optional Brazilian states to restrict the check to. `NULL` (default) checks all. |
-| `sources` | Any of `"gbif"` (default), `"reflora"`, `"speciesLink"`. |
+| `sources` | Any of `"gbif"`, `"reflora"`, `"jabot"`, `"speciesLink"`. Default: `c("gbif", "reflora", "jabot")`. |
+| `keep_downloads` | If `TRUE` (default), keep the downloaded `reflora_download/` and `jabot_download/` folders for later analyses; if `FALSE`, delete them afterwards. |
 | `specieslink_key` | speciesLink API key. Defaults to the `SPECIESLINK_KEY` environment variable. |
 | `domains` | If `TRUE` (default), also place georeferenced records in the phytogeographic domains. Requires the `sf` package. |
 | `max_coordinates` | Maximum number of georeferenced GBIF records read for the domain analysis. Default `5000`. |
 | `version` | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir`, `filename` | Save the result as an `.xlsx` spreadsheet, and where. |
+| `save`, `dir` | Save each taxon's result as an `.xlsx` spreadsheet, named `flora_distribution_gap_<taxon>.xlsx`, and where. |
 | `html_report`, `open_report` | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | Print progress messages. Default `TRUE`. |
 

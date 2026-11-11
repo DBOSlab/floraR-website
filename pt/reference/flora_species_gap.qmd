@@ -13,12 +13,12 @@ floraR::flora_species_gap()
 
 ### Descrição
 
-Dado um gênero de plantas ou algas, encontra os nomes em nível de espécie que fontes globais registram para o Brasil, mas que ainda não estão registrados na Flora e Funga do Brasil (FFB) - candidatos à inclusão na monografia da FFB do grupo. Dois tipos independentes de evidência são combinados (veja `sources`):
+Dados um ou mais gêneros de plantas ou algas, encontra os nomes em nível de espécie que fontes globais registram para o Brasil, mas que ainda não estão registrados na Flora e Funga do Brasil (FFB) - candidatos à inclusão na monografia da FFB do grupo. Dois tipos independentes de evidência, de até quatro fontes, são combinados (veja `sources`):
 
 - **Distribuições do POWO**: espécies que o [Plants of the World Online](https://powo.science.kew.org) (POWO, Royal Botanic Gardens, Kew) mapeia no Brasil;
-- **Espécimes-tipo no GBIF**: espécies cujos espécimes-tipo - holótipos, isótipos, lectótipos, síntipos, parátipos e assim por diante - foram coletados no Brasil, segundo os herbários que os publicam no [Global Biodiversity Information Facility](https://www.gbif.org) (GBIF).
+- **Espécimes-tipo**: espécies cujos espécimes-tipo - holótipos, isótipos, lectótipos, síntipos, parátipos e assim por diante - foram coletados no Brasil, segundo os herbários que os publicam no [Global Biodiversity Information Facility](https://www.gbif.org) (GBIF), no [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e no [JABOT](https://jabot.jbrj.gov.br).
 
-O resultado é uma única tabela, com uma linha por nome, indicando qual(is) fonte(s) o relatou: os nomes relatados por ambas são os candidatos mais fortes. Não se trata de uma comparação geral entre as bases de dados: um nome ausente da FFB só é retornado quando há evidência de que a espécie ocorre no Brasil.
+O resultado é uma única tabela, com uma linha por nome, indicando qual(is) fonte(s) o relatou: quanto mais fontes relatam um nome, mais forte o candidato, e combiná-las recupera o maior número possível de lacunas. Não se trata de uma comparação geral entre as bases de dados: um nome ausente da FFB só é retornado quando há evidência de que a espécie ocorre no Brasil.
 
 ### Detalhes
 
@@ -33,36 +33,42 @@ Um nome do POWO tem evidência de ocorrência no Brasil quando o seu nome aceito
 
 **GBIF** (`"gbif"`). O gênero é procurado apenas entre plantas e algas - os reinos do GBIF Plantae (plantas terrestres, algas vermelhas e verdes), Chromista (algas pardas, diatomáceas) e Protozoa (euglenófitas) - de modo que um nome de gênero compartilhado com um animal (ex.: *Gracilaria*, tanto uma alga vermelha quanto uma mariposa) corresponde à planta ou alga. Uma única busca com facetas lista todos os nomes do gênero com espécimes-tipo coletados no Brasil; apenas para os nomes ausentes da FFB, os próprios espécimes são então recuperados, vários nomes por requisição, e resumidos. Os tipos são registrados no GBIF sob a sua identificação atual - geralmente o nome tipificado - que `GBIF_Specimen_names` mostra.
 
+**REFLORA** (`"reflora"`) e **JABOT** (`"jabot"`). Os espécimes do gênero são lidos com `reflora_records` e `jabot_records` (requerem os pacotes refloraR e jabotR), a partir dos arquivos Darwin Core dos seus herbários: o primeiro uso os baixa - vários gigabytes - para `"reflora_download"` e `"jabot_download"` no diretório de trabalho, onde são reutilizados pelas chamadas seguintes (veja `keep_downloads`). Lê-los leva alguns minutos, por isso são lidos uma única vez por chamada, para todos os gêneros de `taxon` juntos: verificar muitos gêneros em uma chamada é muito mais rápido que uma chamada por gênero. Os nomes em nível de espécie dos espécimes coletados no Brasil que são tipos (qualquer categoria de tipo) são comparados com a FFB; como no GBIF, um espécime é registrado sob a sua identificação atual. Use `sources = c("powo", "gbif")` para uma verificação rápida.
+
+Nas três fontes de espécimes, as categorias de tipo são padronizadas com `barRoso::std_types()` (ex.: `"HOLOTYPUS"` e `"Holotype"` viram `"holotype"`) e as localidades com `barRoso::std_place()`.
+
+**Vários gêneros.** Cada gênero de `taxon` é analisado separadamente, e a sua planilha e o seu relatório HTML são salvos com o seu próprio nome, `flora_species_gap_<gênero>` (ex.: `flora_species_gap_Myrcia.xlsx`). Um gênero que falhe (ex.: um nome mal grafado) é informado e ignorado, sem interromper os demais.
+
 ### Argumentos
 
 | Argumento | Descrição |
 |---|---|
-| taxon | Caractere. Um único nome de gênero de plantas ou algas (ex.: `"Myrcia"`, `"Gracilaria"`). Fungos não são consultados. |
-| sources | Vetor de caracteres. Quais tipos de evidência usar: `"powo"` (distribuições do POWO), `"gbif"` (espécimes-tipo brasileiros no GBIF) ou ambos (padrão). |
+| taxon | Vetor de caracteres. Um ou mais nomes de gênero de plantas ou algas (ex.: `"Myrcia"`, `"Gracilaria"` ou `c("Myrcia", "Eugenia")`). Cada um é analisado separadamente; veja Detalhes. Fungos não são consultados. |
+| sources | Vetor de caracteres. Quais fontes de evidência usar: qualquer combinação de `"powo"` (distribuições do POWO), `"gbif"`, `"reflora"` e `"jabot"` (espécimes-tipo brasileiros no GBIF, no REFLORA e no JABOT). Padrão: as quatro, combinando as suas evidências; veja em Detalhes os requisitos de cada uma. |
+| keep_downloads | Lógico. Aplica-se ao REFLORA e ao JABOT. Se `TRUE` (padrão), os arquivos dos herbários baixados para `"reflora_download"` e `"jabot_download"` no diretório de trabalho são mantidos, de modo que execuções futuras - para este ou outros táxons - os reutilizem em vez de baixá-los novamente. Se `FALSE`, essas pastas são apagadas ao final da análise, deixando o diretório de trabalho limpo (elas ocupam vários gigabytes). |
 | powo_source | Caractere. De onde os dados do POWO são lidos: `"rWCVPdata"` (padrão; rápido, local) ou `"checklistbank"` (sempre atualizado, mais lento). Veja Detalhes. |
-| require_brazil_evidence | Lógico. Aplica-se ao POWO. Se `TRUE` (padrão), os nomes do POWO só são mantidos quando o POWO registra a espécie no Brasil. Defina como `FALSE` para também retornar os nomes do POWO ausentes da FFB independentemente da distribuição, para revisão manual. (Os nomes do GBIF sempre têm evidência de ocorrência no Brasil: os seus tipos foram coletados lá.) |
+| require_brazil_evidence | Lógico. Aplica-se ao POWO. Se `TRUE` (padrão), os nomes do POWO só são mantidos quando o POWO registra a espécie no Brasil. Defina como `FALSE` para também retornar os nomes do POWO ausentes da FFB independentemente da distribuição, para revisão manual. (Os nomes das fontes de espécimes sempre têm evidência de ocorrência no Brasil: os seus tipos foram coletados lá.) |
 | type_status | Caractere ou `NULL`. Aplica-se ao GBIF. Categorias de tipo que contam como evidência (vocabulário atual do GBIF, ex.: `"Holotype"`, `"Isotype"`). `NULL` (padrão) usa todas as categorias de tipo primárias e secundárias: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial e TypeSeries. |
 | fetch_details | Lógico. Aplica-se ao POWO com `powo_source = "checklistbank"`: se `TRUE` (padrão), a citação da publicação original de cada candidato é buscada (uma requisição por nome). Com `"rWCVPdata"`, ela é sempre incluída. |
 | max_number | Numérico. Aplica-se ao POWO com `powo_source = "checklistbank"`: número máximo de nomes recuperados. Padrão `5000`. |
 | version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
-| save | Lógico. Se `TRUE` (padrão), o resultado é salvo em disco como uma planilha `.xlsx`. |
-| dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_species_gap"`. |
-| filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_species_gap_<taxon>"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiá-la ou baixá-la como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| save | Lógico. Se `TRUE` (padrão), o resultado de cada gênero é salvo em disco como uma planilha `.xlsx` nomeada a partir do gênero, `flora_species_gap_<gênero>.xlsx`. |
+| dir | Caractere. Diretório onde as planilhas e os relatórios são salvos. Padrão `"flora_species_gap"`. |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada gênero (`<dir>/flora_species_gap_<gênero>.html`) resumindo os resultados: indicadores principais e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiá-la ou baixá-la como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
 | open_report | Lógico. Se `TRUE`, abre o relatório HTML no navegador após gerá-lo (apenas em sessões interativas). Padrão `FALSE`: o relatório é apenas salvo em `dir`. |
 
 ### Valor
 
-Um `data.frame`, com uma linha por nome em nível de espécie do gênero que está ausente da lista atual da FFB e foi relatado por pelo menos uma fonte, ordenado com os nomes relatados pelas duas fontes primeiro. Colunas comuns:
+Um `data.frame`, com uma linha por nome em nível de espécie do gênero (ou dos gêneros, empilhados um após o outro) que está ausente da lista atual da FFB e foi relatado por pelo menos uma fonte, ordenado com os nomes relatados por mais fontes primeiro. Colunas comuns:
 
 - Taxon_name, Authors: O nome e a citação dos seus autores.
-- Accepted_name: O nome aceito (o do POWO, quando disponível, senão o do GBIF).
-- Found_in: Qual(is) fonte(s) relatou o nome: `"POWO; GBIF"`, `"POWO"` ou `"GBIF"`.
-- Brazil_evidence: Lógico; `TRUE` quando o POWO registra a espécie no Brasil ou ela tem espécimes-tipo brasileiros no GBIF.
+- Accepted_name: O nome aceito (o do POWO, quando disponível, senão o do GBIF; para nomes apenas do REFLORA ou do JABOT, o próprio nome).
+- Found_in: Qual(is) fonte(s) relatou o nome, ex.: `"POWO; GBIF; REFLORA"`, `"GBIF; JABOT"` ou `"POWO"`.
+- Brazil_evidence: Lógico; `TRUE` quando o POWO registra a espécie no Brasil ou ela tem espécimes-tipo brasileiros no GBIF, no REFLORA ou no JABOT.
 - In_FFB: Sempre `FALSE` (mantida por clareza ao combinar com outras tabelas).
 
-Colunas do POWO (quando `"powo"` está entre as `sources`; `NA` para nomes apenas do GBIF):
+Colunas do POWO (quando `"powo"` está entre as `sources`; `NA` para nomes que o POWO não relatou):
 
 - POWO_ID, POWO_Taxonomic_status, POWO_Accepted_name: O identificador do nome no POWO (IPNI), o seu status (ex.: `"Accepted"`, `"Synonym"`) e o seu nome aceito.
 - POWO_Year, POWO_Published_in: Ano de publicação e citação da publicação original.
@@ -71,21 +77,34 @@ Colunas do POWO (quando `"powo"` está entre as `sources`; `NA` para nomes apena
 - POWO_Brazil_Evidence, POWO_Evidence_Source: Se o POWO registra a espécie no Brasil, e se a partir da `"WCVP distribution"` ou da `"POWO range text"`.
 - POWO_URL, IPNI_URL: Links para as páginas do nome no POWO e no IPNI.
 
-Colunas do GBIF (quando `"gbif"` está entre as `sources`; `NA` para nomes apenas do POWO):
+Colunas do GBIF (quando `"gbif"` está entre as `sources`; `NA` para nomes que o GBIF não relatou):
 
 - GBIF_Key, GBIF_Taxonomic_status, GBIF_Accepted_name: A chave do nome no esqueleto taxonômico do GBIF, o seu status (ex.: `"ACCEPTED"`, `"DOUBTFUL"`) e a sua espécie aceita.
 - GBIF_N_type_specimens, GBIF_Type_statuses: Número de espécimes-tipo coletados no Brasil e as suas categorias de tipo.
-- GBIF_Type_specimens: Até dez espécimes, com herbário, número de catálogo e categoria de tipo (ex.: `"RB 00123 (Holotype)"`).
+- GBIF_Type_specimens: Até dez espécimes, com herbário, número de catálogo e categoria de tipo (ex.: `"RB 00123 (holotype)"`).
 - GBIF_Specimen_names: Os nomes sob os quais os tipos estão registrados - geralmente o nome tipificado, ex.: o basiônimo de uma espécie.
 - GBIF_Collectors, GBIF_Years, GBIF_States: Coletores, anos de coleta e estados brasileiros desses espécimes.
 - GBIF_Published_in, GBIF_URL: Citação da publicação original, quando o GBIF a possui, e link para a página do nome no GBIF.
+
+Colunas do REFLORA e do JABOT (quando `"reflora"` ou `"jabot"` está entre as `sources`), com o prefixo `REFLORA_` ou `JABOT_`:
+
+- N_type_specimens, Type_statuses, Type_specimens: Número de espécimes-tipo coletados no Brasil, as suas categorias de tipo e até dez deles, com herbário, número de catálogo e categoria de tipo.
+- Collectors, Years, States: Coletores, anos de coleta e estados brasileiros desses espécimes.
+- Links: Até três links para as páginas dos espécimes (apenas REFLORA; os registros do JABOT não trazem link).
 
 ### Exemplos
 
 ```r
 # Espécies de Myrcia registradas no Brasil pelo POWO e/ou com espécimes-tipo
-# brasileiros no GBIF, mas ausentes da FFB
+# brasileiros no GBIF, no REFLORA ou no JABOT, mas ausentes da FFB
 gap <- flora_species_gap(taxon = "Myrcia")
+
+# Uma verificação rápida, sem os arquivos do REFLORA e do JABOT
+gap_quick <- flora_species_gap(taxon = "Myrcia", sources = c("powo", "gbif"))
+
+# Vários gêneros em uma chamada: o REFLORA e o JABOT são lidos uma única vez, e
+# cada gênero recebe a sua própria planilha e relatório
+gap_many <- flora_species_gap(taxon = c("Myrcia", "Eugenia", "Calyptranthes"))
 
 # Apenas POWO, lido diretamente do ChecklistBank em vez da cópia local da WCVP
 gap_powo <- flora_species_gap(taxon = "Myrcia", sources = "powo",

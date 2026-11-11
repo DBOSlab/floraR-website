@@ -4561,12 +4561,12 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Given a genus of plants or algae, finds the species-level names that global sources record for Brazil but that are not currently registered in the Flora e Funga do Brasil (FFB) - candidates for inclusion in the FFB monograph of the group. Two independent kinds of evidence are combined (see <code>sources</code>):</p>
+<p>Given one or more genera of plants or algae, finds the species-level names that global sources record for Brazil but that are not currently registered in the Flora e Funga do Brasil (FFB) - candidates for inclusion in the FFB monograph of the group. Two independent kinds of evidence, from up to four sources, are combined (see <code>sources</code>):</p>
 <ul>
 <li><strong>POWO distributions</strong>: species that <a href="https://powo.science.kew.org">Plants of the World Online</a> (POWO, Royal Botanic Gardens, Kew) maps in Brazil;</li>
-<li><strong>GBIF type specimens</strong>: species whose type specimens - holotypes, isotypes, lectotypes, syntypes, paratypes, and so on - were collected in Brazil, according to the herbaria that publish them through the <a href="https://www.gbif.org">Global Biodiversity Information Facility</a> (GBIF).</li>
+<li><strong>Type specimens</strong>: species whose type specimens - holotypes, isotypes, lectotypes, syntypes, paratypes, and so on - were collected in Brazil, according to the herbaria that publish them through the <a href="https://www.gbif.org">Global Biodiversity Information Facility</a> (GBIF), the <a href="https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/">Reflora Virtual Herbarium</a>, and <a href="https://jabot.jbrj.gov.br">JABOT</a>.</li>
 </ul>
-<p>The result is a single table, one row per name, stating which source(s) reported it: names reported by both are the strongest candidates. This is not a general diff of the databases: a name missing from FFB is only returned when there is evidence that the species occurs in Brazil.</p>
+<p>The result is a single table, one row per name, stating which source(s) reported it: the more sources report a name, the stronger the candidate, and combining them retrieves as many gaps as possible. This is not a general diff of the databases: a name missing from FFB is only returned when there is evidence that the species occurs in Brazil.</p>
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
@@ -4578,6 +4578,9 @@ height: 400px;
 </ul>
 <p>A POWO name has Brazil evidence when its accepted name occurs in at least one of the five TDWG level-3 areas covering Brazil - Brazil North (<code>BZN</code>), Northeast (<code>BZE</code>), West-Central (<code>BZC</code>), Southeast (<code>BZL</code>), and South (<code>BZS</code>); native, introduced, or extinct, but not doubtful. Without a mapped distribution, POWO’s free-text range (e.g. <code>&quot;Brazil (Bahia)&quot;</code>) is checked instead. POWO covers vascular plants only, so it finds nothing for algae.</p>
 <p><strong>GBIF</strong> (<code>&quot;gbif&quot;</code>). The genus is looked up among plants and algae only - the GBIF kingdoms Plantae (land plants, red and green algae), Chromista (brown algae, diatoms), and Protozoa (euglenids) - so a genus name shared with an animal (e.g. <em>Gracilaria</em>, both a red alga and a moth) resolves to the plant or alga. A single faceted search lists every name in the genus with type specimens collected in Brazil; for the FFB-missing names only, the specimens themselves are then retrieved, many names per request, and summarised. Types are filed in GBIF under their current identification - usually the typified name - which <code>GBIF_Specimen_names</code> shows.</p>
+<p><strong>REFLORA</strong> (<code>&quot;reflora&quot;</code>) and <strong>JABOT</strong> (<code>&quot;jabot&quot;</code>). The specimens of the genus are read with <code>reflora_records</code> and <code>jabot_records</code> (requiring the refloraR and jabotR packages), from their herbaria’s Darwin Core archives: the first use downloads them - several gigabytes - to <code>&quot;reflora_download&quot;</code> and <code>&quot;jabot_download&quot;</code> in the working directory, where they are reused by later calls. Reading them takes a few minutes, so they are read only once per call, for all the genera in <code>taxon</code> together: checking many genera in one call is much faster than one call per genus. The species-level names of the specimens collected in Brazil that are types (any type status) are compared with FFB; as in GBIF, a specimen is filed under its current identification. Use <code>sources = c(&quot;powo&quot;, &quot;gbif&quot;)</code> for a quick check.</p>
+<p>In all three specimen sources, type statuses are standardised with <code>barRoso::std_types()</code> (e.g. <code>&quot;HOLOTYPUS&quot;</code> and <code>&quot;Holotype&quot;</code> both become <code>&quot;holotype&quot;</code>) and places with <code>barRoso::std_place()</code>.</p>
+<p><strong>Several genera.</strong> Each genus in <code>taxon</code> is analysed separately, and its spreadsheet and HTML report are saved under its own name, <code>flora_species_gap_&lt;genus&gt;</code> (e.g. <code>flora_species_gap_Myrcia.xlsx</code>). A genus that fails (e.g. a misspelt name) is reported and skipped, without stopping the others.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4595,55 +4598,55 @@ height: 400px;
 <tbody>
 <tr class="odd">
 <td>taxon</td>
-<td>Character. A single genus name of plants or algae (e.g. <code>&quot;Myrcia&quot;</code>, <code>&quot;Gracilaria&quot;</code>). Fungi are not searched.</td>
+<td>Character vector. One or more genus names of plants or algae (e.g. <code>&quot;Myrcia&quot;</code>, <code>&quot;Gracilaria&quot;</code>, or <code>c(&quot;Myrcia&quot;, &quot;Eugenia&quot;)</code>). Each is analysed separately; see Details. Fungi are not searched.</td>
 </tr>
 <tr class="even">
 <td>sources</td>
-<td>Character vector. Which kinds of evidence to use: <code>&quot;powo&quot;</code> (POWO distributions), <code>&quot;gbif&quot;</code> (Brazilian type specimens in GBIF), or both (default).</td>
+<td>Character vector. Which sources of evidence to use: any of <code>&quot;powo&quot;</code> (POWO distributions), <code>&quot;gbif&quot;</code>, <code>&quot;reflora&quot;</code>, and <code>&quot;jabot&quot;</code> (Brazilian type specimens in GBIF, REFLORA, and JABOT). Defaults to all four, combining their evidence; see Details for the requirements of each.</td>
 </tr>
 <tr class="odd">
+<td>keep_downloads</td>
+<td>Logical. Applies to REFLORA and JABOT. If <code>TRUE</code> (default), the herbarium archives downloaded to <code>&quot;reflora_download&quot;</code> and <code>&quot;jabot_download&quot;</code> in the working directory are kept, so that later runs - for this or other taxa - reuse them instead of downloading them again. If <code>FALSE</code>, those folders are deleted once the analysis is finished, leaving the working directory clean (they take several gigabytes).</td>
+</tr>
+<tr class="even">
 <td>powo_source</td>
 <td>Character. Where POWO’s data is read from: <code>&quot;rWCVPdata&quot;</code> (default; fast, local) or <code>&quot;checklistbank&quot;</code> (always current, slower). See Details.</td>
 </tr>
-<tr class="even">
-<td>require_brazil_evidence</td>
-<td>Logical. Applies to POWO. If <code>TRUE</code> (default), POWO names are only kept when POWO places the species in Brazil. Set to <code>FALSE</code> to also return POWO names missing from FFB regardless of distribution, for manual review. (GBIF names always have Brazil evidence: their types were collected there.)</td>
-</tr>
 <tr class="odd">
+<td>require_brazil_evidence</td>
+<td>Logical. Applies to POWO. If <code>TRUE</code> (default), POWO names are only kept when POWO places the species in Brazil. Set to <code>FALSE</code> to also return POWO names missing from FFB regardless of distribution, for manual review. (Names from the specimen sources always have Brazil evidence: their types were collected there.)</td>
+</tr>
+<tr class="even">
 <td>type_status</td>
 <td>Character or <code>NULL</code>. Applies to GBIF. Type statuses counted as evidence (GBIF’s current vocabulary, e.g. <code>&quot;Holotype&quot;</code>, <code>&quot;Isotype&quot;</code>). <code>NULL</code> (default) uses all primary and secondary type categories: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, and TypeSeries.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>fetch_details</td>
 <td>Logical. Applies to POWO with <code>powo_source = &quot;checklistbank&quot;</code>: if <code>TRUE</code> (default), each candidate’s protologue citation is fetched (one request per name). With <code>&quot;rWCVPdata&quot;</code> it is always included.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>max_number</td>
 <td>Numeric. Applies to POWO with <code>powo_source = &quot;checklistbank&quot;</code>: maximum number of names retrieved. Defaults to <code>5000</code>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>version</td>
 <td>Character. FFB dataset version to compare against. Defaults to <code>&quot;latest&quot;</code>. Passed to <code>flora_download</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>verbose</td>
 <td>Logical. If <code>TRUE</code> (default), prints progress messages.</td>
 </tr>
-<tr class="even">
-<td>save</td>
-<td>Logical. If <code>TRUE</code> (default), the result is saved to disk as an <code>.xlsx</code> spreadsheet.</td>
-</tr>
 <tr class="odd">
-<td>dir</td>
-<td>Character. Directory where the spreadsheet is saved when <code>save = TRUE</code>. Defaults to <code>&quot;flora_species_gap&quot;</code>.</td>
+<td>save</td>
+<td>Logical. If <code>TRUE</code> (default), the result of each genus is saved to disk as an <code>.xlsx</code> spreadsheet named after the genus, <code>flora_species_gap_&lt;genus&gt;.xlsx</code>.</td>
 </tr>
 <tr class="even">
-<td>filename</td>
-<td>Character. Name of the <code>.xlsx</code> file (without extension) to save. Defaults to <code>&quot;flora_species_gap_&lt;taxon&gt;&quot;</code>.</td>
+<td>dir</td>
+<td>Character. Directory where the spreadsheets and reports are saved. Defaults to <code>&quot;flora_species_gap&quot;</code>.</td>
 </tr>
 <tr class="odd">
 <td>html_report</td>
-<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report (<code>&lt;dir&gt;/&lt;filename&gt;.html</code>) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
+<td>Logical. If <code>TRUE</code> (default), also writes a self-contained HTML report for each genus (<code>&lt;dir&gt;/flora_species_gap_&lt;genus&gt;.html</code>) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <code>.xlsx</code> spreadsheet is unaffected).</td>
 </tr>
 <tr class="even">
 <td>open_report</td>
@@ -4654,15 +4657,15 @@ height: 400px;
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A <code>data.frame</code>, one row per species-level name in the genus that is absent from the current FFB checklist and reported by at least one source, sorted with the names reported by both sources first. Common columns:</p>
+<p>A <code>data.frame</code>, one row per species-level name in the genus (or genera, stacked one after the other) that is absent from the current FFB checklist and reported by at least one source, sorted with the names reported by more sources first. Common columns:</p>
 <ul>
 <li>Taxon_name, Authors: The name and its author citation.</li>
-<li>Accepted_name: The accepted name (POWO’s when available, else GBIF’s).</li>
-<li>Found_in: Which source(s) reported the name: <code>&quot;POWO; GBIF&quot;</code>, <code>&quot;POWO&quot;</code>, or <code>&quot;GBIF&quot;</code>.</li>
-<li>Brazil_evidence: Logical; <code>TRUE</code> when POWO places the species in Brazil or it has Brazilian type specimens in GBIF.</li>
+<li>Accepted_name: The accepted name (POWO’s when available, else GBIF’s; for names only in REFLORA or JABOT, the name itself).</li>
+<li>Found_in: Which source(s) reported the name, e.g. <code>&quot;POWO; GBIF; REFLORA&quot;</code>, <code>&quot;GBIF; JABOT&quot;</code>, or <code>&quot;POWO&quot;</code>.</li>
+<li>Brazil_evidence: Logical; <code>TRUE</code> when POWO places the species in Brazil or it has Brazilian type specimens in GBIF, REFLORA, or JABOT.</li>
 <li>In_FFB: Always <code>FALSE</code> (kept for clarity when combining with other tables).</li>
 </ul>
-<p>POWO columns (when <code>&quot;powo&quot;</code> is among <code>sources</code>; <code>NA</code> for names only in GBIF):</p>
+<p>POWO columns (when <code>&quot;powo&quot;</code> is among <code>sources</code>; <code>NA</code> for names POWO did not report):</p>
 <ul>
 <li>POWO_ID, POWO_Taxonomic_status, POWO_Accepted_name: The name’s POWO (IPNI) identifier, status (e.g. <code>&quot;Accepted&quot;</code>, <code>&quot;Synonym&quot;</code>), and accepted name.</li>
 <li>POWO_Year, POWO_Published_in: Year of publication and protologue citation.</li>
@@ -4671,32 +4674,45 @@ height: 400px;
 <li>POWO_Brazil_Evidence, POWO_Evidence_Source: Whether POWO places the species in Brazil, and whether from the <code>&quot;WCVP distribution&quot;</code> or the <code>&quot;POWO range text&quot;</code>.</li>
 <li>POWO_URL, IPNI_URL: Links to the name’s POWO and IPNI pages.</li>
 </ul>
-<p>GBIF columns (when <code>&quot;gbif&quot;</code> is among <code>sources</code>; <code>NA</code> for names only in POWO):</p>
+<p>GBIF columns (when <code>&quot;gbif&quot;</code> is among <code>sources</code>; <code>NA</code> for names GBIF did not report):</p>
 <ul>
 <li>GBIF_Key, GBIF_Taxonomic_status, GBIF_Accepted_name: The name’s GBIF backbone key, status (e.g. <code>&quot;ACCEPTED&quot;</code>, <code>&quot;DOUBTFUL&quot;</code>), and accepted species.</li>
 <li>GBIF_N_type_specimens, GBIF_Type_statuses: Number of type specimens collected in Brazil, and their type categories.</li>
-<li>GBIF_Type_specimens: Up to ten specimens as herbarium, catalogue number, and type status (e.g. <code>&quot;RB 00123 (Holotype)&quot;</code>).</li>
+<li>GBIF_Type_specimens: Up to ten specimens as herbarium, catalogue number, and type status (e.g. <code>&quot;RB 00123 (holotype)&quot;</code>).</li>
 <li>GBIF_Specimen_names: The names the types are filed under - usually the typified name, e.g. the basionym of a species.</li>
 <li>GBIF_Collectors, GBIF_Years, GBIF_States: Collectors, collection years, and Brazilian states of those specimens.</li>
 <li>GBIF_Published_in, GBIF_URL: Protologue citation, when GBIF has it, and a link to the name’s GBIF page.</li>
+</ul>
+<p>REFLORA and JABOT columns (when <code>&quot;reflora&quot;</code> or <code>&quot;jabot&quot;</code> is among <code>sources</code>), prefixed <code>REFLORA_</code> or <code>JABOT_</code>:</p>
+<ul>
+<li>N_type_specimens, Type_statuses, Type_specimens: Number of type specimens collected in Brazil, their type categories, and up to ten of them as herbarium, catalogue number, and type status.</li>
+<li>Collectors, Years, States: Collectors, collection years, and Brazilian states of those specimens.</li>
+<li>Links: Up to three links to the specimens’ pages (REFLORA only; JABOT records carry no link).</li>
 </ul>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Species of Myrcia recorded in Brazil by POWO and/or with Brazilian type</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># specimens in GBIF, but missing from FFB</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># specimens in GBIF, REFLORA, or JABOT, but missing from FFB</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># POWO only, read live from ChecklistBank instead of the local WCVP copy</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># An algal genus: GBIF type specimens only (POWO covers vascular plants)</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># A quick check, without the REFLORA and JABOT archives</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>gap_quick <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;powo&quot;</span>, <span class="st">&quot;gbif&quot;</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Several genera in one call: REFLORA and JABOT are read once, and each genus</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># gets its own spreadsheet and report</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>gap_many <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="fu">c</span>(<span class="st">&quot;Myrcia&quot;</span>, <span class="st">&quot;Eugenia&quot;</span>, <span class="st">&quot;Calyptranthes&quot;</span>))</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Stricter type evidence: holotypes and isotypes only</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># POWO only, read live from ChecklistBank instead of the local WCVP copy</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># An algal genus: GBIF type specimens only (POWO covers vascular plants)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Stricter type evidence: holotypes and isotypes only</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 <!-- -->
@@ -5183,124 +5199,163 @@ height: 400px;
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Description</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Given a genus of plants or algae, finds the species-level names that global sources</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Given one or more genera of plants or algae, finds the species-level names that global sources</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>record for Brazil but that are not currently registered in the Flora e Funga do</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>Brasil (FFB) - candidates for inclusion in the FFB monograph of the group. Two</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>independent kinds of evidence are combined (see <span class="in">`sources`</span>):</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POWO distributions**: species that <span class="co">[</span><span class="ot">Plants of the World Online</span><span class="co">](https://powo.science.kew.org)</span> (POWO, Royal Botanic Gardens, Kew) maps in Brazil;</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**GBIF type specimens**: species whose type specimens - holotypes, isotypes, lectotypes, syntypes, paratypes, and so on - were collected in Brazil, according to the herbaria that publish them through the <span class="co">[</span><span class="ot">Global Biodiversity Information Facility</span><span class="co">](https://www.gbif.org)</span> (GBIF).</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>The result is a single table, one row per name, stating which source(s) reported it:</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>names reported by both are the strongest candidates. This is not a general diff of</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>the databases: a name missing from FFB is only returned when there is evidence that</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>the species occurs in Brazil.</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>independent kinds of evidence, from up to four sources, are combined (see</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="in">`sources`</span>):</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**POWO distributions**: species that <span class="co">[</span><span class="ot">Plants of the World Online</span><span class="co">](https://powo.science.kew.org)</span> (POWO, Royal Botanic Gardens, Kew) maps in Brazil;</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Type specimens**: species whose type specimens - holotypes, isotypes, lectotypes, syntypes, paratypes, and so on - were collected in Brazil, according to the herbaria that publish them through the <span class="co">[</span><span class="ot">Global Biodiversity Information Facility</span><span class="co">](https://www.gbif.org)</span> (GBIF), the <span class="co">[</span><span class="ot">Reflora Virtual Herbarium</span><span class="co">](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/)</span>, and <span class="co">[</span><span class="ot">JABOT</span><span class="co">](https://jabot.jbrj.gov.br)</span>.</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>The result is a single table, one row per name, stating which source(s) reported it:</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>the more sources report a name, the stronger the candidate, and combining them</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>retrieves as many gaps as possible. This is not a general diff of</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>the databases: a name missing from FFB is only returned when there is evidence that</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>the species occurs in Brazil.</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>**FFB side.** Names are compared against the locally cached FFB dataset (as in</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_download`</span> and <span class="in">`flora_parse`</span>). A name counts as</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>&quot;already in FFB&quot; if either the name itself or its *accepted* name (in POWO or</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>GBIF) matches any FFB name - accepted or synonym, anywhere in the checklist, since</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>checklists disagree on generic placement (e.g. a *Myrcia* synonym accepted as</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>*Eugenia florida*). Names are compared ignoring case, diacritics, hyphens,</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>*y*/*i*, and the genitive *-ii*/*-i* ending, so orthographic variants such as</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>*Luetzelburgia andrade-limae* and FFB&#39;s *L. andradelimae* are not</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>reported. Only species-level names are reported.</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>**POWO** (<span class="in">`&quot;powo&quot;`</span>). POWO&#39;s names, synonymy, and distribution maps come</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>from the [World Checklist of Vascular</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>Plants](https://powo.science.kew.org/about-wcvp) (WCVP), read from one of two sources chosen with <span class="in">`powo_source`</span>:</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;rWCVPdata&quot;`</span> (default): The whole WCVP, installed locally by the <span class="co">[</span><span class="ot">rWCVPdata</span><span class="co">](https://github.com/matildabrown/rWCVPdata)</span> package: every name and distribution of the genus is resolved at once, in memory. The data is as current as the installed release (see <span class="in">`rWCVPdata::wcvp_check_version()`</span>). rWCVPdata is not on CRAN; install it with <span class="in">`install.packages(&quot;rWCVPdata&quot;, repos = c(&quot;https://matildabrown.github.io/drat&quot;, &quot;https://cloud.r-project.org&quot;))`</span>.</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;checklistbank&quot;`</span>: POWO&#39;s own weekly export and WCVP, as hosted on <span class="co">[</span><span class="ot">ChecklistBank</span><span class="co">](https://www.checklistbank.org)</span> (POWO&#39;s own API blocks programmatic clients). Always current and needs no extra package, but slower: one request per FFB-missing name.</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>A POWO name has Brazil evidence when its accepted name occurs in at least one of the</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>five TDWG level-3 areas covering Brazil - Brazil North (<span class="in">`BZN`</span>), Northeast</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>(<span class="in">`BZE`</span>), West-Central (<span class="in">`BZC`</span>), Southeast (<span class="in">`BZL`</span>), and South</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>(<span class="in">`BZS`</span>); native, introduced, or extinct, but not doubtful. Without a mapped</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>distribution, POWO&#39;s free-text range (e.g. <span class="in">`&quot;Brazil (Bahia)&quot;`</span>) is checked</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>instead. POWO covers vascular plants only, so it finds nothing for algae.</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>**GBIF** (<span class="in">`&quot;gbif&quot;`</span>). The genus is looked up among plants and algae only -</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>the GBIF kingdoms Plantae (land plants, red and green algae), Chromista (brown algae,</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>diatoms), and Protozoa (euglenids) - so a genus name shared with an animal (e.g.</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>*Gracilaria*, both a red alga and a moth) resolves to the plant or alga. A</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>single faceted search lists every name in the genus with type specimens collected in</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>Brazil; for the FFB-missing names only, the specimens themselves are then retrieved,</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>many names per request, and summarised. Types are filed in GBIF under their current</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>identification - usually the typified name - which <span class="in">`GBIF_Specimen_names`</span> shows.</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Details</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>**FFB side.** Names are compared against the locally cached FFB dataset (as in</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_download`</span> and <span class="in">`flora_parse`</span>). A name counts as</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>&quot;already in FFB&quot; if either the name itself or its *accepted* name (in POWO or</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>GBIF) matches any FFB name - accepted or synonym, anywhere in the checklist, since</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>checklists disagree on generic placement (e.g. a *Myrcia* synonym accepted as</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>*Eugenia florida*). Names are compared ignoring case, diacritics, hyphens,</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>*y*/*i*, and the genitive *-ii*/*-i* ending, so orthographic variants such as</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>*Luetzelburgia andrade-limae* and FFB&#39;s *L. andradelimae* are not</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>reported. Only species-level names are reported.</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>**POWO** (<span class="in">`&quot;powo&quot;`</span>). POWO&#39;s names, synonymy, and distribution maps come</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>from the [World Checklist of Vascular</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>Plants](https://powo.science.kew.org/about-wcvp) (WCVP), read from one of two sources chosen with <span class="in">`powo_source`</span>:</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;rWCVPdata&quot;`</span> (default): The whole WCVP, installed locally by the <span class="co">[</span><span class="ot">rWCVPdata</span><span class="co">](https://github.com/matildabrown/rWCVPdata)</span> package: every name and distribution of the genus is resolved at once, in memory. The data is as current as the installed release (see <span class="in">`rWCVPdata::wcvp_check_version()`</span>). rWCVPdata is not on CRAN; install it with <span class="in">`install.packages(&quot;rWCVPdata&quot;, repos = c(&quot;https://matildabrown.github.io/drat&quot;, &quot;https://cloud.r-project.org&quot;))`</span>.</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&quot;checklistbank&quot;`</span>: POWO&#39;s own weekly export and WCVP, as hosted on <span class="co">[</span><span class="ot">ChecklistBank</span><span class="co">](https://www.checklistbank.org)</span> (POWO&#39;s own API blocks programmatic clients). Always current and needs no extra package, but slower: one request per FFB-missing name.</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>A POWO name has Brazil evidence when its accepted name occurs in at least one of the</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>five TDWG level-3 areas covering Brazil - Brazil North (<span class="in">`BZN`</span>), Northeast</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>(<span class="in">`BZE`</span>), West-Central (<span class="in">`BZC`</span>), Southeast (<span class="in">`BZL`</span>), and South</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>(<span class="in">`BZS`</span>); native, introduced, or extinct, but not doubtful. Without a mapped</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>distribution, POWO&#39;s free-text range (e.g. <span class="in">`&quot;Brazil (Bahia)&quot;`</span>) is checked</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>instead. POWO covers vascular plants only, so it finds nothing for algae.</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>**GBIF** (<span class="in">`&quot;gbif&quot;`</span>). The genus is looked up among plants and algae only -</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>the GBIF kingdoms Plantae (land plants, red and green algae), Chromista (brown algae,</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>diatoms), and Protozoa (euglenids) - so a genus name shared with an animal (e.g.</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>*Gracilaria*, both a red alga and a moth) resolves to the plant or alga. A</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>single faceted search lists every name in the genus with type specimens collected in</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>Brazil; for the FFB-missing names only, the specimens themselves are then retrieved,</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>many names per request, and summarised. Types are filed in GBIF under their current</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>identification - usually the typified name - which <span class="in">`GBIF_Specimen_names`</span> shows.</span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character. A single genus name of plants or algae (e.g. <span class="in">`&quot;Myrcia&quot;`</span>, <span class="in">`&quot;Gracilaria&quot;`</span>). Fungi are not searched. <span class="pp">|</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> sources <span class="pp">|</span> Character vector. Which kinds of evidence to use: <span class="in">`&quot;powo&quot;`</span> (POWO distributions), <span class="in">`&quot;gbif&quot;`</span> (Brazilian type specimens in GBIF), or both (default). <span class="pp">|</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> powo_source <span class="pp">|</span> Character. Where POWO&#39;s data is read from: <span class="in">`&quot;rWCVPdata&quot;`</span> (default; fast, local) or <span class="in">`&quot;checklistbank&quot;`</span> (always current, slower). See Details. <span class="pp">|</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> require_brazil_evidence <span class="pp">|</span> Logical. Applies to POWO. If <span class="in">`TRUE`</span> (default), POWO names are only kept when POWO places the species in Brazil. Set to <span class="in">`FALSE`</span> to also return POWO names missing from FFB regardless of distribution, for manual review. (GBIF names always have Brazil evidence: their types were collected there.) <span class="pp">|</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> type_status <span class="pp">|</span> Character or <span class="in">`NULL`</span>. Applies to GBIF. Type statuses counted as evidence (GBIF&#39;s current vocabulary, e.g. <span class="in">`&quot;Holotype&quot;`</span>, <span class="in">`&quot;Isotype&quot;`</span>). <span class="in">`NULL`</span> (default) uses all primary and secondary type categories: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, and TypeSeries. <span class="pp">|</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> fetch_details <span class="pp">|</span> Logical. Applies to POWO with <span class="in">`powo_source = &quot;checklistbank&quot;`</span>: if <span class="in">`TRUE`</span> (default), each candidate&#39;s protologue citation is fetched (one request per name). With <span class="in">`&quot;rWCVPdata&quot;`</span> it is always included. <span class="pp">|</span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_number <span class="pp">|</span> Numeric. Applies to POWO with <span class="in">`powo_source = &quot;checklistbank&quot;`</span>: maximum number of names retrieved. Defaults to <span class="in">`5000`</span>. <span class="pp">|</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to compare against. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`flora_download`</span>. <span class="pp">|</span></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet. <span class="pp">|</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheet is saved when <span class="in">`save = TRUE`</span>. Defaults to <span class="in">`&quot;flora_species_gap&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> filename <span class="pp">|</span> Character. Name of the <span class="in">`.xlsx`</span> file (without extension) to save. Defaults to <span class="in">`&quot;flora_species_gap_&lt;taxon&gt;&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report (<span class="in">`&lt;dir&gt;/&lt;filename&gt;.html`</span>) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, opens the HTML report in the browser once rendered (in interactive sessions only). Default <span class="in">`FALSE`</span>: the report is only saved to <span class="in">`dir`</span>. <span class="pp">|</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>**REFLORA** (`&quot;reflora&quot;`) and **JABOT** (<span class="in">`&quot;jabot&quot;`</span>). The</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>specimens of the genus are read with <span class="in">`reflora_records`</span> and</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="in">`jabot_records`</span> (requiring the refloraR and jabotR</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>packages), from their herbaria&#39;s Darwin Core archives: the first use downloads them -</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>several gigabytes - to <span class="in">`&quot;reflora_download&quot;`</span> and <span class="in">`&quot;jabot_download&quot;`</span> in the</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>working directory, where they are reused by later calls. Reading them takes a few</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>minutes, so they are read only once per call, for all the genera in <span class="in">`taxon`</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>together: checking many genera in one call is much faster than one call per</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>genus. The species-level names of the specimens collected in</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>Brazil that are types (any type status) are compared with FFB; as in GBIF, a</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>specimen is filed under its current identification. Use `sources = c(&quot;powo&quot;,</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>&quot;gbif&quot;)` for a quick check.</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>In all three specimen sources, type statuses are standardised with</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="in">`barRoso::std_types()`</span> (e.g. <span class="in">`&quot;HOLOTYPUS&quot;`</span> and <span class="in">`&quot;Holotype&quot;`</span> both</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>become <span class="in">`&quot;holotype&quot;`</span>) and places with <span class="in">`barRoso::std_place()`</span>.</span>
 <span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span>, one row per species-level name in the genus that is</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>  absent from the current FFB checklist and reported by at least one source, sorted</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>  with the names reported by both sources first. Common columns:</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>**Several genera.** Each genus in <span class="in">`taxon`</span> is analysed separately, and its</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>spreadsheet and HTML report are saved under its own name,</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="in">`flora_species_gap_&lt;genus&gt;`</span> (e.g. <span class="in">`flora_species_gap_Myrcia.xlsx`</span>). A</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>genus that fails (e.g. a misspelt name) is reported and skipped, without stopping</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>the others.</span>
 <span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Taxon_name, Authors: The name and its author citation.</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Accepted_name: The accepted name (POWO&#39;s when available, else GBIF&#39;s).</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Found_in: Which source(s) reported the name: <span class="in">`&quot;POWO; GBIF&quot;`</span>, <span class="in">`&quot;POWO&quot;`</span>, or <span class="in">`&quot;GBIF&quot;`</span>.</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brazil_evidence: Logical; <span class="in">`TRUE`</span> when POWO places the species in Brazil or it has Brazilian type specimens in GBIF.</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>In_FFB: Always <span class="in">`FALSE`</span> (kept for clarity when combining with other tables).</span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>POWO columns (when <span class="in">`&quot;powo&quot;`</span> is among <span class="in">`sources`</span>; <span class="in">`NA`</span> for names only</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>in GBIF):</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_ID, POWO_Taxonomic_status, POWO_Accepted_name: The name&#39;s POWO (IPNI) identifier, status (e.g. <span class="in">`&quot;Accepted&quot;`</span>, <span class="in">`&quot;Synonym&quot;`</span>), and accepted name.</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Year, POWO_Published_in: Year of publication and protologue citation.</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Range: POWO&#39;s free-text range.</span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Distribution, POWO_Brazil_Areas: Every TDWG level-3 area of the accepted name&#39;s distribution, and only the Brazilian ones.</span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Brazil_Evidence, POWO_Evidence_Source: Whether POWO places the species in Brazil, and whether from the <span class="in">`&quot;WCVP distribution&quot;`</span> or the <span class="in">`&quot;POWO range text&quot;`</span>.</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_URL, IPNI_URL: Links to the name&#39;s POWO and IPNI pages.</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>GBIF columns (when <span class="in">`&quot;gbif&quot;`</span> is among <span class="in">`sources`</span>; <span class="in">`NA`</span> for names only in</span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>POWO):</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argument <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> taxon <span class="pp">|</span> Character vector. One or more genus names of plants or algae (e.g. <span class="in">`&quot;Myrcia&quot;`</span>, <span class="in">`&quot;Gracilaria&quot;`</span>, or <span class="in">`c(&quot;Myrcia&quot;, &quot;Eugenia&quot;)`</span>). Each is analysed separately; see Details. Fungi are not searched. <span class="pp">|</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> sources <span class="pp">|</span> Character vector. Which sources of evidence to use: any of <span class="in">`&quot;powo&quot;`</span> (POWO distributions), <span class="in">`&quot;gbif&quot;`</span>, <span class="in">`&quot;reflora&quot;`</span>, and <span class="in">`&quot;jabot&quot;`</span> (Brazilian type specimens in GBIF, REFLORA, and JABOT). Defaults to all four, combining their evidence; see Details for the requirements of each. <span class="pp">|</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> keep_downloads <span class="pp">|</span> Logical. Applies to REFLORA and JABOT. If <span class="in">`TRUE`</span> (default), the herbarium archives downloaded to <span class="in">`&quot;reflora_download&quot;`</span> and <span class="in">`&quot;jabot_download&quot;`</span> in the working directory are kept, so that later runs - for this or other taxa - reuse them instead of downloading them again. If <span class="in">`FALSE`</span>, those folders are deleted once the analysis is finished, leaving the working directory clean (they take several gigabytes). <span class="pp">|</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> powo_source <span class="pp">|</span> Character. Where POWO&#39;s data is read from: <span class="in">`&quot;rWCVPdata&quot;`</span> (default; fast, local) or <span class="in">`&quot;checklistbank&quot;`</span> (always current, slower). See Details. <span class="pp">|</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> require_brazil_evidence <span class="pp">|</span> Logical. Applies to POWO. If <span class="in">`TRUE`</span> (default), POWO names are only kept when POWO places the species in Brazil. Set to <span class="in">`FALSE`</span> to also return POWO names missing from FFB regardless of distribution, for manual review. (Names from the specimen sources always have Brazil evidence: their types were collected there.) <span class="pp">|</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> type_status <span class="pp">|</span> Character or <span class="in">`NULL`</span>. Applies to GBIF. Type statuses counted as evidence (GBIF&#39;s current vocabulary, e.g. <span class="in">`&quot;Holotype&quot;`</span>, <span class="in">`&quot;Isotype&quot;`</span>). <span class="in">`NULL`</span> (default) uses all primary and secondary type categories: Type, Holotype, Isotype, Lectotype, Isolectotype, Syntype, Isosyntype, Neotype, Isoneotype, Epitype, Isoepitype, Paratype, Isoparatype, Paralectotype, OriginalMaterial, and TypeSeries. <span class="pp">|</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> fetch_details <span class="pp">|</span> Logical. Applies to POWO with <span class="in">`powo_source = &quot;checklistbank&quot;`</span>: if <span class="in">`TRUE`</span> (default), each candidate&#39;s protologue citation is fetched (one request per name). With <span class="in">`&quot;rWCVPdata&quot;`</span> it is always included. <span class="pp">|</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> max_number <span class="pp">|</span> Numeric. Applies to POWO with <span class="in">`powo_source = &quot;checklistbank&quot;`</span>: maximum number of names retrieved. Defaults to <span class="in">`5000`</span>. <span class="pp">|</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> version <span class="pp">|</span> Character. FFB dataset version to compare against. Defaults to <span class="in">`&quot;latest&quot;`</span>. Passed to <span class="in">`flora_download`</span>. <span class="pp">|</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> verbose <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), prints progress messages. <span class="pp">|</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> save <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), the result of each genus is saved to disk as an <span class="in">`.xlsx`</span> spreadsheet named after the genus, <span class="in">`flora_species_gap_&lt;genus&gt;.xlsx`</span>. <span class="pp">|</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> dir <span class="pp">|</span> Character. Directory where the spreadsheets and reports are saved. Defaults to <span class="in">`&quot;flora_species_gap&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> html_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span> (default), also writes a self-contained HTML report for each genus (<span class="in">`&lt;dir&gt;/flora_species_gap_&lt;genus&gt;.html`</span>) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the <span class="in">`.xlsx`</span> spreadsheet is unaffected). <span class="pp">|</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> open_report <span class="pp">|</span> Logical. If <span class="in">`TRUE`</span>, opens the HTML report in the browser once rendered (in interactive sessions only). Default <span class="in">`FALSE`</span>: the report is only saved to <span class="in">`dir`</span>. <span class="pp">|</span></span>
 <span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Key, GBIF_Taxonomic_status, GBIF_Accepted_name: The name&#39;s GBIF backbone key, status (e.g. <span class="in">`&quot;ACCEPTED&quot;`</span>, <span class="in">`&quot;DOUBTFUL&quot;`</span>), and accepted species.</span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_N_type_specimens, GBIF_Type_statuses: Number of type specimens collected in Brazil, and their type categories.</span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Type_specimens: Up to ten specimens as herbarium, catalogue number, and type status (e.g. <span class="in">`&quot;RB 00123 (Holotype)&quot;`</span>).</span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Specimen_names: The names the types are filed under - usually the typified name, e.g. the basionym of a species.</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Collectors, GBIF_Years, GBIF_States: Collectors, collection years, and Brazilian states of those specimens.</span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Published_in, GBIF_URL: Protologue citation, when GBIF has it, and a link to the name&#39;s GBIF page.</span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="co"># Species of Myrcia recorded in Brazil by POWO and/or with Brazilian type</span></span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a><span class="co"># specimens in GBIF, but missing from FFB</span></span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>)</span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="co"># POWO only, read live from ChecklistBank instead of the local WCVP copy</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="co"># An algal genus: GBIF type specimens only (POWO covers vascular plants)</span></span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="co"># Stricter type evidence: holotypes and isotypes only</span></span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>,</span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>A <span class="in">`data.frame`</span>, one row per species-level name in the genus (or</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>  genera, stacked one after the other) that is absent from the current FFB checklist and reported by at least one source, sorted</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>  with the names reported by more sources first. Common columns:</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Taxon_name, Authors: The name and its author citation.</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Accepted_name: The accepted name (POWO&#39;s when available, else GBIF&#39;s; for names only in REFLORA or JABOT, the name itself).</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Found_in: Which source(s) reported the name, e.g. <span class="in">`&quot;POWO; GBIF; REFLORA&quot;`</span>, <span class="in">`&quot;GBIF; JABOT&quot;`</span>, or <span class="in">`&quot;POWO&quot;`</span>.</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Brazil_evidence: Logical; <span class="in">`TRUE`</span> when POWO places the species in Brazil or it has Brazilian type specimens in GBIF, REFLORA, or JABOT.</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>In_FFB: Always <span class="in">`FALSE`</span> (kept for clarity when combining with other tables).</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>POWO columns (when <span class="in">`&quot;powo&quot;`</span> is among <span class="in">`sources`</span>; <span class="in">`NA`</span> for names POWO</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>did not report):</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_ID, POWO_Taxonomic_status, POWO_Accepted_name: The name&#39;s POWO (IPNI) identifier, status (e.g. <span class="in">`&quot;Accepted&quot;`</span>, <span class="in">`&quot;Synonym&quot;`</span>), and accepted name.</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Year, POWO_Published_in: Year of publication and protologue citation.</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Range: POWO&#39;s free-text range.</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Distribution, POWO_Brazil_Areas: Every TDWG level-3 area of the accepted name&#39;s distribution, and only the Brazilian ones.</span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_Brazil_Evidence, POWO_Evidence_Source: Whether POWO places the species in Brazil, and whether from the <span class="in">`&quot;WCVP distribution&quot;`</span> or the <span class="in">`&quot;POWO range text&quot;`</span>.</span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>POWO_URL, IPNI_URL: Links to the name&#39;s POWO and IPNI pages.</span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>GBIF columns (when <span class="in">`&quot;gbif&quot;`</span> is among <span class="in">`sources`</span>; <span class="in">`NA`</span> for names GBIF</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>did not report):</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Key, GBIF_Taxonomic_status, GBIF_Accepted_name: The name&#39;s GBIF backbone key, status (e.g. <span class="in">`&quot;ACCEPTED&quot;`</span>, <span class="in">`&quot;DOUBTFUL&quot;`</span>), and accepted species.</span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_N_type_specimens, GBIF_Type_statuses: Number of type specimens collected in Brazil, and their type categories.</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Type_specimens: Up to ten specimens as herbarium, catalogue number, and type status (e.g. <span class="in">`&quot;RB 00123 (holotype)&quot;`</span>).</span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Specimen_names: The names the types are filed under - usually the typified name, e.g. the basionym of a species.</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Collectors, GBIF_Years, GBIF_States: Collectors, collection years, and Brazilian states of those specimens.</span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>GBIF_Published_in, GBIF_URL: Protologue citation, when GBIF has it, and a link to the name&#39;s GBIF page.</span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>REFLORA and JABOT columns (when <span class="in">`&quot;reflora&quot;`</span> or <span class="in">`&quot;jabot&quot;`</span> is among</span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="in">`sources`</span>), prefixed <span class="in">`REFLORA_`</span> or <span class="in">`JABOT_`</span>:</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>N_type_specimens, Type_statuses, Type_specimens: Number of type specimens collected in Brazil, their type categories, and up to ten of them as herbarium, catalogue number, and type status.</span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Collectors, Years, States: Collectors, collection years, and Brazilian states of those specimens.</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Links: Up to three links to the specimens&#39; pages (REFLORA only; JABOT records carry no link).</span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="co"># Species of Myrcia recorded in Brazil by POWO and/or with Brazilian type</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a><span class="co"># specimens in GBIF, REFLORA, or JABOT, but missing from FFB</span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>)</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a><span class="co"># A quick check, without the REFLORA and JABOT archives</span></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>gap_quick <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;powo&quot;</span>, <span class="st">&quot;gbif&quot;</span>))</span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a><span class="co"># Several genera in one call: REFLORA and JABOT are read once, and each genus</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a><span class="co"># gets its own spreadsheet and report</span></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>gap_many <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="fu">c</span>(<span class="st">&quot;Myrcia&quot;</span>, <span class="st">&quot;Eugenia&quot;</span>, <span class="st">&quot;Calyptranthes&quot;</span>))</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a><span class="co"># POWO only, read live from ChecklistBank instead of the local WCVP copy</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="co"># An algal genus: GBIF type specimens only (POWO covers vascular plants)</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a><span class="co"># Stricter type evidence: holotypes and isotypes only</span></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>,</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>                                <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

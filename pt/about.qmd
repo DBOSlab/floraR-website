@@ -32,9 +32,9 @@ format:
 
 `floraR` é um pacote R para acessar, analisar e curar dados taxonômicos e de distribuição de plantas e algas da plataforma [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/), mantida pelo [Jardim Botânico do Rio de Janeiro](https://www.gov.br/jbrj/pt-br). Ele oferece uma interface completa para o [portal de dados IPT da FFB](https://ipt.jbrj.gov.br/jbrj/resource?r=lista_especies_flora_brasil): baixando, analisando, filtrando e explorando dados versionados de Arquivo Darwin Core (DwC-A) — desde a navegação por critérios taxonômicos, geográficos ou de atributos até a resolução da sua própria lista de nomes de espécies em relação a ela.
 
-Mas o `floraR` foi concebido para ir além da recuperação de dados da FFB: seu objetivo é ajudar taxonomistas a expandir as monografias atuais da FFB. Ao comparar a FFB com recursos globais - as distribuições de espécies do [Plants of the World Online](https://powo.science.kew.org) e os espécimes-tipo coletados no Brasil que os herbários publicam no [GBIF](https://www.gbif.org) - ele aponta espécies registradas no Brasil, mas ainda não tratadas na FFB, oferecendo aos especialistas um ponto de partida concreto para aproximar cada monografia de um tratamento completo da flora brasileira.
+Mas o `floraR` foi concebido para ir além da recuperação de dados da FFB: seu objetivo é ajudar taxonomistas a expandir as monografias atuais da FFB. Ao comparar a FFB com recursos globais - as distribuições de espécies do [Plants of the World Online](https://powo.science.kew.org) e os espécimes coletados no Brasil que os herbários publicam no [GBIF](https://www.gbif.org), no [Herbário Virtual Reflora](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/) e no [JABOT](https://jabot.jbrj.gov.br) - ele aponta espécies registradas no Brasil, mas ainda não tratadas na FFB, oferecendo aos especialistas um ponto de partida concreto para aproximar cada monografia de um tratamento completo da flora brasileira.
 
-O `floraR` também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, POWO, REFLORA e GBIF.
+O `floraR` também auxilia especialistas taxonômicos que contribuem para a FFB, simplificando a integração de novos nomes de espécies e registros de repositórios globais de biodiversidade, como IPNI, POWO, REFLORA, JABOT e GBIF.
 
 ## Flora e Funga do Brasil
 
@@ -59,8 +59,8 @@ Mantenedor: Domingos Cardoso (<domingoscardoso@jbrj.gov.br>)
 - Filtragem da lista de espécies por critérios taxonômicos, geográficos e de atributos
 - Resolução de nomes exata e aproximada (distância de Levenshtein) em relação à lista de espécies
 - Navegação pela hierarquia taxonômica em qualquer nível, da classe até a espécie
-- Análise de lacunas: espécies registradas no Brasil pelo Plants of the World Online, ou com espécimes-tipo coletados no Brasil (GBIF), mas ainda ausentes da FFB - para ajudar a expandir as monografias da FFB
-- Candidatos a novos registros estaduais: estados brasileiros com evidência de espécimes (GBIF, REFLORA, speciesLink) ausentes da distribuição de um táxon na FFB
+- Análise de lacunas: espécies registradas no Brasil pelo Plants of the World Online, ou com espécimes-tipo coletados no Brasil (GBIF, REFLORA, JABOT), mas ainda ausentes da FFB - para ajudar a expandir as monografias da FFB
+- Candidatos a novos registros estaduais e de domínios: estados e domínios fitogeográficos brasileiros com evidência de espécimes (GBIF, REFLORA, JABOT, speciesLink) ausentes da distribuição de um táxon na FFB
 - Ferramentas para curadoria de dados e integração com repositórios globais de biodiversidade
 - Fluxos de trabalho integrados ao tidyverse
 

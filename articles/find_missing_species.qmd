@@ -5,19 +5,19 @@ format: html
 
 Here we present a practical guide to the `flora_species_gap()` function of the `floraR` package. Given a genus of plants or algae, it lists the species-level names that occur in Brazil but that the [Flora e Funga do Brasil (FFB)](https://floradobrasil.jbrj.gov.br/consulta/) does not register yet - a to-do list for taxonomists expanding the FFB monographs.
 
-It combines two independent kinds of evidence that a species occurs in Brazil:
+It combines two independent kinds of evidence that a species occurs in Brazil, from up to four sources:
 
 - **POWO distributions** - species that [Plants of the World Online (POWO)](https://powo.science.kew.org), maintained by the Royal Botanic Gardens, Kew, maps in Brazil;
-- **GBIF type specimens** - species whose type specimens (holotypes, isotypes, lectotypes, syntypes, paratypes, and so on) were collected in Brazil, as published by herbaria worldwide through [GBIF](https://www.gbif.org). A type collected in Brazil is direct evidence that the taxon occurs in the country.
+- **Type specimens** - species whose type specimens (holotypes, isotypes, lectotypes, syntypes, paratypes, and so on) were collected in Brazil, from three collection databases: [GBIF](https://www.gbif.org), where herbaria worldwide publish their specimens; the [Reflora Virtual Herbarium](https://floradobrasil.jbrj.gov.br/reflora/herbarioVirtual/); and [JABOT](https://jabot.jbrj.gov.br), the Rio de Janeiro Botanical Garden's herbarium system. A type collected in Brazil is direct evidence that the taxon occurs in the country.
 
-The result is a single table, one row per name, stating which source(s) reported it. Names reported by **both** are listed first: they are the strongest candidates for inclusion in FFB.
+All four sources are queried by default, and their results are merged, so as many gaps as possible are retrieved. The result is a single table, one row per name, stating which source(s) reported it. Names reported by **more sources** are listed first: they are the strongest candidates for inclusion in FFB.
 
 ## How the comparison works
 
 1. **FFB side.** Read every name currently registered in FFB, from the locally cached FFB dataset (downloaded only when needed, as in [`flora_download()`](/articles/download_ffb_dataset.qmd)).
 2. **Each source.** Retrieve the genus's species-level names - accepted names *and* synonyms - with each name's accepted name, and the evidence that it occurs in Brazil.
 3. **Missing names.** Keep only the names not already in FFB. A name counts as already in FFB when either the name itself **or its accepted name** matches any FFB name, anywhere in the checklist. This matters because checklists disagree on generic placement: for example, POWO lists *Myrcia doloresensis* as a synonym of *Eugenia florida*, which FFB registers under *Eugenia*.
-4. **One table.** Merge the names from both sources into one row per name.
+4. **One table.** Merge the names from all sources into one row per name.
 
 Names are compared ignoring case, diacritics, hyphens, *y*/*i*, and the genitive *-ii*/*-i* ending, so orthographic variants are neither reported as missing nor listed twice. For example, POWO's *Luetzelburgia andrade-limae* is recognised as FFB's *L. andradelimae*, and POWO's *Myrcia aegiphylloides* is merged with GBIF's *Myrcia aegyphylloides*. Only species-level names are reported.
 
@@ -38,7 +38,24 @@ A species has POWO evidence when its accepted name occurs in at least one of the
 
 The genus is searched among plants and algae only - the GBIF kingdoms Plantae (land plants, red and green algae), Chromista (brown algae, diatoms), and Protozoa (euglenids) - so a genus name shared with an animal, such as *Gracilaria* (both a red alga and a moth), resolves to the alga. A single search lists every name in the genus with type specimens collected in Brazil; for the FFB-missing names only, the specimens themselves are then retrieved and summarised.
 
-## Installing rWCVPdata
+### REFLORA and JABOT type specimens (`sources = "reflora"`, `"jabot"`)
+
+The specimens of the genus are read with the [refloraR](https://github.com/DBOSlab/refloraR) and [jabotR](https://github.com/DBOSlab/jabotR) packages, from the Darwin Core archives of the herbaria in REFLORA and JABOT. The names of the specimens collected in Brazil that are types - with any type status - are compared with FFB, and each missing name comes with a summary of its types, and, for REFLORA, links to the specimens' pages. As in GBIF, a specimen is filed under its current identification.
+
+In all three specimen sources, type statuses are standardised with `std_types()` from [barRoso](https://github.com/DBOSlab/barRoso) - so `"HOLOTYPUS"`, `"Holotype"`, and `"holótipo"` all become `"holotype"` - and places with its `std_place()`.
+
+### Keeping the downloaded archives (`keep_downloads`)
+
+The REFLORA and JABOT archives are big: the first analysis downloads several gigabytes to two folders in your working directory, `reflora_download/` and `jabot_download/`, which takes a while. By default (`keep_downloads = TRUE`) these folders are **kept**, so any new analysis - for the same genus or another one - reuses them instead of downloading everything again. Reading them still takes a few minutes per call, so to check several genera, give them all in one call (see [Several genera in one call](#several-genera-in-one-call)): the archives are then read only once.
+
+If you only need one analysis, or want to keep the working directory clean and light, set `keep_downloads = FALSE`: the folders are deleted once the analysis is finished.
+
+```r
+# Delete the REFLORA and JABOT archives after this analysis
+gap <- flora_species_gap(taxon = "Myrcia", keep_downloads = FALSE)
+```
+
+## Installing rWCVPdata, refloraR, and jabotR
 
 `rWCVPdata` is not on CRAN. Install it once with:
 
@@ -48,7 +65,13 @@ install.packages("rWCVPdata",
                            "https://cloud.r-project.org"))
 ```
 
-The WCVP version in use is shown in each HTML report; `rWCVPdata::wcvp_check_version()` tells you whether a newer release is available. If you prefer not to install it, use `powo_source = "checklistbank"`, or `sources = "gbif"`.
+The WCVP version in use is shown in each HTML report; `rWCVPdata::wcvp_check_version()` tells you whether a newer release is available. If you prefer not to install it, use `powo_source = "checklistbank"`, or leave `"powo"` out of `sources`.
+
+`refloraR` and `jabotR` are installed from GitHub; without them, REFLORA or JABOT is skipped with a message:
+
+```r
+remotes::install_github(c("DBOSlab/refloraR", "DBOSlab/jabotR"))
+```
 
 ## Find species missing from FFB
 
@@ -58,14 +81,14 @@ library(floraR)
 gap <- flora_species_gap(taxon = "Myrcia")
 ```
 
-This returns one row per missing name, and also saves an `.xlsx` spreadsheet and a self-contained HTML report (KPI counts plus a filterable table you can copy or download) in the `flora_species_gap/` folder. For *Myrcia*, 28 names are missing from FFB: 6 reported by both POWO and GBIF - such as *Myrcia microcalyx*, mapped by POWO in Brazil North and known from a holotype and isotypes collected there - 4 by POWO only, and 18 by GBIF only.
+This returns one row per missing name, and also saves an `.xlsx` spreadsheet and a self-contained HTML report (KPI counts plus a filterable table you can copy or download) in the `flora_species_gap/` folder. With POWO and GBIF alone (`sources = c("powo", "gbif")`), 28 names of *Myrcia* are missing from FFB: 6 reported by both - such as *Myrcia microcalyx*, mapped by POWO in Brazil North and known from a holotype and isotypes collected there - 4 by POWO only, and 18 by GBIF only. REFLORA and JABOT add the types kept in Brazilian herbaria.
 
 Key columns of the result:
 
 | Column | Meaning |
 |---|---|
 | `Taxon_name`, `Authors`, `Accepted_name` | The name, its authors, and its accepted name. |
-| `Found_in` | `"POWO; GBIF"`, `"POWO"`, or `"GBIF"`. |
+| `Found_in` | The sources that reported the name, e.g. `"POWO; GBIF; REFLORA"`, `"GBIF; JABOT"`, or `"POWO"`. |
 | `Brazil_evidence` | Whether POWO places the species in Brazil or it has Brazilian types. |
 | `POWO_Brazil_Areas`, `POWO_Evidence_Source` | The Brazilian regions POWO maps for the species, and whether from the WCVP distribution or POWO's range text. |
 | `POWO_Published_in`, `POWO_URL`, `IPNI_URL` | Protologue citation, and links to the name's POWO and IPNI pages. |
@@ -74,16 +97,33 @@ Key columns of the result:
 | `GBIF_Specimen_names` | The names the types are filed under in GBIF - usually the typified name. |
 | `GBIF_Collectors`, `GBIF_Years`, `GBIF_States` | Who collected the types, when, and in which Brazilian states. |
 | `GBIF_URL` | Link to the name's GBIF page. |
+| `REFLORA_*`, `JABOT_*` | For each herbarium source: `N_type_specimens`, `Type_statuses`, `Type_specimens`, `Collectors`, `Years`, `States`, and `Links` (REFLORA only). |
 
-Source-specific columns are `NA` for names the other source did not report.
+Source-specific columns are `NA` for names that source did not report.
 
 ## Read the typification
 
 `GBIF_Specimen_names` shows which name each type actually belongs to, which often differs from `Taxon_name`. For example, in *Myrcia* the row for *Myrcia aegiphylloides* (reported by both sources) rests on a holotype collected in Rio de Janeiro that GBIF files under *Aulomyrcia anomala* O.Berg - pointing straight to the basionym and its original material.
 
-## Use one source at a time
+## Several genera in one call
+
+`taxon` also takes a vector of genera. Reading the REFLORA and JABOT archives is the slow step, and it is done only **once** for all of them (as is reading FFB and WCVP), so one call with ten genera is much faster than ten separate calls:
 
 ```r
+gap_many <- flora_species_gap(taxon = c("Myrcia", "Eugenia", "Calyptranthes"))
+```
+
+Each genus is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_species_gap_Myrcia.xlsx`, `flora_species_gap_Eugenia.html`, and so on. The returned table stacks the candidates of all genera. A genus that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
+
+## Choose the sources
+
+```r
+# A quick check, without the REFLORA and JABOT archives
+gap_quick <- flora_species_gap(taxon = "Myrcia", sources = c("powo", "gbif"))
+
+# Brazilian herbaria only
+gap_herbaria <- flora_species_gap(taxon = "Myrcia", sources = c("reflora", "jabot"))
+
 # POWO only, read live from ChecklistBank
 gap_powo <- flora_species_gap(taxon = "Myrcia", sources = "powo",
                               powo_source = "checklistbank")
@@ -102,24 +142,25 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 
 | Argument | Applies to | Description |
 |---|---|---|
-| `taxon` | | A single genus name of plants or algae. |
-| `sources` | | `"powo"`, `"gbif"`, or both (default). |
+| `taxon` | | One or more genus names of plants or algae; see [Several genera in one call](#several-genera-in-one-call). |
+| `sources` | | Any of `"powo"`, `"gbif"`, `"reflora"`, and `"jabot"`. Default: all four. |
+| `keep_downloads` | REFLORA, JABOT | If `TRUE` (default), keep the downloaded `reflora_download/` and `jabot_download/` folders for later analyses; if `FALSE`, delete them afterwards. |
 | `powo_source` | POWO | `"rWCVPdata"` (default) or `"checklistbank"`. |
 | `require_brazil_evidence` | POWO | If `TRUE` (default), keep only POWO names placed in Brazil. |
 | `fetch_details` | POWO | With `powo_source = "checklistbank"`, fetch each candidate's protologue citation. Default `TRUE`. |
 | `max_number` | POWO | With `powo_source = "checklistbank"`, maximum number of names retrieved. Default `5000`. |
 | `type_status` | GBIF | Type categories counted as evidence (e.g. `c("Holotype", "Isotype")`). `NULL` (default) uses all. |
 | `version` | | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir`, `filename` | | Save the result as an `.xlsx` spreadsheet, and where. |
+| `save`, `dir` | | Save each genus's result as an `.xlsx` spreadsheet, named `flora_species_gap_<genus>.xlsx`, and where. |
 | `html_report`, `open_report` | | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | | Print progress messages. Default `TRUE`. |
 
 ## Additional Tips
 
-- Start with the names reported by both sources (`Found_in == "POWO; GBIF"`): two independent lines of evidence point to the same gap.
+- Start with the names reported by more sources (e.g. `Found_in == "POWO; GBIF; REFLORA"`): independent lines of evidence point to the same gap.
 - A synonym reported as missing usually means FFB lacks its accepted name too; check `Accepted_name` before adding a name.
 - GBIF names with `GBIF_Taxonomic_status` `"DOUBTFUL"` are often old names of uncertain application (e.g. many 19th-century names): filter them out for a shorter list, or review them if you are revising the group.
-- GBIF only knows the types that herbaria have digitised and published; a name absent from the result may still have Brazilian types in a collection not yet in GBIF.
+- GBIF, REFLORA, and JABOT only know the types that herbaria have digitised and published; a name absent from the result may still have Brazilian types in a collection not yet in them.
 - The HTML report requires the `rmarkdown`, `DT`, and `htmltools` packages. Without them, the report is skipped with a message and the spreadsheet is still saved.
 
 ## See Also
