@@ -115,6 +115,17 @@ gap_many <- flora_species_gap(taxon = c("Myrcia", "Eugenia", "Calyptranthes"))
 
 Each genus is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_species_gap_Myrcia.xlsx`, `flora_species_gap_Eugenia.html`, and so on. The returned table stacks the candidates of all genera. A genus that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
 
+## Genera with nothing missing
+
+A genus whose species with evidence are all already in FFB needs no FFB update, so it gets **no** spreadsheet or detailed report. Instead, all such genera of a call are listed together in one simple page, `__no_missing_species_report.html` in `dir` (the leading underscores keep it at the top of the folder). For each genus it shows its number of species in FFB, the number of names with evidence in each source, and a conclusion:
+
+| Conclusion | Meaning |
+|---|---|
+| All names already in FFB - no update needed | The sources reported names, and FFB already has all of them. |
+| No names found - check the genus | The sources returned nothing - often a misspelt genus. |
+
+So, after checking a list of genera, the folder holds one spreadsheet and one report per genus that needs an FFB update, and this single page for the rest.
+
 ## Choose the sources
 
 ```r
@@ -151,7 +162,7 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 | `max_number` | POWO | With `powo_source = "checklistbank"`, maximum number of names retrieved. Default `5000`. |
 | `type_status` | GBIF | Type categories counted as evidence (e.g. `c("Holotype", "Isotype")`). `NULL` (default) uses all. |
 | `version` | | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir` | | Save each genus's result as an `.xlsx` spreadsheet, named `flora_species_gap_<genus>.xlsx`, and where. |
+| `save`, `dir` | | Save each genus's result as an `.xlsx` spreadsheet, named `flora_species_gap_<genus>.xlsx`, and where; genera with nothing missing get none (see [Genera with nothing missing](#genera-with-nothing-missing)). |
 | `html_report`, `open_report` | | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | | Print progress messages. Default `TRUE`. |
 

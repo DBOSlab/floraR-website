@@ -4684,6 +4684,7 @@ height: 400px;
   <li><a href="#encontrar-espécies-ausentes-da-ffb" id="toc-encontrar-espécies-ausentes-da-ffb" class="nav-link" data-scroll-target="#encontrar-espécies-ausentes-da-ffb">Encontrar espécies ausentes da FFB</a></li>
   <li><a href="#interpretar-a-tipificação" id="toc-interpretar-a-tipificação" class="nav-link" data-scroll-target="#interpretar-a-tipificação">Interpretar a tipificação</a></li>
   <li><a href="#vários-gêneros-em-uma-chamada" id="toc-vários-gêneros-em-uma-chamada" class="nav-link" data-scroll-target="#vários-gêneros-em-uma-chamada">Vários gêneros em uma chamada</a></li>
+  <li><a href="#gêneros-sem-espécies-ausentes" id="toc-gêneros-sem-espécies-ausentes" class="nav-link" data-scroll-target="#gêneros-sem-espécies-ausentes">Gêneros sem espécies ausentes</a></li>
   <li><a href="#escolher-as-fontes" id="toc-escolher-as-fontes" class="nav-link" data-scroll-target="#escolher-as-fontes">Escolher as fontes</a></li>
   <li><a href="#argumentos" id="toc-argumentos" class="nav-link" data-scroll-target="#argumentos">Argumentos</a></li>
   <li><a href="#dicas-adicionais" id="toc-dicas-adicionais" class="nav-link" data-scroll-target="#dicas-adicionais">Dicas Adicionais</a></li>
@@ -4866,6 +4867,33 @@ height: 400px;
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>gap_many <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="fu">c</span>(<span class="st">&quot;Myrcia&quot;</span>, <span class="st">&quot;Eugenia&quot;</span>, <span class="st">&quot;Calyptranthes&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cada gênero é analisado separadamente e recebe sua própria planilha e relatório HTML em <code>dir</code>, nomeados a partir dele - <code>flora_species_gap_Myrcia.xlsx</code>, <code>flora_species_gap_Eugenia.html</code> e assim por diante. A tabela retornada empilha os candidatos de todos os gêneros. Um gênero que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.</p>
 </section>
+<section id="gêneros-sem-espécies-ausentes" class="level2">
+<h2 class="anchored" data-anchor-id="gêneros-sem-espécies-ausentes">Gêneros sem espécies ausentes</h2>
+<p>Um gênero cujas espécies com evidência já estão todas na FFB não precisa de atualização na FFB, e por isso <strong>não</strong> recebe planilha nem relatório detalhado. Em vez disso, todos esses gêneros de uma chamada são listados juntos em uma única página simples, <code>__no_missing_species_report.html</code> em <code>dir</code> (os sublinhados iniciais a mantêm no topo da pasta). Para cada gênero, ela mostra o seu número de espécies na FFB, o número de nomes com evidência em cada fonte e uma conclusão:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Conclusão</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All names already in FFB - no update needed</td>
+<td>As fontes relataram nomes, e a FFB já tem todos eles.</td>
+</tr>
+<tr class="even">
+<td>No names found - check the genus</td>
+<td>As fontes não retornaram nada - frequentemente, um gênero mal grafado.</td>
+</tr>
+</tbody>
+</table>
+<p>Assim, depois de verificar uma lista de gêneros, a pasta contém uma planilha e um relatório para cada gênero que precisa de atualização na FFB, e esta única página para os demais.</p>
+</section>
 <section id="escolher-as-fontes" class="level2">
 <h2 class="anchored" data-anchor-id="escolher-as-fontes">Escolher as fontes</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uma verificação rápida, sem os arquivos do REFLORA e do JABOT</span></span>
@@ -4946,7 +4974,7 @@ height: 400px;
 <tr class="even">
 <td><code>save</code>, <code>dir</code></td>
 <td></td>
-<td>Salva o resultado de cada gênero como planilha <code>.xlsx</code>, nomeada <code>flora_species_gap_&lt;genus&gt;.xlsx</code>, e onde.</td>
+<td>Salva o resultado de cada gênero como planilha <code>.xlsx</code>, nomeada <code>flora_species_gap_&lt;genus&gt;.xlsx</code>, e onde; gêneros sem espécies ausentes não recebem planilha (veja <a href="#gêneros-sem-espécies-ausentes">Gêneros sem espécies ausentes</a>).</td>
 </tr>
 <tr class="odd">
 <td><code>html_report</code>, <code>open_report</code></td>
@@ -5577,58 +5605,69 @@ height: 400px;
 <span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>Cada gênero é analisado separadamente e recebe sua própria planilha e relatório HTML em <span class="in">`dir`</span>, nomeados a partir dele - <span class="in">`flora_species_gap_Myrcia.xlsx`</span>, <span class="in">`flora_species_gap_Eugenia.html`</span> e assim por diante. A tabela retornada empilha os candidatos de todos os gêneros. Um gênero que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.</span>
 <span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="fu">## Escolher as fontes</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gêneros sem espécies ausentes</span></span>
 <span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Uma verificação rápida, sem os arquivos do REFLORA e do JABOT</span></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>gap_quick <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;powo&quot;</span>, <span class="st">&quot;gbif&quot;</span>))</span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas herbários brasileiros</span></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>gap_herbaria <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;reflora&quot;</span>, <span class="st">&quot;jabot&quot;</span>))</span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a>Um gênero cujas espécies com evidência já estão todas na FFB não precisa de atualização na FFB, e por isso **não** recebe planilha nem relatório detalhado. Em vez disso, todos esses gêneros de uma chamada são listados juntos em uma única página simples, <span class="in">`__no_missing_species_report.html`</span> em <span class="in">`dir`</span> (os sublinhados iniciais a mantêm no topo da pasta). Para cada gênero, ela mostra o seu número de espécies na FFB, o número de nomes com evidência em cada fonte e uma conclusão:</span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Conclusão <span class="pp">|</span> Significado <span class="pp">|</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> All names already in FFB - no update needed <span class="pp">|</span> As fontes relataram nomes, e a FFB já tem todos eles. <span class="pp">|</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> No names found - check the genus <span class="pp">|</span> As fontes não retornaram nada - frequentemente, um gênero mal grafado. <span class="pp">|</span></span>
 <span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas POWO, lido diretamente do ChecklistBank</span></span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a>Assim, depois de verificar uma lista de gêneros, a pasta contém uma planilha e um relatório para cada gênero que precisa de atualização na FFB, e esta única página para os demais.</span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Escolher as fontes</span></span>
 <span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas GBIF - ex.: para algas, que o POWO não cobre</span></span>
-<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="co"># Evidência de tipos mais restrita: apenas holótipos e isótipos</span></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="co"># Revisar também os nomes do POWO ausentes da FFB que o POWO registra fora do Brasil</span></span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>gap_all <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a><span class="fu">## Argumentos</span></span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Aplica-se a <span class="pp">|</span> Descrição <span class="pp">|</span></span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`taxon`</span> <span class="pp">|</span> <span class="pp">|</span> Um ou mais nomes de gênero de plantas ou algas; veja <span class="co">[</span><span class="ot">Vários gêneros em uma chamada</span><span class="co">](#vários-gêneros-em-uma-chamada)</span>. <span class="pp">|</span></span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`sources`</span> <span class="pp">|</span> <span class="pp">|</span> Qualquer combinação de <span class="in">`&quot;powo&quot;`</span>, <span class="in">`&quot;gbif&quot;`</span>, <span class="in">`&quot;reflora&quot;`</span> e <span class="in">`&quot;jabot&quot;`</span>. Padrão: as quatro. <span class="pp">|</span></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`keep_downloads`</span> <span class="pp">|</span> REFLORA, JABOT <span class="pp">|</span> Se <span class="in">`TRUE`</span> (padrão), mantém as pastas baixadas <span class="in">`reflora_download/`</span> e <span class="in">`jabot_download/`</span> para análises futuras; se <span class="in">`FALSE`</span>, apaga-as ao final. <span class="pp">|</span></span>
-<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`powo_source`</span> <span class="pp">|</span> POWO <span class="pp">|</span> <span class="in">`&quot;rWCVPdata&quot;`</span> (padrão) ou <span class="in">`&quot;checklistbank&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`require_brazil_evidence`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Se <span class="in">`TRUE`</span> (padrão), mantém apenas os nomes do POWO registrados no Brasil. <span class="pp">|</span></span>
-<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`fetch_details`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Com <span class="in">`powo_source = &quot;checklistbank&quot;`</span>, busca a citação da publicação original de cada candidato. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`max_number`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Com <span class="in">`powo_source = &quot;checklistbank&quot;`</span>, número máximo de nomes recuperados. Padrão <span class="in">`5000`</span>. <span class="pp">|</span></span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`type_status`</span> <span class="pp">|</span> GBIF <span class="pp">|</span> Categorias de tipo que contam como evidência (ex.: <span class="in">`c(&quot;Holotype&quot;, &quot;Isotype&quot;)`</span>). <span class="in">`NULL`</span> (padrão) usa todas. <span class="pp">|</span></span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`version`</span> <span class="pp">|</span> <span class="pp">|</span> Versão do conjunto de dados da FFB usada na comparação. Padrão <span class="in">`&quot;latest&quot;`</span>. <span class="pp">|</span></span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`save`</span>, <span class="in">`dir`</span> <span class="pp">|</span> <span class="pp">|</span> Salva o resultado de cada gênero como planilha <span class="in">`.xlsx`</span>, nomeada <span class="in">`flora_species_gap_&lt;genus&gt;.xlsx`</span>, e onde. <span class="pp">|</span></span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`html_report`</span>, <span class="in">`open_report`</span> <span class="pp">|</span> <span class="pp">|</span> Gera o relatório HTML e (com <span class="in">`open_report = TRUE`</span>) o abre no navegador. <span class="pp">|</span></span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`verbose`</span> <span class="pp">|</span> <span class="pp">|</span> Exibe mensagens de progresso. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dicas Adicionais</span></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comece pelos nomes relatados por mais fontes (ex.: <span class="in">`Found_in == &quot;POWO; GBIF; REFLORA&quot;`</span>): linhas de evidência independentes apontam para a mesma lacuna.</span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Um sinônimo relatado como ausente geralmente indica que a FFB também não tem o seu nome aceito; confira <span class="in">`Accepted_name`</span> antes de adicionar um nome.</span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Nomes do GBIF com <span class="in">`GBIF_Taxonomic_status`</span> <span class="in">`&quot;DOUBTFUL&quot;`</span> costumam ser nomes antigos de aplicação incerta (ex.: muitos nomes do século XIX): filtre-os para uma lista mais curta, ou revise-os se estiver revisando o grupo.</span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>O GBIF, o REFLORA e o JABOT só conhecem os tipos que os herbários digitalizaram e publicaram; um nome ausente do resultado ainda pode ter tipos brasileiros em uma coleção que ainda não está neles.</span>
-<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>O relatório HTML requer os pacotes <span class="in">`rmarkdown`</span>, <span class="in">`DT`</span> e <span class="in">`htmltools`</span>. Sem eles, o relatório é omitido com uma mensagem, e a planilha continua sendo salva.</span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## Veja Também</span></span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Encontrar candidatos a novos registros estaduais</span><span class="co">](/pt/articles/find_new_state_records.qmd)</span></span>
-<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Curar e descrever novos registros</span><span class="co">](/pt/articles/curate_ffb_descriptions.qmd)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="co"># Uma verificação rápida, sem os arquivos do REFLORA e do JABOT</span></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a>gap_quick <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;powo&quot;</span>, <span class="st">&quot;gbif&quot;</span>))</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas herbários brasileiros</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>gap_herbaria <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">&quot;reflora&quot;</span>, <span class="st">&quot;jabot&quot;</span>))</span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas POWO, lido diretamente do ChecklistBank</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>gap_powo <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;powo&quot;</span>,</span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a>                              <span class="at">powo_source =</span> <span class="st">&quot;checklistbank&quot;</span>)</span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas GBIF - ex.: para algas, que o POWO não cobre</span></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>gap_algae <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Gracilaria&quot;</span>, <span class="at">sources =</span> <span class="st">&quot;gbif&quot;</span>)</span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Evidência de tipos mais restrita: apenas holótipos e isótipos</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>gap_strict <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">type_status =</span> <span class="fu">c</span>(<span class="st">&quot;Holotype&quot;</span>, <span class="st">&quot;Isotype&quot;</span>))</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="co"># Revisar também os nomes do POWO ausentes da FFB que o POWO registra fora do Brasil</span></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>gap_all <span class="ot">&lt;-</span> <span class="fu">flora_species_gap</span>(<span class="at">taxon =</span> <span class="st">&quot;Myrcia&quot;</span>, <span class="at">require_brazil_evidence =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="fu">## Argumentos</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Argumento <span class="pp">|</span> Aplica-se a <span class="pp">|</span> Descrição <span class="pp">|</span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`taxon`</span> <span class="pp">|</span> <span class="pp">|</span> Um ou mais nomes de gênero de plantas ou algas; veja <span class="co">[</span><span class="ot">Vários gêneros em uma chamada</span><span class="co">](#vários-gêneros-em-uma-chamada)</span>. <span class="pp">|</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`sources`</span> <span class="pp">|</span> <span class="pp">|</span> Qualquer combinação de <span class="in">`&quot;powo&quot;`</span>, <span class="in">`&quot;gbif&quot;`</span>, <span class="in">`&quot;reflora&quot;`</span> e <span class="in">`&quot;jabot&quot;`</span>. Padrão: as quatro. <span class="pp">|</span></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`keep_downloads`</span> <span class="pp">|</span> REFLORA, JABOT <span class="pp">|</span> Se <span class="in">`TRUE`</span> (padrão), mantém as pastas baixadas <span class="in">`reflora_download/`</span> e <span class="in">`jabot_download/`</span> para análises futuras; se <span class="in">`FALSE`</span>, apaga-as ao final. <span class="pp">|</span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`powo_source`</span> <span class="pp">|</span> POWO <span class="pp">|</span> <span class="in">`&quot;rWCVPdata&quot;`</span> (padrão) ou <span class="in">`&quot;checklistbank&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`require_brazil_evidence`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Se <span class="in">`TRUE`</span> (padrão), mantém apenas os nomes do POWO registrados no Brasil. <span class="pp">|</span></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`fetch_details`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Com <span class="in">`powo_source = &quot;checklistbank&quot;`</span>, busca a citação da publicação original de cada candidato. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`max_number`</span> <span class="pp">|</span> POWO <span class="pp">|</span> Com <span class="in">`powo_source = &quot;checklistbank&quot;`</span>, número máximo de nomes recuperados. Padrão <span class="in">`5000`</span>. <span class="pp">|</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`type_status`</span> <span class="pp">|</span> GBIF <span class="pp">|</span> Categorias de tipo que contam como evidência (ex.: <span class="in">`c(&quot;Holotype&quot;, &quot;Isotype&quot;)`</span>). <span class="in">`NULL`</span> (padrão) usa todas. <span class="pp">|</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`version`</span> <span class="pp">|</span> <span class="pp">|</span> Versão do conjunto de dados da FFB usada na comparação. Padrão <span class="in">`&quot;latest&quot;`</span>. <span class="pp">|</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`save`</span>, <span class="in">`dir`</span> <span class="pp">|</span> <span class="pp">|</span> Salva o resultado de cada gênero como planilha <span class="in">`.xlsx`</span>, nomeada <span class="in">`flora_species_gap_&lt;genus&gt;.xlsx`</span>, e onde; gêneros sem espécies ausentes não recebem planilha (veja <span class="co">[</span><span class="ot">Gêneros sem espécies ausentes</span><span class="co">](#gêneros-sem-espécies-ausentes)</span>). <span class="pp">|</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`html_report`</span>, <span class="in">`open_report`</span> <span class="pp">|</span> <span class="pp">|</span> Gera o relatório HTML e (com <span class="in">`open_report = TRUE`</span>) o abre no navegador. <span class="pp">|</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`verbose`</span> <span class="pp">|</span> <span class="pp">|</span> Exibe mensagens de progresso. Padrão <span class="in">`TRUE`</span>. <span class="pp">|</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dicas Adicionais</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Comece pelos nomes relatados por mais fontes (ex.: <span class="in">`Found_in == &quot;POWO; GBIF; REFLORA&quot;`</span>): linhas de evidência independentes apontam para a mesma lacuna.</span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Um sinônimo relatado como ausente geralmente indica que a FFB também não tem o seu nome aceito; confira <span class="in">`Accepted_name`</span> antes de adicionar um nome.</span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Nomes do GBIF com <span class="in">`GBIF_Taxonomic_status`</span> <span class="in">`&quot;DOUBTFUL&quot;`</span> costumam ser nomes antigos de aplicação incerta (ex.: muitos nomes do século XIX): filtre-os para uma lista mais curta, ou revise-os se estiver revisando o grupo.</span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>O GBIF, o REFLORA e o JABOT só conhecem os tipos que os herbários digitalizaram e publicaram; um nome ausente do resultado ainda pode ter tipos brasileiros em uma coleção que ainda não está neles.</span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>O relatório HTML requer os pacotes <span class="in">`rmarkdown`</span>, <span class="in">`DT`</span> e <span class="in">`htmltools`</span>. Sem eles, o relatório é omitido com uma mensagem, e a planilha continua sendo salva.</span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="fu">## Veja Também</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Encontrar candidatos a novos registros estaduais</span><span class="co">](/pt/articles/find_new_state_records.qmd)</span></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">Curar e descrever novos registros</span><span class="co">](/pt/articles/curate_ffb_descriptions.qmd)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

@@ -120,6 +120,17 @@ gap_many$states[gap_many$states$New_state_record_candidate, ]
 
 Cada táxon é analisado separadamente e recebe sua própria planilha e relatório HTML em `dir`, nomeados a partir dele - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html` e assim por diante. As tabelas `states`, `domains` e `records` retornadas empilham as linhas de todos os táxons, distinguidos pela coluna `Taxon`. Um nome que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.
 
+## Táxons sem novidades
+
+Um táxon cujos registros estão todos dentro da sua distribuição na FFB - sem candidato a novo estado nem a novo domínio - não precisa de atualização na FFB, e por isso **não** recebe planilha nem relatório detalhado. Em vez disso, todos esses táxons de uma chamada são listados juntos em uma única página simples, `__no_new_records_report.html` em `dir` (os sublinhados iniciais a mantêm no topo da pasta). Para cada táxon, ela mostra os seus estados e domínios na FFB, o número de registros encontrados em cada fonte e uma conclusão:
+
+| Conclusão | Significado |
+|---|---|
+| Within FFB distribution - no update needed | Foram encontrados registros, e todos estão em estados e domínios que a FFB já lista. |
+| No records found - check the name | As bases não retornaram nada; o resultado nada diz sobre a distribuição - frequentemente, um nome mal grafado. |
+
+Assim, depois de verificar uma lista de táxons, a pasta contém uma planilha e um relatório para cada táxon que precisa de atualização na FFB, e esta única página para os demais. As linhas dos táxons sem novidades continuam sendo retornadas pela função.
+
 ## Escolher as fontes
 
 ```r
@@ -147,7 +158,7 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `domains` | Se `TRUE` (padrão), também situa os registros georreferenciados nos domínios fitogeográficos. Requer o pacote `sf`. |
 | `max_coordinates` | Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | `version` | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
-| `save`, `dir` | Salva o resultado de cada táxon como planilha `.xlsx`, nomeada `flora_distribution_gap_<taxon>.xlsx`, e onde. |
+| `save`, `dir` | Salva o resultado de cada táxon como planilha `.xlsx`, nomeada `flora_distribution_gap_<taxon>.xlsx`, e onde; táxons sem novidades não recebem planilha (veja [Táxons sem novidades](#táxons-sem-novidades)). |
 | `html_report`, `open_report` | Gera o relatório HTML e (com `open_report = TRUE`) o abre no navegador. |
 | `verbose` | Exibe mensagens de progresso. Padrão `TRUE`. |
 

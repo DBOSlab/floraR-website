@@ -120,6 +120,17 @@ gap_many$states[gap_many$states$New_state_record_candidate, ]
 
 Each taxon is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html`, and so on. The returned `states`, `domains`, and `records` tables stack the rows of all taxa, told apart by their `Taxon` column. A name that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
 
+## Taxa with nothing new
+
+A taxon whose records all fall within its FFB distribution - no candidate new state, no candidate new domain - needs no FFB update, so it gets **no** spreadsheet or detailed report. Instead, all such taxa of a call are listed together in one simple page, `__no_new_records_report.html` in `dir` (the leading underscores keep it at the top of the folder). For each taxon it shows its FFB states and domains, the number of records found in each source, and a conclusion:
+
+| Conclusion | Meaning |
+|---|---|
+| Within FFB distribution - no update needed | Records were found, and all of them are in states and domains FFB already lists. |
+| No records found - check the name | The databases returned nothing, so the result says nothing about the distribution - often a misspelt name. |
+
+So, after checking a list of taxa, the folder holds one spreadsheet and one report per taxon that needs an FFB update, and this single page for the rest. The rows of the taxa with nothing new are still returned by the function.
+
 ## Choose the sources
 
 ```r
@@ -147,7 +158,7 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `domains` | If `TRUE` (default), also place georeferenced records in the phytogeographic domains. Requires the `sf` package. |
 | `max_coordinates` | Maximum number of georeferenced GBIF records read for the domain analysis. Default `5000`. |
 | `version` | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir` | Save each taxon's result as an `.xlsx` spreadsheet, named `flora_distribution_gap_<taxon>.xlsx`, and where. |
+| `save`, `dir` | Save each taxon's result as an `.xlsx` spreadsheet, named `flora_distribution_gap_<taxon>.xlsx`, and where; taxa with nothing new get none (see [Taxa with nothing new](#taxa-with-nothing-new)). |
 | `html_report`, `open_report` | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | Print progress messages. Default `TRUE`. |
 

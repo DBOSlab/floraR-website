@@ -115,6 +115,17 @@ gap_many <- flora_species_gap(taxon = c("Myrcia", "Eugenia", "Calyptranthes"))
 
 Cada gênero é analisado separadamente e recebe sua própria planilha e relatório HTML em `dir`, nomeados a partir dele - `flora_species_gap_Myrcia.xlsx`, `flora_species_gap_Eugenia.html` e assim por diante. A tabela retornada empilha os candidatos de todos os gêneros. Um gênero que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.
 
+## Gêneros sem espécies ausentes
+
+Um gênero cujas espécies com evidência já estão todas na FFB não precisa de atualização na FFB, e por isso **não** recebe planilha nem relatório detalhado. Em vez disso, todos esses gêneros de uma chamada são listados juntos em uma única página simples, `__no_missing_species_report.html` em `dir` (os sublinhados iniciais a mantêm no topo da pasta). Para cada gênero, ela mostra o seu número de espécies na FFB, o número de nomes com evidência em cada fonte e uma conclusão:
+
+| Conclusão | Significado |
+|---|---|
+| All names already in FFB - no update needed | As fontes relataram nomes, e a FFB já tem todos eles. |
+| No names found - check the genus | As fontes não retornaram nada - frequentemente, um gênero mal grafado. |
+
+Assim, depois de verificar uma lista de gêneros, a pasta contém uma planilha e um relatório para cada gênero que precisa de atualização na FFB, e esta única página para os demais.
+
 ## Escolher as fontes
 
 ```r
@@ -151,7 +162,7 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 | `max_number` | POWO | Com `powo_source = "checklistbank"`, número máximo de nomes recuperados. Padrão `5000`. |
 | `type_status` | GBIF | Categorias de tipo que contam como evidência (ex.: `c("Holotype", "Isotype")`). `NULL` (padrão) usa todas. |
 | `version` | | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
-| `save`, `dir` | | Salva o resultado de cada gênero como planilha `.xlsx`, nomeada `flora_species_gap_<genus>.xlsx`, e onde. |
+| `save`, `dir` | | Salva o resultado de cada gênero como planilha `.xlsx`, nomeada `flora_species_gap_<genus>.xlsx`, e onde; gêneros sem espécies ausentes não recebem planilha (veja [Gêneros sem espécies ausentes](#gêneros-sem-espécies-ausentes)). |
 | `html_report`, `open_report` | | Gera o relatório HTML e (com `open_report = TRUE`) o abre no navegador. |
 | `verbose` | | Exibe mensagens de progresso. Padrão `TRUE`. |
 

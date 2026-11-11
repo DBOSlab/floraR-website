@@ -36,6 +36,8 @@ Registros de ocorrência são evidências a revisar, não provas: um registro em
 
 **Vários táxons.** Cada táxon de `taxon` é analisado separadamente, e a sua planilha e o seu relatório HTML são salvos com o seu próprio nome, `flora_distribution_gap_<taxon>` (ex.: `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`). Um táxon que falhe (ex.: um nome mal grafado) é informado e ignorado, sem interromper os demais.
 
+**Táxons sem novidades.** Um táxon sem nenhum candidato a novo registro estadual ou de domínio não precisa de atualização na FFB, e por isso nenhuma planilha ou relatório detalhado é gerado para ele. Em vez disso, todos esses táxons de uma chamada são listados em um único relatório HTML simples, `<dir>/__no_new_records_report.html` (gerado quando `html_report = TRUE`), com o que foi pesquisado para cada um - os seus estados e domínios na FFB, o número de registros por fonte - e uma conclusão: `"Within FFB distribution - no update needed"`, ou `"No records found - check the name"` quando as bases não retornaram nada (o que nada diz sobre a distribuição do táxon). As suas linhas continuam sendo retornadas.
+
 ### Argumentos
 
 | Argumento | Descrição |
@@ -49,9 +51,9 @@ Registros de ocorrência são evidências a revisar, não provas: um registro em
 | max_coordinates | Numérico. Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
-| save | Lógico. Se `TRUE` (padrão), o resultado de cada táxon é salvo em disco como uma planilha `.xlsx` nomeada a partir do táxon, `flora_distribution_gap_<taxon>.xlsx`. |
+| save | Lógico. Se `TRUE` (padrão), o resultado de cada táxon com pelo menos um candidato a novo registro estadual ou de domínio é salvo em disco como uma planilha `.xlsx` nomeada a partir do táxon, `flora_distribution_gap_<taxon>.xlsx`. Táxons sem novidades não recebem planilha (veja Detalhes). |
 | dir | Caractere. Diretório onde as planilhas e os relatórios são salvos. Padrão `"flora_distribution_gap"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada táxon (`<dir>/flora_distribution_gap_<taxon>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada táxon com candidatos (`<dir>/flora_distribution_gap_<taxon>.html`), além de um único `<dir>/__no_new_records_report.html` listando os táxons sem novidades (veja Detalhes), resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
 | open_report | Lógico. Se `TRUE`, abre o relatório HTML no navegador após gerá-lo (apenas em sessões interativas). Padrão `FALSE`: o relatório é apenas salvo em `dir`. |
 
 ### Valor

@@ -86,6 +86,15 @@ spreadsheet and HTML report are saved under its own name,
 genus that fails (e.g. a misspelt name) is reported and skipped, without stopping
 the others.
 
+**Genera with nothing missing.** A genus without any species missing from FFB
+needs no FFB update, so no spreadsheet or detailed report is written for it.
+Instead, all such genera of a call are listed in a single, simple HTML report,
+`<dir>/__no_missing_species_report.html` (written when `html_report =
+TRUE`), with what was searched for each - its number of species in FFB and of names
+with evidence in each source - and a conclusion: `"All names already in FFB -
+no update needed"`, or `"No names found - check the genus"` when the sources
+returned nothing at all.
+
 ### Arguments
 
 | Argument | Description |
@@ -100,9 +109,9 @@ the others.
 | max_number | Numeric. Applies to POWO with `powo_source = "checklistbank"`: maximum number of names retrieved. Defaults to `5000`. |
 | version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `flora_download`. |
 | verbose | Logical. If `TRUE` (default), prints progress messages. |
-| save | Logical. If `TRUE` (default), the result of each genus is saved to disk as an `.xlsx` spreadsheet named after the genus, `flora_species_gap_<genus>.xlsx`. |
+| save | Logical. If `TRUE` (default), the result of each genus with at least one species missing from FFB is saved to disk as an `.xlsx` spreadsheet named after the genus, `flora_species_gap_<genus>.xlsx`. Genera with nothing missing get no spreadsheet (see Details). |
 | dir | Character. Directory where the spreadsheets and reports are saved. Defaults to `"flora_species_gap"`. |
-| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report for each genus (`<dir>/flora_species_gap_<genus>.html`) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
+| html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report for each genus with missing species (`<dir>/flora_species_gap_<genus>.html`), plus a single `<dir>/__no_missing_species_report.html` listing the genera with nothing missing (see Details) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
 | open_report | Logical. If `TRUE`, opens the HTML report in the browser once rendered (in interactive sessions only). Default `FALSE`: the report is only saved to `dir`. |
 
 ### Value

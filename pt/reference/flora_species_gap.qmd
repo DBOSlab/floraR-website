@@ -39,6 +39,8 @@ Nas três fontes de espécimes, as categorias de tipo são padronizadas com `bar
 
 **Vários gêneros.** Cada gênero de `taxon` é analisado separadamente, e a sua planilha e o seu relatório HTML são salvos com o seu próprio nome, `flora_species_gap_<gênero>` (ex.: `flora_species_gap_Myrcia.xlsx`). Um gênero que falhe (ex.: um nome mal grafado) é informado e ignorado, sem interromper os demais.
 
+**Gêneros sem espécies ausentes.** Um gênero sem nenhuma espécie ausente da FFB não precisa de atualização na FFB, e por isso nenhuma planilha ou relatório detalhado é gerado para ele. Em vez disso, todos esses gêneros de uma chamada são listados em um único relatório HTML simples, `<dir>/__no_missing_species_report.html` (gerado quando `html_report = TRUE`), com o que foi pesquisado para cada um - o seu número de espécies na FFB e de nomes com evidência em cada fonte - e uma conclusão: `"All names already in FFB - no update needed"`, ou `"No names found - check the genus"` quando as fontes não retornaram nada.
+
 ### Argumentos
 
 | Argumento | Descrição |
@@ -53,9 +55,9 @@ Nas três fontes de espécimes, as categorias de tipo são padronizadas com `bar
 | max_number | Numérico. Aplica-se ao POWO com `powo_source = "checklistbank"`: número máximo de nomes recuperados. Padrão `5000`. |
 | version | Caractere. Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. Repassado para `flora_download`. |
 | verbose | Lógico. Se `TRUE` (padrão), exibe mensagens de progresso. |
-| save | Lógico. Se `TRUE` (padrão), o resultado de cada gênero é salvo em disco como uma planilha `.xlsx` nomeada a partir do gênero, `flora_species_gap_<gênero>.xlsx`. |
+| save | Lógico. Se `TRUE` (padrão), o resultado de cada gênero com pelo menos uma espécie ausente da FFB é salvo em disco como uma planilha `.xlsx` nomeada a partir do gênero, `flora_species_gap_<gênero>.xlsx`. Gêneros sem espécies ausentes não recebem planilha (veja Detalhes). |
 | dir | Caractere. Diretório onde as planilhas e os relatórios são salvos. Padrão `"flora_species_gap"`. |
-| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada gênero (`<dir>/flora_species_gap_<gênero>.html`) resumindo os resultados: indicadores principais e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiá-la ou baixá-la como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
+| html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido para cada gênero com espécies ausentes (`<dir>/flora_species_gap_<gênero>.html`), além de um único `<dir>/__no_missing_species_report.html` listando os gêneros sem espécies ausentes (veja Detalhes), resumindo os resultados: indicadores principais e a tabela completa de candidatos como um widget DT ordenável e filtrável, com botões para copiá-la ou baixá-la como CSV/Excel. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
 | open_report | Lógico. Se `TRUE`, abre o relatório HTML no navegador após gerá-lo (apenas em sessões interativas). Padrão `FALSE`: o relatório é apenas salvo em `dir`. |
 
 ### Valor
