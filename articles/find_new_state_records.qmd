@@ -111,7 +111,7 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `max_coordinates` | Maximum number of georeferenced GBIF records read for the domain analysis. Default `5000`. |
 | `version` | FFB dataset version to compare against. Default `"latest"`. |
 | `save`, `dir`, `filename` | Save the result as an `.xlsx` spreadsheet, and where. |
-| `html_report`, `open_report` | Write the HTML report, and open it in the browser. |
+| `html_report`, `open_report` | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | Print progress messages. Default `TRUE`. |
 
 ## Additional Tips

@@ -78,7 +78,7 @@ identification - usually the typified name - which `GBIF_Specimen_names` shows.
 | dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"flora_species_gap"`. |
 | filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"flora_species_gap_<taxon>"`. |
 | html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
-| open_report | Logical. If `TRUE` (default in interactive sessions), opens the HTML report in the browser once rendered. |
+| open_report | Logical. If `TRUE`, opens the HTML report in the browser once rendered (in interactive sessions only). Default `FALSE`: the report is only saved to `dir`. |
 
 ### Value
 

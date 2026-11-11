@@ -111,7 +111,7 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 | `type_status` | GBIF | Type categories counted as evidence (e.g. `c("Holotype", "Isotype")`). `NULL` (default) uses all. |
 | `version` | | FFB dataset version to compare against. Default `"latest"`. |
 | `save`, `dir`, `filename` | | Save the result as an `.xlsx` spreadsheet, and where. |
-| `html_report`, `open_report` | | Write the HTML report, and open it in the browser. |
+| `html_report`, `open_report` | | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | | Print progress messages. Default `TRUE`. |
 
 ## Additional Tips

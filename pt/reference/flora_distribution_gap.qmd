@@ -47,7 +47,7 @@ Registros de ocorrência são evidências a revisar, não provas: um registro em
 | dir | Caractere. Diretório onde a planilha é salva quando `save = TRUE`. Padrão `"flora_distribution_gap"`. |
 | filename | Caractere. Nome do arquivo `.xlsx` (sem extensão) a ser salvo. Padrão `"flora_distribution_gap_<taxon>"`. |
 | html_report | Lógico. Se `TRUE` (padrão), também gera um relatório HTML autocontido (`<dir>/<filename>.html`) resumindo os resultados: indicadores principais, um resumo das evidências por fonte, a tabela completa estado por estado, a tabela de domínios, um mapa interativo dos registros georreferenciados sobre os domínios fitogeográficos (coloridos por situação), os registros nos domínios candidatos e os registros individuais encontrados nos estados candidatos - cada um com link para o registro na sua base de dados de origem. Requer os pacotes rmarkdown, DT e htmltools; se algum estiver ausente, o relatório é omitido com uma mensagem (a planilha `.xlsx` não é afetada). |
-| open_report | Lógico. Se `TRUE` (padrão em sessões interativas), abre o relatório HTML no navegador após gerá-lo. |
+| open_report | Lógico. Se `TRUE`, abre o relatório HTML no navegador após gerá-lo (apenas em sessões interativas). Padrão `FALSE`: o relatório é apenas salvo em `dir`. |
 
 ### Valor
 

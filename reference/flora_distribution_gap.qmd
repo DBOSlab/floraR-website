@@ -77,7 +77,7 @@ HTML report lists the individual records behind each candidate state.
 | dir | Character. Directory where the spreadsheet is saved when `save = TRUE`. Defaults to `"flora_distribution_gap"`. |
 | filename | Character. Name of the `.xlsx` file (without extension) to save. Defaults to `"flora_distribution_gap_<taxon>"`. |
 | html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report (`<dir>/<filename>.html`) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, the domain table, an interactive map of the georeferenced records over the phytogeographic domains (coloured by candidate status), the records in candidate domains, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
-| open_report | Logical. If `TRUE` (default in interactive sessions), opens the HTML report in the browser once rendered. |
+| open_report | Logical. If `TRUE`, opens the HTML report in the browser once rendered (in interactive sessions only). Default `FALSE`: the report is only saved to `dir`. |
 
 ### Value
 
