@@ -55,16 +55,18 @@ This returns a list of three tables - `gap$states`, `gap$domains`, and `gap$reco
 
 | Column | Meaning |
 |---|---|
-| `State` | Brazilian state. |
-| `In_FFB_distribution` | Whether FFB already lists the state for the taxon. |
-| `GBIF_records`, `Reflora_records`, `Jabot_records`, `speciesLink_records` | Number of records in the state, for each source queried. |
-| `New_state_record_candidate` | `TRUE` for states with records that FFB does not list. |
+| `state` | Brazilian state. |
+| `in_ffb_distribution` | Whether FFB already lists the state for the taxon. |
+| `gbif_records`, `reflora_records`, `jabot_records`, `specieslink_records` | Number of records in the state, for each source queried. |
+| `new_state_record_candidate` | `TRUE` for states with records that FFB does not list. |
+
+The columns created by `floraR` are in lower case, while the fields taken from the source databases in `gap$records` keep their original Darwin Core names - `recordedBy`, `recordNumber`, `eventDate`, `institutionCode`, `catalogNumber`, `scientificName` (the identification), `decimalLatitude`, `decimalLongitude`, and so on. `gap$records` holds every georeferenced record, plus the records without coordinates from the candidate new states, with the candidates first.
 
 For *Luetzelburgia auriculata*, FFB lists 14 states, and the specimens in GBIF, REFLORA, and JABOT point to five more - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul, and São Paulo. Paraná and Rio de Janeiro are backed by all three sources (e.g. Paraná: 22 GBIF records, 10 REFLORA and 7 JABOT specimens), while Rio Grande do Sul rests on a single GBIF record.
 
 ## Check the records behind each candidate
 
-Occurrence records are evidence to review, not proof: a record from a new state may be a cultivated plant, a misidentification, or a georeferencing error. The HTML report therefore lists the individual records found in each candidate state - collector and number, date, locality, herbarium and catalogue number, and the name under which the specimen was identified - each linked to the record itself, so that every candidate can be checked before it goes into FFB.
+Occurrence records are evidence to review, not proof: a record from a new state may be a cultivated plant, a misidentification, or a georeferencing error. The spreadsheet is built for a specialist to validate them (see [Validating the spreadsheet](#validating-the-spreadsheet)), and the HTML report lists the individual records found in each candidate state - collector and number, date, locality, herbarium and catalogue number, and the name under which the specimen was identified - each linked to the record itself, so that every candidate can be checked before it goes into FFB.
 
 ## Phytogeographic domains
 
@@ -72,7 +74,7 @@ Alongside states, the GBIF, REFLORA, and JABOT records that have coordinates are
 
 ```r
 gap$domains                                          # one row per domain
-gap$records[gap$records$New_domain_record_candidate, ]  # the records behind new domains
+gap$records[gap$records$new_domain_record_candidate, ]  # the records behind new domains
 ```
 
 For *Luetzelburgia auriculata*, FFB lists the Amazônia, Caatinga, and Cerrado. Of its 1,134 georeferenced records - 745 from GBIF, 258 from REFLORA, and 131 from JABOT - 10, from Rio de Janeiro, São Paulo, and Paraná, fall in the **Mata Atlântica**, a candidate new domain:
@@ -105,6 +107,49 @@ gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
                                  state = c("PE", "Paraiba", "Alagoas"))
 ```
 
+## Validating the spreadsheet
+
+Each spreadsheet is designed to be handed to a specialist of the group, who confirms the candidates before they go into FFB. **The specialist does not need to check every record**: the goal is to find **at least one voucher specimen** supporting each candidate new state or domain. Once a candidate has one voucher, it is supported, and the specialist moves on to the next one.
+
+The spreadsheet has four sheets:
+
+| Sheet | What it holds |
+|---|---|
+| `instructions` | The first sheet: what to do, the terms to use, a fictitious example, and the progress of the review. |
+| `states` | One row per state, as in `gap$states`. For each candidate, `records_reviewed` and `vouchers_validated` count the specialist's work in `records`. |
+| `domains` | The same for the phytogeographic domains. |
+| `records` | The individual records, candidates first, each with `record_link` to the specimen. **The only sheet to fill in**, in its last two columns, `validation` and `comments`. |
+
+What the specialist does:
+
+1. In `states`, pick a row with `new_state_record_candidate = TRUE`.
+2. In `records`, filter the column `state` to that state, and open `record_link` to see the specimen - its image, label, and identification.
+3. In `validation`, choose one of three words from the drop-down list (below).
+4. As soon as one record is `correct`, the state is supported: move on to the next candidate state. If the record is `incorrect` or `uncertain`, check the next record of the same state.
+5. Do the same for the candidate domains, filtering `records` by `domain` and `new_domain_record_candidate = TRUE`. A record validated as `correct` counts for both its state and its domain.
+6. Leave `validation` **empty** for the records not looked at: every filled cell counts as a reviewed record.
+
+The terms of the `validation` column - always the same three words:
+
+| `validation` | When to use it |
+|---|---|
+| `correct` | The specimen was checked: its identification is right and it was collected in that state or domain. It is a voucher for the new record. |
+| `incorrect` | The specimen was checked: it is misidentified, or its locality or coordinates are wrong. It does not support the record. |
+| `uncertain` | The specimen was checked, but it is impossible to decide (e.g. sterile material, poor image, unreadable label, difficult group). |
+| *(empty)* | Not reviewed. |
+
+The column `comments` is **optional** free text - filled in only when there is something to add. For example (fictitious records):
+
+| `state` | `catalogNumber` | `validation` | `comments` |
+|---|---|---|---|
+| Piauí | XX0000001 | `incorrect` | Misidentified: it is *Genus alterus* |
+| Piauí | XX0000002 | `uncertain` | Sterile; image too poor to confirm |
+| Piauí | XX0000003 | `correct` | |
+| Piauí | XX0000004 | | *(not reviewed: Piauí already has a voucher)* |
+| Pará | XX0000005 | `uncertain` | Possibly an undescribed species - needs further study |
+
+The `instructions` sheet sums up the progress - records reviewed, how many `correct`, `incorrect`, and `uncertain`, and how many candidate states and domains already have a voucher - and Excel updates these counts, and those of `states` and `domains`, as the specialist works. Do not rename the sheets or columns, since the counters depend on them. Every sheet has filters on its header, and the header row and the taxon column stay frozen while scrolling. The `validation` and `comments` columns and the counters exist only in the spreadsheet, not in the tables returned in R.
+
 ## Several taxa in one call
 
 `taxon` also takes a vector of names - species, genera, or both. Reading the REFLORA and JABOT archives is the slow step, and it is done only **once** for all of them, so one call with ten species is much faster than ten separate calls:
@@ -115,10 +160,10 @@ gap_many <- flora_distribution_gap(taxon = c("Luetzelburgia auriculata",
                                              "Luetzelburgia praecox"))
 
 # The candidates of all three species, in one table
-gap_many$states[gap_many$states$New_state_record_candidate, ]
+gap_many$states[gap_many$states$new_state_record_candidate, ]
 ```
 
-Each taxon is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html`, and so on. The returned `states`, `domains`, and `records` tables stack the rows of all taxa, told apart by their `Taxon` column. A name that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
+Each taxon is analysed separately, and gets its own spreadsheet and HTML report in `dir`, named after it - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html`, and so on. The returned `states`, `domains`, and `records` tables stack the rows of all taxa, told apart by their `taxon` column. A name that fails (e.g. a misspelling) is reported and skipped, without stopping the others.
 
 ## Taxa with nothing new
 
@@ -158,7 +203,7 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `domains` | If `TRUE` (default), also place georeferenced records in the phytogeographic domains. Requires the `sf` package. |
 | `max_coordinates` | Maximum number of georeferenced GBIF records read for the domain analysis. Default `5000`. |
 | `version` | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir` | Save each taxon's result as an `.xlsx` spreadsheet, named `flora_distribution_gap_<taxon>.xlsx`, and where; taxa with nothing new get none (see [Taxa with nothing new](#taxa-with-nothing-new)). |
+| `save`, `dir` | Save each taxon's result as an `.xlsx` spreadsheet ready for validation (see [Validating the spreadsheet](#validating-the-spreadsheet)), named `flora_distribution_gap_<taxon>.xlsx`, and where; taxa with nothing new get none (see [Taxa with nothing new](#taxa-with-nothing-new)). |
 | `html_report`, `open_report` | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | Print progress messages. Default `TRUE`. |
 

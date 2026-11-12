@@ -81,7 +81,7 @@ library(floraR)
 gap <- flora_species_gap(taxon = "Myrcia")
 ```
 
-This returns one row per missing name, and also saves an `.xlsx` spreadsheet and a self-contained HTML report (KPI counts plus a filterable table you can copy or download) in the `flora_species_gap/` folder. With POWO and GBIF alone (`sources = c("powo", "gbif")`), 28 names of *Myrcia* are missing from FFB: 6 reported by both - such as *Myrcia microcalyx*, mapped by POWO in Brazil North and known from a holotype and isotypes collected there - 4 by POWO only, and 18 by GBIF only. REFLORA and JABOT add the types kept in Brazilian herbaria.
+This returns one row per missing name, and also saves an `.xlsx` spreadsheet - ready for a specialist to validate the names (see [Validating the spreadsheet](#validating-the-spreadsheet)) - and a self-contained HTML report (KPI counts plus a filterable table you can copy or download) in the `flora_species_gap/` folder. With POWO and GBIF alone (`sources = c("powo", "gbif")`), 28 names of *Myrcia* are missing from FFB: 6 reported by both - such as *Myrcia microcalyx*, mapped by POWO in Brazil North and known from a holotype and isotypes collected there - 4 by POWO only, and 18 by GBIF only. REFLORA and JABOT add the types kept in Brazilian herbaria.
 
 Key columns of the result:
 
@@ -104,6 +104,36 @@ Source-specific columns are `NA` for names that source did not report.
 ## Read the typification
 
 `GBIF_Specimen_names` shows which name each type actually belongs to, which often differs from `Taxon_name`. For example, in *Myrcia* the row for *Myrcia aegiphylloides* (reported by both sources) rests on a holotype collected in Rio de Janeiro that GBIF files under *Aulomyrcia anomala* O.Berg - pointing straight to the basionym and its original material.
+
+## Validating the spreadsheet
+
+Each spreadsheet is designed to be handed to a specialist of the group, who decides which names should be added to FFB. Its first sheet, `instructions`, explains what to do, with the terms to use, a fictitious example, and the progress of the review; the candidates are in the `species` sheet, one row per name. **The specialist does not need to check every type specimen**: one reliable specimen or source showing that the species is accepted and occurs in Brazil is enough.
+
+What the specialist does:
+
+1. In `species`, read the name (`Taxon_name`, `Accepted_name`) and its evidence (`Found_in`, and the POWO, GBIF, REFLORA, and JABOT columns).
+2. Open the links (`POWO_URL`, `IPNI_URL`, `GBIF_URL`, `REFLORA_Links`) to see the protologue, the distribution, and the type specimens.
+3. In `validation`, choose one of three words from the drop-down list (below).
+4. For every name validated as `correct`, choose its `taxonomicStatus` and `nomenclaturalStatus` from their drop-down lists - FFB's own terms, so the name can go straight into FFB. For a `SINONIMO`, write its accepted name in `comments`. For `incorrect` or `uncertain` names, fill them in only if known.
+5. Move on to the next name. Leave `validation` **empty** for the names not looked at: every filled cell counts as a reviewed name.
+
+| `validation` | When to use it |
+|---|---|
+| `correct` | The name was checked: it applies to a plant occurring in Brazil and should be added to FFB - as an accepted name or as a synonym (said in `taxonomicStatus`). |
+| `incorrect` | The name was checked: it should not be added (e.g. the species does not occur in Brazil, the evidence rests on misidentified specimens, or FFB already has it under another spelling). |
+| `uncertain` | The name was checked, but it is impossible to decide yet (e.g. unclear synonymy, type not seen, needs a specialist of the group). |
+| *(empty)* | Not reviewed. |
+
+`taxonomicStatus` is `NOME_ACEITO` (accepted name) or `SINONIMO` (synonym), and `nomenclaturalStatus` one of `NOME_CORRETO`, `NOME_LEGITIMO_MAS_INCORRETO`, `NOME_CORRETO_VIA_CONSERVACAO`, `VARIANTE_ORTOGRAFICA`, `NOME_ILEGITIMO`, `NOME_NAO_EFETIVAMENTE_PUBLICADO`, `NOME_NAO_VALIDAMENTE_PUBLICADO`, `NOME_APLICACAO_INCERTA`, `NOME_REJEITADO`, or `NOME_MAL_APLICADO` - the `instructions` sheet explains each of them. For example (fictitious names):
+
+| `Taxon_name` | `validation` | `taxonomicStatus` | `nomenclaturalStatus` | `comments` |
+|---|---|---|---|---|
+| *Genus exemplaris* | `correct` | `NOME_ACEITO` | `NOME_CORRETO` | |
+| *Genus alterus* | `correct` | `SINONIMO` | `NOME_LEGITIMO_MAS_INCORRETO` | Accepted name: *Genus primus* |
+| *Genus dubius* | `uncertain` | | | Type not seen; possibly the same as *Genus exemplaris* |
+| *Genus extraneus* | `incorrect` | | | Known only from Peru; the Brazilian record is a misidentification |
+
+The last column, `comments`, is **optional** free text - filled in only when there is something to add. The `instructions` sheet counts the names reviewed, how many are `correct`, `incorrect`, and `uncertain`, and how many are `NOME_ACEITO` and `SINONIMO`, and Excel updates these counts as the specialist works; do not rename the sheets or columns, since the counters depend on them. The sheet has filters on its header, and the header row and the name column stay frozen while scrolling. The four columns of the specialist exist only in the spreadsheet, not in the table returned in R.
 
 ## Several genera in one call
 
@@ -162,7 +192,7 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 | `max_number` | POWO | With `powo_source = "checklistbank"`, maximum number of names retrieved. Default `5000`. |
 | `type_status` | GBIF | Type categories counted as evidence (e.g. `c("Holotype", "Isotype")`). `NULL` (default) uses all. |
 | `version` | | FFB dataset version to compare against. Default `"latest"`. |
-| `save`, `dir` | | Save each genus's result as an `.xlsx` spreadsheet, named `flora_species_gap_<genus>.xlsx`, and where; genera with nothing missing get none (see [Genera with nothing missing](#genera-with-nothing-missing)). |
+| `save`, `dir` | | Save each genus's result as an `.xlsx` spreadsheet ready for validation (see [Validating the spreadsheet](#validating-the-spreadsheet)), named `flora_species_gap_<genus>.xlsx`, and where; genera with nothing missing get none (see [Genera with nothing missing](#genera-with-nothing-missing)). |
 | `html_report`, `open_report` | | Write the HTML report, and (with `open_report = TRUE`) open it in the browser. |
 | `verbose` | | Print progress messages. Default `TRUE`. |
 

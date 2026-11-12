@@ -87,6 +87,21 @@ or `"No records found - check the name"` when the databases returned nothing
 at all (which says nothing about the taxon's distribution). Their rows are still
 returned.
 
+**Validating the spreadsheet.** The spreadsheet is meant to be reviewed by a
+specialist of the group. Its first sheet, `instructions`, explains what to do:
+the goal is to find at least *one* voucher specimen supporting each candidate
+new state or domain, not to check every record. The `records` sheet ends with
+two columns for the specialist: `validation`, filled in from a drop-down list
+with `"correct"` (a voucher for the new record), `"incorrect"`
+(misidentified, or wrong locality), or `"uncertain"` (checked, but impossible
+to decide), and left empty for records not reviewed; and `comments`, optional
+free text. In the `states` and `domains` sheets,
+`records_reviewed` and `vouchers_validated` count, for each candidate,
+the records reviewed and those validated as correct, and the `instructions`
+sheet sums up the progress; Excel updates them as the records are reviewed. Every
+sheet has filters on its header, and the header row and the taxon column stay
+frozen while scrolling.
+
 ### Arguments
 
 | Argument | Description |
@@ -100,22 +115,24 @@ returned.
 | max_coordinates | Numeric. Maximum number of georeferenced GBIF records read for the domain analysis. Defaults to `5000`. |
 | version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `flora_download`. |
 | verbose | Logical. If `TRUE` (default), prints progress messages. |
-| save | Logical. If `TRUE` (default), the result of each taxon with at least one candidate new state or domain record is saved to disk as an `.xlsx` spreadsheet named after the taxon, `flora_distribution_gap_<taxon>.xlsx`. Taxa with nothing new get no spreadsheet (see Details). |
+| save | Logical. If `TRUE` (default), the result of each taxon with at least one candidate new state or domain record is saved to disk as an `.xlsx` spreadsheet named after the taxon, `flora_distribution_gap_<taxon>.xlsx`, ready for a specialist to validate the candidates (see Details). Taxa with nothing new get no spreadsheet. |
 | dir | Character. Directory where the spreadsheets and reports are saved. Defaults to `"flora_distribution_gap"`. |
 | html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report for each taxon with candidates (`<dir>/flora_distribution_gap_<taxon>.html`), plus a single `<dir>/__no_new_records_report.html` listing the taxa with nothing new (see Details) summarizing the results: KPI counts, an evidence-by-source breakdown, the full state-by-state table, the domain table, an interactive map of the georeferenced records over the phytogeographic domains (coloured by candidate status), the records in candidate domains, and the individual occurrence records found in the new-state-record candidate states - each linking to the record in its source database - all as sortable, filterable DT widgets with buttons to copy or download them as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
 | open_report | Logical. If `TRUE`, opens the HTML report in the browser once rendered (in interactive sessions only). Default `FALSE`: the report is only saved to `dir`. |
 
 ### Value
 
-A list of three `data.frame`s, each with a `Taxon` column; with
-  several taxa, the rows of all of them are stacked:
+A list of three `data.frame`s, each with a `taxon` column; with
+  several taxa, the rows of all of them are stacked. Fields taken from the source
+  databases keep their original Darwin Core names (e.g. `recordedBy`,
+  `decimalLatitude`); the columns created by floraR are in lower case:
 
-- `states`: One row per Brazilian state with any evidence for `taxon` (in FFB or in the queried sources): `Taxon`, `State`, `In_FFB_distribution` (whether FFB already lists the state), `GBIF_records`, `Reflora_records`, `Jabot_records`, and `speciesLink_records` (records in the state, for each source queried), and `New_state_record_candidate` (`TRUE` when the state has evidence from at least one source but is not in FFB's distribution).
-- `domains`: One row per phytogeographic domain with evidence (in FFB or among the georeferenced records): `Taxon`, `Domain`, `In_FFB_distribution`, `Georeferenced_records`, and `New_domain_record_candidate`. Empty when `domains = FALSE`.
-- `records`: One row per georeferenced record, with its coordinates, `State`, `Domain`, collector, date, institution, catalogue number, identification, a link to the record, and the logical columns `New_state_record_candidate` and `New_domain_record_candidate`. Empty when `domains = FALSE`.
+- `states`: One row per Brazilian state with any evidence for `taxon` (in FFB or in the queried sources): `taxon`, `state`, `in_ffb_distribution` (whether FFB already lists the state), `gbif_records`, `reflora_records`, `jabot_records`, and `specieslink_records` (records in the state, for each source queried), and `new_state_record_candidate` (`TRUE` when the state has evidence from at least one source but is not in FFB's distribution).
+- `domains`: One row per phytogeographic domain with evidence (in FFB or among the georeferenced records): `taxon`, `domain`, `in_ffb_distribution`, `georeferenced_records`, and `new_domain_record_candidate`. Empty when `domains = FALSE`.
+- `records`: The individual records: every georeferenced record, plus the records without coordinates from the candidate new states, with the candidates first. Columns: `taxon`, `source`, `decimalLatitude`, `decimalLongitude`, `state`, `domain`, `municipality`, `locality`, `recordedBy`, `recordNumber`, `eventDate` (the year, for REFLORA and JABOT), `institutionCode`, `catalogNumber`, `scientificName` (the record's identification), `record_link`, and the logical columns `new_state_record_candidate` and `new_domain_record_candidate`.
 
 With `save = TRUE`, each table is saved as a sheet of the `.xlsx`
-spreadsheet.
+spreadsheet, after an `instructions` sheet (see Details).
 
 ### Examples
 
@@ -129,14 +146,14 @@ gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia",
 
 # The candidate new phytogeographic domains, and the records behind them
 gap$domains
-gap$records[gap$records$New_domain_record_candidate, ]
+gap$records[gap$records$new_domain_record_candidate, ]
 
 # Several species in one call: REFLORA and JABOT are read once, and each species
 # gets its own spreadsheet and report
 gap_many <- flora_distribution_gap(taxon = c("Luetzelburgia auriculata",
                                              "Luetzelburgia bahiensis",
                                              "Luetzelburgia praecox"))
-gap_many$states[gap_many$states$New_state_record_candidate, ]
+gap_many$states[gap_many$states$new_state_record_candidate, ]
 
 # A quick check with GBIF only
 gap_gbif <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",

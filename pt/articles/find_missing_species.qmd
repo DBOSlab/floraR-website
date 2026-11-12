@@ -81,7 +81,7 @@ library(floraR)
 gap <- flora_species_gap(taxon = "Myrcia")
 ```
 
-A função retorna uma linha por nome ausente e também salva uma planilha `.xlsx` e um relatório HTML autocontido (indicadores principais e uma tabela filtrável que pode ser copiada ou baixada) na pasta `flora_species_gap/`. Apenas com o POWO e o GBIF (`sources = c("powo", "gbif")`), 28 nomes de *Myrcia* estão ausentes da FFB: 6 relatados por ambos - como *Myrcia microcalyx*, mapeada pelo POWO no Norte do Brasil e conhecida por um holótipo e isótipos coletados lá - 4 apenas pelo POWO e 18 apenas pelo GBIF. O REFLORA e o JABOT acrescentam os tipos guardados em herbários brasileiros.
+A função retorna uma linha por nome ausente e também salva uma planilha `.xlsx` - pronta para que um especialista valide os nomes (veja [Validando a planilha](#validando-a-planilha)) - e um relatório HTML autocontido (indicadores principais e uma tabela filtrável que pode ser copiada ou baixada) na pasta `flora_species_gap/`. Apenas com o POWO e o GBIF (`sources = c("powo", "gbif")`), 28 nomes de *Myrcia* estão ausentes da FFB: 6 relatados por ambos - como *Myrcia microcalyx*, mapeada pelo POWO no Norte do Brasil e conhecida por um holótipo e isótipos coletados lá - 4 apenas pelo POWO e 18 apenas pelo GBIF. O REFLORA e o JABOT acrescentam os tipos guardados em herbários brasileiros.
 
 Principais colunas do resultado:
 
@@ -104,6 +104,36 @@ As colunas específicas de cada fonte ficam `NA` para os nomes que essa fonte n�
 ## Interpretar a tipificação
 
 `GBIF_Specimen_names` mostra a qual nome cada tipo realmente pertence, o que muitas vezes difere de `Taxon_name`. Por exemplo, em *Myrcia* a linha de *Myrcia aegiphylloides* (relatada pelas duas fontes) se baseia em um holótipo coletado no Rio de Janeiro que o GBIF registra como *Aulomyrcia anomala* O.Berg - o que leva diretamente ao basiônimo e ao seu material original.
+
+## Validando a planilha
+
+Cada planilha foi pensada para ser entregue a um especialista do grupo, que decide quais nomes devem ser incluídos na FFB. A sua primeira aba, `instructions`, explica o que fazer, com os termos a usar, um exemplo fictício e o andamento da revisão; os candidatos estão na aba `species`, uma linha por nome. **O especialista não precisa verificar todos os espécimes-tipo**: um espécime ou uma fonte confiável que mostre que a espécie é aceita e ocorre no Brasil é suficiente.
+
+O que o especialista faz:
+
+1. Em `species`, leia o nome (`Taxon_name`, `Accepted_name`) e a sua evidência (`Found_in` e as colunas do POWO, GBIF, REFLORA e JABOT).
+2. Abra os links (`POWO_URL`, `IPNI_URL`, `GBIF_URL`, `REFLORA_Links`) para ver o protólogo, a distribuição e os espécimes-tipo.
+3. Em `validation`, escolha uma de três palavras na lista suspensa (abaixo).
+4. Para todo nome validado como `correct`, escolha o seu `taxonomicStatus` e o seu `nomenclaturalStatus` nas listas suspensas - os próprios termos da FFB, para que o nome possa entrar diretamente na FFB. Para um `SINONIMO`, escreva o seu nome aceito em `comments`. Para nomes `incorrect` ou `uncertain`, preencha-os apenas se forem conhecidos.
+5. Passe para o próximo nome. Deixe `validation` **vazia** nos nomes não examinados: toda célula preenchida conta como nome revisado.
+
+| `validation` | Quando usar |
+|---|---|
+| `correct` | O nome foi verificado: aplica-se a uma planta que ocorre no Brasil e deve ser incluído na FFB - como nome aceito ou como sinônimo (indicado em `taxonomicStatus`). |
+| `incorrect` | O nome foi verificado: não deve ser incluído (ex.: a espécie não ocorre no Brasil, a evidência se baseia em espécimes mal identificados, ou a FFB já o tem com outra grafia). |
+| `uncertain` | O nome foi verificado, mas ainda não é possível decidir (ex.: sinonímia incerta, tipo não visto, requer um especialista do grupo). |
+| *(vazia)* | Não revisado. |
+
+`taxonomicStatus` é `NOME_ACEITO` (nome aceito) ou `SINONIMO` (sinônimo), e `nomenclaturalStatus` um de `NOME_CORRETO`, `NOME_LEGITIMO_MAS_INCORRETO`, `NOME_CORRETO_VIA_CONSERVACAO`, `VARIANTE_ORTOGRAFICA`, `NOME_ILEGITIMO`, `NOME_NAO_EFETIVAMENTE_PUBLICADO`, `NOME_NAO_VALIDAMENTE_PUBLICADO`, `NOME_APLICACAO_INCERTA`, `NOME_REJEITADO` ou `NOME_MAL_APLICADO` - a aba `instructions` explica cada um deles. Por exemplo (nomes fictícios):
+
+| `Taxon_name` | `validation` | `taxonomicStatus` | `nomenclaturalStatus` | `comments` |
+|---|---|---|---|---|
+| *Genus exemplaris* | `correct` | `NOME_ACEITO` | `NOME_CORRETO` | |
+| *Genus alterus* | `correct` | `SINONIMO` | `NOME_LEGITIMO_MAS_INCORRETO` | Accepted name: *Genus primus* |
+| *Genus dubius* | `uncertain` | | | Type not seen; possibly the same as *Genus exemplaris* |
+| *Genus extraneus* | `incorrect` | | | Known only from Peru; the Brazilian record is a misidentification |
+
+A última coluna, `comments`, é texto livre **opcional** - preenchida apenas quando houver algo a acrescentar. A aba `instructions` conta os nomes revisados, quantos são `correct`, `incorrect` e `uncertain`, e quantos são `NOME_ACEITO` e `SINONIMO`, e o Excel atualiza essas contagens à medida que o especialista trabalha; não renomeie as abas nem as colunas, pois os contadores dependem delas. A aba tem filtros no cabeçalho, e a linha de cabeçalho e a coluna do nome ficam congeladas ao rolar. As quatro colunas do especialista existem apenas na planilha, não na tabela retornada no R.
 
 ## Vários gêneros em uma chamada
 
@@ -162,7 +192,7 @@ gap_all <- flora_species_gap(taxon = "Myrcia", require_brazil_evidence = FALSE)
 | `max_number` | POWO | Com `powo_source = "checklistbank"`, número máximo de nomes recuperados. Padrão `5000`. |
 | `type_status` | GBIF | Categorias de tipo que contam como evidência (ex.: `c("Holotype", "Isotype")`). `NULL` (padrão) usa todas. |
 | `version` | | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
-| `save`, `dir` | | Salva o resultado de cada gênero como planilha `.xlsx`, nomeada `flora_species_gap_<genus>.xlsx`, e onde; gêneros sem espécies ausentes não recebem planilha (veja [Gêneros sem espécies ausentes](#gêneros-sem-espécies-ausentes)). |
+| `save`, `dir` | | Salva o resultado de cada gênero como planilha `.xlsx` pronta para validação (veja [Validando a planilha](#validando-a-planilha)), nomeada `flora_species_gap_<genus>.xlsx`, e onde; gêneros sem espécies ausentes não recebem planilha (veja [Gêneros sem espécies ausentes](#gêneros-sem-espécies-ausentes)). |
 | `html_report`, `open_report` | | Gera o relatório HTML e (com `open_report = TRUE`) o abre no navegador. |
 | `verbose` | | Exibe mensagens de progresso. Padrão `TRUE`. |
 

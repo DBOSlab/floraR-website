@@ -95,6 +95,21 @@ with evidence in each source - and a conclusion: `"All names already in FFB -
 no update needed"`, or `"No names found - check the genus"` when the sources
 returned nothing at all.
 
+**Validating the spreadsheet.** The spreadsheet is meant to be reviewed by a
+specialist of the group. Its first sheet, `instructions`, explains what to do,
+and the candidates are in the `species` sheet, which ends with four columns for
+the specialist, each but the last filled in from a drop-down list:
+
+- `validation`: `"correct"` (the name should be added to FFB, as an accepted name or a synonym), `"incorrect"` (it should not, e.g. the species does not occur in Brazil), or `"uncertain"` (checked, but impossible to decide yet); left empty for names not reviewed;
+- `taxonomicStatus`: the name's status in FFB's own terms, `"NOME_ACEITO"` or `"SINONIMO"`;
+- `nomenclaturalStatus`: also in FFB's terms - `"NOME_CORRETO"`, `"NOME_LEGITIMO_MAS_INCORRETO"`, `"NOME_CORRETO_VIA_CONSERVACAO"`, `"VARIANTE_ORTOGRAFICA"`, `"NOME_ILEGITIMO"`, `"NOME_NAO_EFETIVAMENTE_PUBLICADO"`, `"NOME_NAO_VALIDAMENTE_PUBLICADO"`, `"NOME_APLICACAO_INCERTA"`, `"NOME_REJEITADO"`, or `"NOME_MAL_APLICADO"`;
+- `comments`: optional free text (e.g. the accepted name of a `"SINONIMO"`).
+
+The two status columns are filled in for every name validated as
+`"correct"`. The `instructions` sheet explains every term, and counts
+the names reviewed and validated, updated by Excel as the names are reviewed. The sheet has filters on its header, and the header row
+and the name column stay frozen while scrolling.
+
 ### Arguments
 
 | Argument | Description |
@@ -109,7 +124,7 @@ returned nothing at all.
 | max_number | Numeric. Applies to POWO with `powo_source = "checklistbank"`: maximum number of names retrieved. Defaults to `5000`. |
 | version | Character. FFB dataset version to compare against. Defaults to `"latest"`. Passed to `flora_download`. |
 | verbose | Logical. If `TRUE` (default), prints progress messages. |
-| save | Logical. If `TRUE` (default), the result of each genus with at least one species missing from FFB is saved to disk as an `.xlsx` spreadsheet named after the genus, `flora_species_gap_<genus>.xlsx`. Genera with nothing missing get no spreadsheet (see Details). |
+| save | Logical. If `TRUE` (default), the result of each genus with at least one species missing from FFB is saved to disk as an `.xlsx` spreadsheet named after the genus, `flora_species_gap_<genus>.xlsx`, ready for a specialist to validate the candidates (see Details). Genera with nothing missing get no spreadsheet. |
 | dir | Character. Directory where the spreadsheets and reports are saved. Defaults to `"flora_species_gap"`. |
 | html_report | Logical. If `TRUE` (default), also writes a self-contained HTML report for each genus with missing species (`<dir>/flora_species_gap_<genus>.html`), plus a single `<dir>/__no_missing_species_report.html` listing the genera with nothing missing (see Details) summarizing the results: KPI counts and the full candidate table as a sortable, filterable DT widget with buttons to copy or download it as CSV/Excel. Requires the rmarkdown, DT, and htmltools packages; if any is missing, the report is skipped with a message (the `.xlsx` spreadsheet is unaffected). |
 | open_report | Logical. If `TRUE`, opens the HTML report in the browser once rendered (in interactive sessions only). Default `FALSE`: the report is only saved to `dir`. |

@@ -55,16 +55,18 @@ A função retorna uma lista de três tabelas - `gap$states`, `gap$domains` e `g
 
 | Coluna | Significado |
 |---|---|
-| `State` | Estado brasileiro. |
-| `In_FFB_distribution` | Se a FFB já lista o estado para o táxon. |
-| `GBIF_records`, `Reflora_records`, `Jabot_records`, `speciesLink_records` | Número de registros no estado, para cada fonte consultada. |
-| `New_state_record_candidate` | `TRUE` para estados com registros que a FFB não lista. |
+| `state` | Estado brasileiro. |
+| `in_ffb_distribution` | Se a FFB já lista o estado para o táxon. |
+| `gbif_records`, `reflora_records`, `jabot_records`, `specieslink_records` | Número de registros no estado, para cada fonte consultada. |
+| `new_state_record_candidate` | `TRUE` para estados com registros que a FFB não lista. |
+
+As colunas criadas pelo `floraR` ficam em minúsculas, enquanto os campos vindos das bases de dados de origem em `gap$records` mantêm os seus nomes originais do Darwin Core - `recordedBy`, `recordNumber`, `eventDate`, `institutionCode`, `catalogNumber`, `scientificName` (a identificação), `decimalLatitude`, `decimalLongitude` e assim por diante. `gap$records` contém todos os registros georreferenciados, mais os registros sem coordenadas dos estados candidatos, com os candidatos primeiro.
 
 Para *Luetzelburgia auriculata*, a FFB lista 14 estados, e os espécimes no GBIF, no REFLORA e no JABOT apontam para mais cinco - Alagoas, Paraná, Rio de Janeiro, Rio Grande do Sul e São Paulo. O Paraná e o Rio de Janeiro são sustentados pelas três fontes (ex.: Paraná: 22 registros do GBIF, 10 espécimes do REFLORA e 7 do JABOT), enquanto o Rio Grande do Sul se baseia em um único registro do GBIF.
 
 ## Verificar os registros por trás de cada candidato
 
-Registros de ocorrência são evidências a revisar, não provas: um registro de um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento. Por isso, o relatório HTML lista os registros individuais encontrados em cada estado candidato - coletor e número, data, localidade, herbário e número de catálogo, e o nome sob o qual o espécime foi identificado - cada um com link para o próprio registro, para que cada candidato possa ser verificado antes de entrar na FFB.
+Registros de ocorrência são evidências a revisar, não provas: um registro de um novo estado pode ser uma planta cultivada, uma identificação equivocada ou um erro de georreferenciamento. Por isso, a planilha é preparada para que um especialista os valide (veja [Validando a planilha](#validando-a-planilha)), e o relatório HTML lista os registros individuais encontrados em cada estado candidato - coletor e número, data, localidade, herbário e número de catálogo, e o nome sob o qual o espécime foi identificado - cada um com link para o próprio registro, para que cada candidato possa ser verificado antes de entrar na FFB.
 
 ## Domínios fitogeográficos
 
@@ -72,7 +74,7 @@ Além dos estados, os registros do GBIF, do REFLORA e do JABOT que têm coordena
 
 ```r
 gap$domains                                          # uma linha por domínio
-gap$records[gap$records$New_domain_record_candidate, ]  # os registros por trás dos novos domínios
+gap$records[gap$records$new_domain_record_candidate, ]  # os registros por trás dos novos domínios
 ```
 
 Para *Luetzelburgia auriculata*, a FFB lista a Amazônia, a Caatinga e o Cerrado. Dos seus 1.134 registros georreferenciados - 745 do GBIF, 258 do REFLORA e 131 do JABOT -, 10, do Rio de Janeiro, de São Paulo e do Paraná, estão na **Mata Atlântica**, um candidato a novo domínio:
@@ -105,6 +107,49 @@ gap_ne <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
                                  state = c("PE", "Paraiba", "Alagoas"))
 ```
 
+## Validando a planilha
+
+Cada planilha foi pensada para ser entregue a um especialista do grupo, que confirma os candidatos antes que entrem na FFB. **O especialista não precisa verificar todos os registros**: o objetivo é encontrar **pelo menos um espécime-testemunho** que sustente cada candidato a novo estado ou domínio. Assim que um candidato tem um testemunho, ele está sustentado, e o especialista passa para o próximo.
+
+A planilha tem quatro abas:
+
+| Aba | O que contém |
+|---|---|
+| `instructions` | A primeira aba: o que fazer, os termos a usar, um exemplo fictício e o andamento da revisão. |
+| `states` | Uma linha por estado, como em `gap$states`. Para cada candidato, `records_reviewed` e `vouchers_validated` contam o trabalho do especialista em `records`. |
+| `domains` | O mesmo para os domínios fitogeográficos. |
+| `records` | Os registros individuais, com os candidatos primeiro, cada um com `record_link` para o espécime. **A única aba a preencher**, nas suas duas últimas colunas, `validation` e `comments`. |
+
+O que o especialista faz:
+
+1. Em `states`, escolha uma linha com `new_state_record_candidate = TRUE`.
+2. Em `records`, filtre a coluna `state` por esse estado e abra `record_link` para ver o espécime - a imagem, a etiqueta e a identificação.
+3. Em `validation`, escolha uma de três palavras na lista suspensa (abaixo).
+4. Assim que um registro for `correct`, o estado está sustentado: passe para o próximo estado candidato. Se o registro for `incorrect` ou `uncertain`, verifique o próximo registro do mesmo estado.
+5. Faça o mesmo para os domínios candidatos, filtrando `records` por `domain` e `new_domain_record_candidate = TRUE`. Um registro validado como `correct` vale tanto para o seu estado quanto para o seu domínio.
+6. Deixe `validation` **vazia** nos registros não examinados: toda célula preenchida conta como registro revisado.
+
+Os termos da coluna `validation` - sempre as mesmas três palavras:
+
+| `validation` | Quando usar |
+|---|---|
+| `correct` | O espécime foi verificado: a identificação está correta e ele foi coletado naquele estado ou domínio. É um testemunho do novo registro. |
+| `incorrect` | O espécime foi verificado: está mal identificado, ou a localidade ou as coordenadas estão erradas. Não sustenta o registro. |
+| `uncertain` | O espécime foi verificado, mas não é possível decidir (ex.: material estéril, imagem ruim, etiqueta ilegível, grupo difícil). |
+| *(vazia)* | Não revisado. |
+
+A coluna `comments` é texto livre **opcional** - preenchida apenas quando houver algo a acrescentar. Por exemplo (registros fictícios):
+
+| `state` | `catalogNumber` | `validation` | `comments` |
+|---|---|---|---|
+| Piauí | XX0000001 | `incorrect` | Misidentified: it is *Genus alterus* |
+| Piauí | XX0000002 | `uncertain` | Sterile; image too poor to confirm |
+| Piauí | XX0000003 | `correct` | |
+| Piauí | XX0000004 | | *(não revisado: o Piauí já tem um testemunho)* |
+| Pará | XX0000005 | `uncertain` | Possibly an undescribed species - needs further study |
+
+A aba `instructions` resume o andamento - registros revisados, quantos `correct`, `incorrect` e `uncertain`, e quantos estados e domínios candidatos já têm um testemunho -, e o Excel atualiza essas contagens, e as de `states` e `domains`, à medida que o especialista trabalha. Não renomeie as abas nem as colunas, pois os contadores dependem delas. Todas as abas têm filtros no cabeçalho, e a linha de cabeçalho e a coluna do táxon ficam congeladas ao rolar. As colunas `validation` e `comments` e os contadores existem apenas na planilha, não nas tabelas retornadas no R.
+
 ## Vários táxons em uma chamada
 
 `taxon` também aceita um vetor de nomes - espécies, gêneros ou ambos. A leitura dos arquivos do REFLORA e do JABOT é a etapa lenta, e é feita uma **única** vez para todos eles; assim, uma chamada com dez espécies é muito mais rápida que dez chamadas separadas:
@@ -115,10 +160,10 @@ gap_many <- flora_distribution_gap(taxon = c("Luetzelburgia auriculata",
                                              "Luetzelburgia praecox"))
 
 # Os candidatos das três espécies, em uma única tabela
-gap_many$states[gap_many$states$New_state_record_candidate, ]
+gap_many$states[gap_many$states$new_state_record_candidate, ]
 ```
 
-Cada táxon é analisado separadamente e recebe sua própria planilha e relatório HTML em `dir`, nomeados a partir dele - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html` e assim por diante. As tabelas `states`, `domains` e `records` retornadas empilham as linhas de todos os táxons, distinguidos pela coluna `Taxon`. Um nome que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.
+Cada táxon é analisado separadamente e recebe sua própria planilha e relatório HTML em `dir`, nomeados a partir dele - `flora_distribution_gap_Luetzelburgia_auriculata.xlsx`, `flora_distribution_gap_Luetzelburgia_bahiensis.html` e assim por diante. As tabelas `states`, `domains` e `records` retornadas empilham as linhas de todos os táxons, distinguidos pela coluna `taxon`. Um nome que falhe (ex.: um erro de grafia) é informado e ignorado, sem interromper os demais.
 
 ## Táxons sem novidades
 
@@ -158,7 +203,7 @@ gap_splink <- flora_distribution_gap(taxon = "Luetzelburgia auriculata",
 | `domains` | Se `TRUE` (padrão), também situa os registros georreferenciados nos domínios fitogeográficos. Requer o pacote `sf`. |
 | `max_coordinates` | Número máximo de registros georreferenciados do GBIF lidos para a análise de domínios. Padrão `5000`. |
 | `version` | Versão do conjunto de dados da FFB usada na comparação. Padrão `"latest"`. |
-| `save`, `dir` | Salva o resultado de cada táxon como planilha `.xlsx`, nomeada `flora_distribution_gap_<taxon>.xlsx`, e onde; táxons sem novidades não recebem planilha (veja [Táxons sem novidades](#táxons-sem-novidades)). |
+| `save`, `dir` | Salva o resultado de cada táxon como planilha `.xlsx` pronta para validação (veja [Validando a planilha](#validando-a-planilha)), nomeada `flora_distribution_gap_<taxon>.xlsx`, e onde; táxons sem novidades não recebem planilha (veja [Táxons sem novidades](#táxons-sem-novidades)). |
 | `html_report`, `open_report` | Gera o relatório HTML e (com `open_report = TRUE`) o abre no navegador. |
 | `verbose` | Exibe mensagens de progresso. Padrão `TRUE`. |
 
